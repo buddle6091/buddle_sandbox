@@ -1,0 +1,8 @@
+{
+  "name": "buddle_sandbox",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "nx": "22.6.5"
+  }
+}
