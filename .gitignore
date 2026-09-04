@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+
+# nx
+.nx/cache
+.nx/workspace-data
+
+# builds / outputs
+dist/
+build/
+out/
+storybook-static/
+.next/
+
+# test artifacts
+coverage/
+playwright-report/
+test-results/
+
+# env
+.env
+.env.*
+!.env.example
+
+# editors / OS
+.idea/
+.vscode/
+.DS_Store
+
+# deploy
+.vercel
