@@ -2,7 +2,22 @@
   "name": "buddle_sandbox",
   "version": "0.0.0",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "libs/*"
+  ],
   "devDependencies": {
-    "nx": "22.6.5"
+    "@nx/eslint": "22.6.5",
+    "@nx/vite": "22.6.5",
+    "nx": "22.6.5",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.11"
+  },
+  "allowScripts": {
+    "nx@22.6.5": true
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
   }
 }

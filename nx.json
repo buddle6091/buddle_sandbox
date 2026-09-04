@@ -1,3 +1,25 @@
 {
-  "$schema": "./node_modules/nx/schemas/nx-schema.json"
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "production": [
+      "default",
+      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+      "!{projectRoot}/tests/**/*",
+      "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)",
+      "!{projectRoot}/.eslintrc.json",
+      "!{projectRoot}/eslint.config.@(js|cjs|mjs|ts)"
+    ],
+    "sharedGlobals": []
+  },
+  "targetDefaults": {
+    "test": {
+      "cache": true,
+      "inputs": ["default", "^production"]
+    },
+    "lint": {
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/eslint.config.mjs"]
+    }
+  }
 }
