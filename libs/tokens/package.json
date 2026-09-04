@@ -1,0 +1,11 @@
+{
+  "name": "@sandbox/tokens",
+  "version": "0.0.0",
+  "private": true,
+  "description": "design.md 토큰 SSOT — --bs-color-* CSS 변수 + Tailwind v4 @theme",
+  "exports": {
+    "./index.css": "./src/index.css",
+    "./package.json": "./package.json"
+  },
+  "type": "module"
+}
