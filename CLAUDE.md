@@ -14,7 +14,7 @@
 - 토큰: `design.md`(Primitive→Semantic Light/Dark) → `libs/tokens`(`--bs-color-*` CSS 변수 + Tailwind `@theme`)
 - 테스트: **Vitest + Testing Library**, **Playwright**(E2E 최소), **Storybook**
 - 배포: **Vercel + 커스텀 도메인**. 2번째 모듈은 **Next.js Multi-Zones**로 같은 도메인 분리 배포.
-- 최소 버전: **Node 20.9+**, **TypeScript 5.1+**
+- 최소 버전: **Node 20.19+** (`.nvmrc`=24 — vitest 4/vite 8 요구. 20.16 에서는 설치·테스트가 깨진다), **TypeScript 5.1+**
 
 ## 타겟 구조
 ```
@@ -29,9 +29,12 @@ tools/            # Nx generators, 스크립트
 ```
 
 ## 명령 (항상 affected 우선)
+> 세션 시작 시 `nvm use` (Node 24). 아래는 그 다음.
+
 - 개발:      `npx nx dev web`
 - 검증:      `npx nx affected -t lint test typecheck`
 - 빌드:      `npx nx affected -t build`
+- 토큰 검증: `npx nx test tokens`
 - Storybook: `npx nx storybook ui`
 - E2E:       `npx nx e2e web-e2e`
 
@@ -40,6 +43,8 @@ tools/            # Nx generators, 스크립트
 2. 세션은 **작업 대상 패키지 폴더에서 시작**한다(컨텍스트 오염 방지). 루트에서 전방위로 헤집지 않는다.
 3. 검증은 항상 **`nx affected`**로 변경분만.
 4. 결정/상태는 이 파일 또는 `docs/state/<domain>.md` 상태 원장에 flush한다.
+5. 커밋 메시지는 **Conventional Commits** (`feat:` `fix:` `chore:` `docs:` `test:` `refactor:`).
+   제목은 영문 소문자 한 줄, 본문은 한글 불릿으로 "왜"를 남긴다.
 
 ## 패키지 경계 (`@nx/enforce-module-boundaries`)
 - 태그: `scope:web|ui|shared`, `type:app|feature|ui|util`
@@ -47,6 +52,8 @@ tools/            # Nx generators, 스크립트
 
 ## 디자인 시스템 규칙 (중요)
 - 색/간격/타이포/radius/shadow는 **절대 하드코딩 금지.** 반드시 `libs/tokens` 변수 / Tailwind theme을 쓴다.
+- `libs/tokens` 는 구현 완료(Phase 0). 사용법·주의사항은 `libs/tokens/README.md` 참고.
+  소비는 `@import "@sandbox/tokens/index.css";` 한 줄이면 된다.
 - 새 컴포넌트는 반드시 **`/new-component` 스킬 절차**를 따른다.
 
 ## TDD 규율
