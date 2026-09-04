@@ -32,7 +32,7 @@ tools/            # Nx generators, 스크립트
 > 세션 시작 시 `nvm use` (Node 24). 아래는 그 다음.
 
 - 개발:      `npx nx dev web`
-- 검증:      `npx nx affected -t lint test typecheck`
+- 검증:      `npx nx affected -t lint test typecheck`  (3개 타깃 모두 실배선됨)
 - 빌드:      `npx nx affected -t build`
 - 토큰 검증: `npx nx test tokens`
 - Storybook: `npx nx storybook ui`
@@ -47,8 +47,15 @@ tools/            # Nx generators, 스크립트
    제목은 영문 소문자 한 줄, 본문은 한글 불릿으로 "왜"를 남긴다.
 
 ## 패키지 경계 (`@nx/enforce-module-boundaries`)
+**배선 완료.** 루트 `eslint.config.mjs` 의 `depConstraints` 가 강제한다.
+
 - 태그: `scope:web|ui|shared`, `type:app|feature|ui|util`
 - 의존 방향: `app -> feature -> ui -> util` (역방향 금지). `libs/ui`는 앱을 참조할 수 없다.
+- **새 프로젝트에는 `project.json` 에 `tags` 를 반드시 넣는다.** 태그가 없으면
+  이 규칙은 그 프로젝트에 대해 아무것도 잡지 못한다 (조용히 통과한다).
+- 규칙이 실제로 무는지 확인하려면 위반 import 를 잠깐 넣고 `npx nx run <proj>:lint` 를 돌려본다.
+  scope 위반과 type 위반은 각각 다른 메시지로 나온다.
+- 태그를 바꾼 뒤 lint 결과가 이상하면 프로젝트 그래프가 캐시된 것이다 -> `npx nx reset`.
 
 ## 디자인 시스템 규칙 (중요)
 - 색/간격/타이포/radius/shadow는 **절대 하드코딩 금지.** 반드시 `libs/tokens` 변수 / Tailwind theme을 쓴다.

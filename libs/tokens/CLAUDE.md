@@ -6,6 +6,11 @@
 - **CSS 전용.** 런타임 TS export 를 두지 않는다. TS 토큰 맵은 CSS 와 조용히 어긋나는 두 번째 SSOT 가 된다. 필요해지면(예: 차트 색) 그때 CSS 에서 생성하는 방식으로 추가한다.
 - 소비는 TS path alias 가 아니라 패키지 export: `@import "@sandbox/tokens/index.css";`
 - `tags: scope:shared, type:util` — 아무것도 import 하지 않는 최하위 레이어다.
+- ⚠ **여기에 TS export 를 추가한다면 `tsconfig.base.json` 에 `@sandbox/tokens` path 매핑을 같이 넣어라.**
+  path 매핑이 없으면 Nx 가 의존 엣지를 만들지 못해서 `@nx/enforce-module-boundaries` 가
+  이 패키지에 대해 **조용히 아무것도 검사하지 않는다** (에러가 아니라 무검사로 통과한다).
+- ⚠ `tsconfig.json` 의 `include` 는 `tests/` 와 `vite.config.ts` 뿐이라 **`src/` 는 typecheck 대상이 아니다.**
+  지금은 `src/` 가 CSS 전용이라 문제없지만, `src/*.ts` 를 만든다면 `include` 를 같이 넓혀라.
 
 ## 절대 규칙
 1. **`design.md` 가 먼저다.** 토큰을 바꾸려면 `design.md` → 픽스처 → 테스트(Red) → CSS(Green) 순서. 코드에서 시작하지 않는다.
