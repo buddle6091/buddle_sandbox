@@ -1,0 +1,97 @@
+/**
+ * Semantic — design.md §1.2
+ *
+ * 의미 기반 토큰. 값은 전부 primitives 참조이며 raw hex 를 쓰지 않는다.
+ * 컴포넌트/앱이 소비하는 유일한 색 레이어다.
+ *
+ * 다크모드는 세 블록으로 구성한다:
+ *   1) :root                        — 라이트 기본값
+ *   2) @media (prefers-color-scheme) — 시스템 설정(명시적 선택이 없을 때만)
+ *   3) .dark / [data-theme="dark"]   — 명시적 선택(항상 이김)
+ *
+ * @custom-variant 가 Tailwind 기본 media query 를 "대체"하므로 2)가 클래스 없는
+ * 기본값을 담당한다. 세 블록의 키 집합은 반드시 동일해야 한다 —
+ * tokens.contract.test.ts 의 패리티 테스트가 이를 강제한다.
+ */
+
+:root {
+  --bs-color-bg-default: var(--bs-color-gray-0);
+  --bs-color-bg-subtle: var(--bs-color-gray-50);
+  --bs-color-bg-muted: var(--bs-color-gray-100);
+
+  --bs-color-fg-default: var(--bs-color-gray-900);
+  --bs-color-fg-muted: var(--bs-color-gray-500);
+  --bs-color-fg-subtle: var(--bs-color-gray-400);
+
+  --bs-color-border-default: var(--bs-color-gray-200);
+  --bs-color-border-strong: var(--bs-color-gray-300);
+
+  --bs-color-accent-default: var(--bs-color-indigo-600);
+  --bs-color-accent-hover: var(--bs-color-indigo-700);
+  --bs-color-accent-subtle-bg: color-mix(in srgb, var(--bs-color-indigo-500) 10%, transparent);
+  --bs-color-accent-fg-on: var(--bs-color-gray-0);
+
+  --bs-color-danger-default: var(--bs-color-red-500);
+  --bs-color-success-default: var(--bs-color-green-500);
+  --bs-color-warning-default: var(--bs-color-amber-500);
+}
+
+/* 시스템 다크 — 사용자가 라이트를 명시적으로 고르지 않았을 때만 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bs-color-bg-default: var(--bs-color-gray-950);
+    --bs-color-bg-subtle: var(--bs-color-gray-900);
+    --bs-color-bg-muted: var(--bs-color-gray-800);
+
+    --bs-color-fg-default: var(--bs-color-gray-50);
+    --bs-color-fg-muted: var(--bs-color-gray-400);
+    --bs-color-fg-subtle: var(--bs-color-gray-500);
+
+    --bs-color-border-default: var(--bs-color-gray-800);
+    --bs-color-border-strong: var(--bs-color-gray-700);
+
+    --bs-color-accent-default: var(--bs-color-indigo-400);
+    --bs-color-accent-hover: var(--bs-color-indigo-300);
+    --bs-color-accent-subtle-bg: color-mix(in srgb, var(--bs-color-indigo-400) 16%, transparent);
+    --bs-color-accent-fg-on: var(--bs-color-gray-950);
+
+    --bs-color-danger-default: var(--bs-color-red-500);
+    --bs-color-success-default: var(--bs-color-green-500);
+    --bs-color-warning-default: var(--bs-color-amber-500);
+  }
+}
+
+/* 명시적 다크 선택 — next-themes 등이 붙이는 클래스/속성 */
+.dark, [data-theme="dark"] {
+  --bs-color-bg-default: var(--bs-color-gray-950);
+  --bs-color-bg-subtle: var(--bs-color-gray-900);
+  --bs-color-bg-muted: var(--bs-color-gray-800);
+
+  --bs-color-fg-default: var(--bs-color-gray-50);
+  --bs-color-fg-muted: var(--bs-color-gray-400);
+  --bs-color-fg-subtle: var(--bs-color-gray-500);
+
+  --bs-color-border-default: var(--bs-color-gray-800);
+  --bs-color-border-strong: var(--bs-color-gray-700);
+
+  --bs-color-accent-default: var(--bs-color-indigo-400);
+  --bs-color-accent-hover: var(--bs-color-indigo-300);
+  --bs-color-accent-subtle-bg: color-mix(in srgb, var(--bs-color-indigo-400) 16%, transparent);
+  --bs-color-accent-fg-on: var(--bs-color-gray-950);
+
+  --bs-color-danger-default: var(--bs-color-red-500);
+  --bs-color-success-default: var(--bs-color-green-500);
+  --bs-color-warning-default: var(--bs-color-amber-500);
+}
+
+/**
+ * Shadow — design.md §4.
+ * design.md 에 다크모드 값이 없어 라이트 값을 그대로 쓴다. 검은 알파는 어두운
+ * 배경에서 잘 안 보이므로 Phase 1 에서 다크 전용 값을 정할 때 여기만 고치면 된다.
+ * (semantic 레이어이므로 소비자는 --shadow-* 유틸리티만 계속 쓰면 된다.)
+ */
+:root, :host {
+  --bs-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
+  --bs-shadow-md: 0 4px 12px rgb(0 0 0 / 0.08);
+  --bs-shadow-lg: 0 12px 32px rgb(0 0 0 / 0.12);
+}

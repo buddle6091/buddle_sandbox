@@ -78,8 +78,11 @@ export const RADIUS: Record<string, string> = {
 /** design.md §4 Shadow */
 export const SHADOW_LEVELS = ['sm', 'md', 'lg'] as const;
 
-/** design.md §3 — 콘텐츠 최대 폭 */
+/**
+ * design.md §3 — 콘텐츠 최대 폭.
+ * Tailwind 내장 max-w-prose(65ch)와 이름이 겹치지 않도록 blog 본문은 content.
+ */
 export const CONTAINER: Record<string, string> = {
   landing: '1120px',
-  prose: '720px',
+  content: '720px',
 };

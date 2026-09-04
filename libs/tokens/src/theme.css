@@ -1,0 +1,111 @@
+/**
+ * Tailwind v4 theme 매핑 — design.md §2 §3 §4
+ *
+ * 두 블록으로 나뉘고, 그 구분이 다크모드의 생사를 가른다:
+ *
+ *   @theme inline  — 모드에 따라 "변하는" 색.
+ *     inline 은 값(`var(--bs-color-*)` 라는 텍스트 자체)을 유틸리티 본문에
+ *     그대로 심는다. 해석이 요소 스코프에서 런타임에 일어나므로
+ *     .dark 재정의가 그대로 흐른다.
+ *
+ *     ⚠ inline 을 빼면 Tailwind 가 :root 에 전역 --color-* 를 만들고
+ *     거기서 한 번 해석해버린다. .dark 에서 --bs-color-* 를 바꿔도
+ *     간접참조가 이미 접혔기 때문에 아무 일도 안 일어난다.
+ *     에러도 안 나고 유틸리티도 계속 생성돼서 육안으로는 못 잡는다.
+ *     → tokens.contract.test.ts 5번이 이걸 잠근다.
+ *
+ *   @theme         — 모드와 무관한 스케일. 정적 값 최적화를 받는다.
+ */
+
+@theme inline {
+  --color-bg-default: var(--bs-color-bg-default);
+  --color-bg-subtle: var(--bs-color-bg-subtle);
+  --color-bg-muted: var(--bs-color-bg-muted);
+
+  --color-fg-default: var(--bs-color-fg-default);
+  --color-fg-muted: var(--bs-color-fg-muted);
+  --color-fg-subtle: var(--bs-color-fg-subtle);
+
+  --color-border-default: var(--bs-color-border-default);
+  --color-border-strong: var(--bs-color-border-strong);
+
+  --color-accent-default: var(--bs-color-accent-default);
+  --color-accent-hover: var(--bs-color-accent-hover);
+  --color-accent-subtle-bg: var(--bs-color-accent-subtle-bg);
+  --color-accent-fg-on: var(--bs-color-accent-fg-on);
+
+  --color-danger-default: var(--bs-color-danger-default);
+  --color-success-default: var(--bs-color-success-default);
+  --color-warning-default: var(--bs-color-warning-default);
+}
+
+@theme {
+  /* Spacing — design.md §3. 4px 베이스 곱셈 스케일.
+     개별 열거 대신 기준값 하나만 두면 p-6=24px 처럼 표의 값이 그대로 나오면서
+     p-7 같은 표 밖 값도 계속 동작한다. */
+  --spacing: 4px;
+
+  /* Typography — design.md §2.
+     v4 의 --text-*--line-height / --font-weight 동반 문법 덕에
+     text-h1 하나로 size+leading+weight 가 모두 적용된다. */
+  --font-sans: Pretendard, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --text-display: 48px;
+  --text-display--line-height: 56px;
+  --text-display--font-weight: 700;
+
+  --text-h1: 32px;
+  --text-h1--line-height: 40px;
+  --text-h1--font-weight: 700;
+
+  --text-h2: 24px;
+  --text-h2--line-height: 32px;
+  --text-h2--font-weight: 600;
+
+  --text-h3: 20px;
+  --text-h3--line-height: 28px;
+  --text-h3--font-weight: 600;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 28px;
+  --text-body-lg--font-weight: 400;
+
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+  --text-body--font-weight: 400;
+
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-body-sm--font-weight: 400;
+
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-caption--font-weight: 500;
+
+  --text-code: 14px;
+  --text-code--line-height: 22px;
+  --text-code--font-weight: 400;
+
+  /* Radius — design.md §4 */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+
+  /* Shadow — design.md §4.
+     design.md 에 다크모드 그림자가 정의돼 있지 않다. 검은 알파는 어두운
+     배경에서 거의 안 보이므로, Phase 1 에서 소비자 수정 없이 조정할 수 있게
+     --bs-shadow-* 를 한 번 거치게 해 둔다. */
+  --shadow-sm: var(--bs-shadow-sm);
+  --shadow-md: var(--bs-shadow-md);
+  --shadow-lg: var(--bs-shadow-lg);
+
+  /* 콘텐츠 최대 폭 — design.md §3.
+     --container-* 네임스페이스는 max-w-landing / max-w-content 를 만든다
+     (max-w-container-landing 이 아니다).
+     "prose" 는 Tailwind 내장 max-w-prose(65ch)와 이름이 겹쳐 조용히 가려지므로
+     블로그 본문 폭은 content 로 부른다. */
+  --container-landing: 1120px;
+  --container-content: 720px;
+}
