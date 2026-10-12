@@ -1,7 +1,7 @@
 # SandBox — 상태 원장
 
 > 세션 시작 시 이 파일 + `CLAUDE.md` 를 먼저 읽는다.
-> 계획 전체는 `sandbox-roadmap.md`, 토큰 스펙은 `design.md`.
+> 계획 전체는 `sandbox-roadmap.md`, 토큰 스펙은 `../../design.md`.
 
 ## 현재 상태 (2026-09-04)
 - Nx 22.6.5 모노레포(**npm** workspaces), 브랜치 `master`, 리모트 `github.com/buddle6091/buddle_sandbox`
@@ -26,7 +26,7 @@ nvm use
 `--legacy-peer-deps` 로 우회하려던 흔적이 보이면 그건 잘못된 처방이다. Node 버전을 올리면 플래그 없이 깨끗이 설치된다. CLAUDE.md 의 "Node 20.9+" 하한도 이 조합에서는 실질 20.19+ 다.
 
 ## Phase 0 결과 — libs/tokens
-`design.md` → 실행 가능한 CSS. 자세한 사용법은 `libs/tokens/README.md`.
+`../../design.md` → 실행 가능한 CSS. 자세한 사용법은 `libs/tokens/README.md`.
 
 - 3단 구조: `primitives.css`(원시 20종) → `semantic.css`(의미 15종 + shadow) → `theme.css`(Tailwind 매핑)
 - 다크모드 3갈래: 시스템(`prefers-color-scheme`) / 명시(`.dark`·`[data-theme="dark"]`) / 라이트 고정(`[data-theme="light"]`)
@@ -45,7 +45,7 @@ nvm use
 - **lefthook 설치** — `npm i -D lefthook && npx lefthook install`. Phase 1 에서 켜는 걸 권장. 지금은 커밋 전 수동으로 `npx nx affected -t lint test typecheck`.
 
 ## 다음 단계 (sandbox-roadmap.md)
-- **Phase 1**: `libs/ui` — shadcn init(모노레포) + Button/Input/Card/Tag(`design.md` §5) + Storybook → `/new-component` 스킬 사용
+- **Phase 1**: `libs/ui` — shadcn init(모노레포) + Button/Input/Card/Tag(`../../design.md` §5) + Storybook → `/new-component` 스킬 사용
 - **Phase 2**: `apps/web` — Next 16 App Router 랜딩+블로그(MDX) + Vitest/Playwright + Vercel 도메인
 - **Phase 3**: CI/CD — GitHub Actions nx affected 3단 게이트 + @claude
 - **Phase 4**: Multi-Zones 2번째 모듈(`apps/console`)

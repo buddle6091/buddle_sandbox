@@ -1,6 +1,6 @@
 # @sandbox/tokens
 
-`design.md` 토큰의 **SSOT**. Primitive → Semantic(Light/Dark) → Tailwind theme 3단 구조.
+`../../design.md` 토큰의 **SSOT**. Primitive → Semantic(Light/Dark) → Tailwind theme 3단 구조.
 
 ## 사용법
 
@@ -59,7 +59,7 @@
 
 ## 토큰 바꾸기
 
-1. `design.md` 를 먼저 고친다 (진짜 SSOT).
+1. `../../design.md` 를 먼저 고친다 (진짜 SSOT).
 2. `tests/fixtures/expected-tokens.ts` 에 반영한다.
 3. 테스트가 실패하는 걸 확인한다(Red).
 4. `src/*.css` 를 고쳐 통과시킨다(Green).

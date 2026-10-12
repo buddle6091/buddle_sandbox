@@ -1,6 +1,6 @@
 # libs/tokens — 패키지 규칙
 
-`design.md` 토큰의 SSOT. 사용법은 `README.md`, 배경은 루트 `CLAUDE.md`.
+`../../design.md` 토큰의 SSOT. 사용법은 `README.md`, 배경은 루트 `CLAUDE.md`.
 
 ## 이 패키지의 성격
 - **CSS 전용.** 런타임 TS export 를 두지 않는다. TS 토큰 맵은 CSS 와 조용히 어긋나는 두 번째 SSOT 가 된다. 필요해지면(예: 차트 색) 그때 CSS 에서 생성하는 방식으로 추가한다.
@@ -8,7 +8,7 @@
 - `tags: scope:shared, type:util` — 아무것도 import 하지 않는 최하위 레이어다.
 
 ## 절대 규칙
-1. **`design.md` 가 먼저다.** 토큰을 바꾸려면 `design.md` → 픽스처 → 테스트(Red) → CSS(Green) 순서. 코드에서 시작하지 않는다.
+1. **`../../design.md` 가 먼저다.** 토큰을 바꾸려면 `../../design.md` → 픽스처 → 테스트(Red) → CSS(Green) 순서. 코드에서 시작하지 않는다.
 2. **`@theme inline` 의 `inline` 을 지우지 않는다.** 지우면 다크모드가 무증상으로 죽는다 (`theme.css` 주석 참고).
 3. **semantic 값에 raw hex 를 쓰지 않는다.** 항상 `var(--bs-color-*)` 또는 `color-mix()`.
 4. **다크모드 3블록의 키 집합을 항상 일치시킨다.** 토큰을 추가하면 `:root` / `@media` / `.dark` 세 곳 모두에 넣는다.
