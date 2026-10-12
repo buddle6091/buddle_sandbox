@@ -16,7 +16,9 @@ describe('Card — design.md §6.3', () => {
   it('기본 = glass base: 유리 + 고임 + 굽선 + radius/card + 패딩 space/6', () => {
     render(<Card data-testid="c">x</Card>);
     const el = screen.getByTestId('c');
-    expect(el).toHaveClass('glass-base', 'rounded-[var(--bs-radius-card)]', 'p-6');
+    // compact 는 blur 없는 glass-base-flat, medium 부터 glass-base (design.md §3.1 blur 2개 제한)
+    expect(el).toHaveClass('glass-base-flat', 'medium:glass-base', 'rounded-[var(--bs-radius-card)]', 'p-6');
+    expect(el.className).not.toMatch(/(^|\s)glass-base(\s|$)/);
     expect(el).toHaveAttribute('data-variant', 'glass');
     expectTokenOnly(el.className);
   });
@@ -83,6 +85,6 @@ describe('Card — design.md §6.3', () => {
         <a href="/posts/a">글</a>
       </Card>,
     );
-    expect(screen.getByRole('link', { name: '글' })).toHaveClass('glass-base', 'hover-fine:-translate-y-[3px]');
+    expect(screen.getByRole('link', { name: '글' })).toHaveClass('medium:glass-base', 'hover-fine:-translate-y-[3px]');
   });
 });

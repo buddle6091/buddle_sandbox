@@ -7,7 +7,7 @@ import { cn } from '@sandbox/ui/lib/utils';
 /**
  * Card — design.md §6.3 + §5.1
  *
- * variant: glass(기본, base 유리 + 고임 + 굽선) / glass-flat(blur 없음, compact 리스트) / flat(bg/default)
+ * variant: glass(기본, base 유리 + 고임 + 굽선; compact 는 blur 없는 flat 유리로 자동 강등) / glass-flat(항상 blur 없음) / flat(bg/default)
  * hover (하나만 선택):
  *   pool — 고임 차오름: background-size 100%→138%(pool 레이어만) + 굽선 accent, 420ms
  *   lift — 3px 부상 + shadow/md, 300ms. 카드 전체가 링크일 때만(asChild)
@@ -19,7 +19,8 @@ const cardVariants = cva(
   {
     variants: {
       variant: {
-        glass: 'glass-base',
+        // compact 에서는 blur 없이(화면당 backdrop-filter 2개 = TopBar·TabBar), medium 부터 유리
+        glass: 'glass-base-flat medium:glass-base',
         'glass-flat': 'glass-base-flat',
         flat: 'border border-border-default bg-bg-default shadow-sm',
       },
