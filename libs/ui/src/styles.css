@@ -13,6 +13,24 @@
 @source "../.storybook";
 
 /**
+ * 브레이크포인트 축을 갖는 컴포넌트 변수 — 토큰 레이어는 모드 축만 가지므로 여기(ui) 책임.
+ * radius/card 12 / 14 / 16 (compact / medium / expanded+), design.md §3.1
+ */
+:root {
+  --bs-radius-card: 12px;
+}
+@media (min-width: 600px) {
+  :root {
+    --bs-radius-card: 14px;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --bs-radius-card: 16px;
+  }
+}
+
+/**
  * 베이스 — design.md §2 §3 §7.
  * 한글 제목은 keep-all + balance, 본문은 pretty. 다크 display/h1 은 weight 한 단계 하향.
  */
