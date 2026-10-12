@@ -83,11 +83,16 @@ export const SEMANTIC: Record<string, { light: string; dark: string }> = {
   'fg-link': { light: 'blue-600', dark: 'blue-300' },
   'border-default': { light: 'gray-200', dark: 'obsidian-foot' },
   'border-strong': { light: 'gray-300', dark: 'gray-700' },
+  // 불투명 반전 표면(Tooltip·Toast) + 오버레이
+  'bg-inverse': { light: 'gray-900', dark: 'gray-100' },
+  'fg-inverse': { light: 'gray-0', dark: 'gray-900' },
+  'overlay-bg': { light: 'obsidian-ink', dark: 'obsidian-ink' },
   // accent
   'accent-default': { light: 'blue-500', dark: 'blue-400' },
   'accent-hover': { light: 'blue-600', dark: 'blue-300' },
   'accent-subtle-bg': { light: 'blue-500', dark: 'blue-400' },
   'accent-fg-on': { light: 'gray-0', dark: 'obsidian-ink' },
+  'accent-fg-strong': { light: 'blue-700', dark: 'blue-200' },
   'accent-secondary': { light: 'violet-500', dark: 'violet-300' },
   'accent-tertiary': { light: 'celadon-500', dark: 'celadon-300' },
   'danger-default': { light: 'red-500', dark: 'red-500' },
@@ -110,6 +115,7 @@ export const SEMANTIC: Record<string, { light: string; dark: string }> = {
 /** 알파 합성 토큰 — design.md 표의 `@ N%` */
 export const ALPHA_TOKENS: Record<string, { light: number; dark: number }> = {
   'accent-subtle-bg': { light: 10, dark: 16 },
+  'overlay-bg': { light: 42, dark: 42 },
   'glass-subtle-bg': { light: 45, dark: 5 },
   'glass-subtle-border': { light: 60, dark: 9 },
   'glass-base-bg': { light: 62, dark: 72 },

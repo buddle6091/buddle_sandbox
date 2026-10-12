@@ -41,11 +41,17 @@
   --bs-color-border-default: var(--bs-color-gray-200);
   --bs-color-border-strong: var(--bs-color-gray-300);
 
+  /* 반전 표면(Tooltip·Toast) · 오버레이 */
+  --bs-color-bg-inverse: var(--bs-color-gray-900);
+  --bs-color-fg-inverse: var(--bs-color-gray-0);
+  --bs-color-overlay-bg: color-mix(in srgb, var(--bs-color-obsidian-ink) 42%, transparent);
+
   /* accent */
   --bs-color-accent-default: var(--bs-color-blue-500);
   --bs-color-accent-hover: var(--bs-color-blue-600);
   --bs-color-accent-subtle-bg: color-mix(in srgb, var(--bs-color-blue-500) 10%, transparent);
   --bs-color-accent-fg-on: var(--bs-color-gray-0);
+  --bs-color-accent-fg-strong: var(--bs-color-blue-700);
   --bs-color-accent-secondary: var(--bs-color-violet-500);
   --bs-color-accent-tertiary: var(--bs-color-celadon-500);
   --bs-color-danger-default: var(--bs-color-red-500);
@@ -109,11 +115,17 @@
     --bs-color-border-default: var(--bs-color-obsidian-foot);
     --bs-color-border-strong: var(--bs-color-gray-700);
 
+  /* 반전 표면(Tooltip·Toast) · 오버레이 */
+  --bs-color-bg-inverse: var(--bs-color-gray-100);
+  --bs-color-fg-inverse: var(--bs-color-gray-900);
+  --bs-color-overlay-bg: color-mix(in srgb, var(--bs-color-obsidian-ink) 42%, transparent);
+
     /* accent */
     --bs-color-accent-default: var(--bs-color-blue-400);
     --bs-color-accent-hover: var(--bs-color-blue-300);
     --bs-color-accent-subtle-bg: color-mix(in srgb, var(--bs-color-blue-400) 16%, transparent);
     --bs-color-accent-fg-on: var(--bs-color-obsidian-ink);
+  --bs-color-accent-fg-strong: var(--bs-color-blue-200);
     --bs-color-accent-secondary: var(--bs-color-violet-300);
     --bs-color-accent-tertiary: var(--bs-color-celadon-300);
     --bs-color-danger-default: var(--bs-color-red-500);
@@ -177,11 +189,17 @@
   --bs-color-border-default: var(--bs-color-obsidian-foot);
   --bs-color-border-strong: var(--bs-color-gray-700);
 
+  /* 반전 표면(Tooltip·Toast) · 오버레이 */
+  --bs-color-bg-inverse: var(--bs-color-gray-100);
+  --bs-color-fg-inverse: var(--bs-color-gray-900);
+  --bs-color-overlay-bg: color-mix(in srgb, var(--bs-color-obsidian-ink) 42%, transparent);
+
   /* accent */
   --bs-color-accent-default: var(--bs-color-blue-400);
   --bs-color-accent-hover: var(--bs-color-blue-300);
   --bs-color-accent-subtle-bg: color-mix(in srgb, var(--bs-color-blue-400) 16%, transparent);
   --bs-color-accent-fg-on: var(--bs-color-obsidian-ink);
+  --bs-color-accent-fg-strong: var(--bs-color-blue-200);
   --bs-color-accent-secondary: var(--bs-color-violet-300);
   --bs-color-accent-tertiary: var(--bs-color-celadon-300);
   --bs-color-danger-default: var(--bs-color-red-500);

@@ -96,6 +96,11 @@ v0.1 토큰 이름은 전부 유지한다(기존 컴포넌트 무수정). `glass
 | `fg/link`        | `blue/600`       | `blue/300`       |
 | `border/default` | `gray/200`       | `obsidian/foot`  |
 | `border/strong`  | `gray/300`       | `gray/700`       |
+| `bg/inverse`     | `gray/900`       | `gray/100`       |
+| `fg/inverse`     | `gray/0`         | `gray/900`       |
+| `overlay/bg`     | `obsidian/ink @ 42%` | `obsidian/ink @ 42%` |
+
+`bg/inverse`·`fg/inverse` 는 Tooltip·Toast 의 "불투명 반전 표면"(§6.8). 라이트에서 `gray/900`+`gray/0`, 다크에서는 뒤집어 `gray/100`+`gray/900` — 다크 페이지 위에 `gray/900` 을 올리면 배경과 구분되지 않는다. `overlay/bg` 는 Dialog/Sheet 오버레이(§6.7).
 
 `fg/muted` 라이트 값 `gray/550`(`#5D6679`)은 `gray/500`보다 어둡게 따로 둔 값이다. `bg/page`·`bg/subtle`·`gray/0` 위에서 4.5:1을 넘기기 위함. **텍스트에 알파 금지** — 유리 위 본문도 불투명 `fg/*`만 쓴다.
 
@@ -107,6 +112,7 @@ v0.1 토큰 이름은 전부 유지한다(기존 컴포넌트 무수정). `glass
 | `accent/hover`     | `blue/600`       | `blue/300`       |
 | `accent/subtle-bg` | `blue/500 @ 10%` | `blue/400 @ 16%` |
 | `accent/fg-on`     | `gray/0`         | `obsidian/ink`   |
+| `accent/fg-strong` | `blue/700`       | `blue/200`       |
 | `accent/secondary` | `violet/500`     | `violet/300`     |
 | `accent/tertiary`  | `celadon/500`    | `celadon/300`    |
 | `danger/default`   | `red/500`        | `red/500`        |
@@ -114,6 +120,7 @@ v0.1 토큰 이름은 전부 유지한다(기존 컴포넌트 무수정). `glass
 | `warning/default`  | `amber/500`      | `amber/500`      |
 
 다크 모드 solid 버튼의 글자는 `accent/fg-on` = `obsidian/ink`(6.69:1). 흰 글자는 2.88:1로 실패한다.
+`accent/fg-strong` 은 `accent/subtle-bg` 위에 올리는 작은 글자(Avatar 이니셜, 캘린더 칩 잉크)용 — `accent/default`(`blue/500`)는 라이트 배경에서 3.9:1 로 본문 기준에 못 미친다.
 
 **glass (유리 3단계)**
 

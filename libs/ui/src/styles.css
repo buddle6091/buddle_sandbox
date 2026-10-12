@@ -145,3 +145,96 @@
     opacity: 0.8;
   }
 }
+
+/**
+ * 오버레이 모션 — design.md §4 + PROMPT Step 5.
+ * 팝오버/슬래시/버블 메뉴: scale .96→1 + 투명도 170ms(control). Dialog: 300ms(surface).
+ * Sheet/토스트: 아래서 올라옴. 이징은 ease-bs 하나. reduced-motion 에서는 투명도만.
+ */
+@keyframes bs-pop-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes bs-pop-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.96); }
+}
+@keyframes bs-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes bs-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes bs-rise-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes bs-rise-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(8px); }
+}
+@keyframes bs-sheet-in {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes bs-sheet-out {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+@keyframes bs-sheet-side-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes bs-sheet-side-out {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+@utility animate-bs-pop-in {
+  animation: bs-pop-in var(--bs-motion-control) var(--ease-bs) both;
+  @media (prefers-reduced-motion: reduce) { animation-name: bs-fade-in; }
+}
+@utility animate-bs-pop-out {
+  animation: bs-pop-out var(--bs-motion-control) var(--ease-bs) both;
+  @media (prefers-reduced-motion: reduce) { animation-name: bs-fade-out; }
+}
+@utility animate-bs-surface-in {
+  animation: bs-pop-in var(--bs-motion-surface) var(--ease-bs) both;
+  @media (prefers-reduced-motion: reduce) { animation-name: bs-fade-in; }
+}
+@utility animate-bs-surface-out {
+  animation: bs-pop-out var(--bs-motion-surface) var(--ease-bs) both;
+  @media (prefers-reduced-motion: reduce) { animation-name: bs-fade-out; }
+}
+@utility animate-bs-fade-in {
+  animation: bs-fade-in var(--bs-motion-surface) var(--ease-bs) both;
+}
+@utility animate-bs-fade-out {
+  animation: bs-fade-out var(--bs-motion-surface) var(--ease-bs) both;
+}
+@utility animate-bs-rise-in {
+  animation: bs-rise-in var(--bs-motion-surface) var(--ease-bs) both;
+  @media (prefers-reduced-motion: reduce) { animation-name: bs-fade-in; }
+}
+@utility animate-bs-rise-out {
+  animation: bs-rise-out var(--bs-motion-surface) var(--ease-bs) both;
+  @media (prefers-reduced-motion: reduce) { animation-name: bs-fade-out; }
+}
+@utility animate-bs-sheet-in {
+  animation: bs-sheet-in var(--bs-motion-surface) var(--ease-bs) both;
+  @media (prefers-reduced-motion: reduce) { animation-name: bs-fade-in; }
+}
+@utility animate-bs-sheet-out {
+  animation: bs-sheet-out var(--bs-motion-surface) var(--ease-bs) both;
+  @media (prefers-reduced-motion: reduce) { animation-name: bs-fade-out; }
+}
+@utility animate-bs-sheet-side-in {
+  animation: bs-sheet-side-in var(--bs-motion-surface) var(--ease-bs) both;
+  @media (prefers-reduced-motion: reduce) { animation-name: bs-fade-in; }
+}
+@utility animate-bs-sheet-side-out {
+  animation: bs-sheet-side-out var(--bs-motion-surface) var(--ease-bs) both;
+  @media (prefers-reduced-motion: reduce) { animation-name: bs-fade-out; }
+}

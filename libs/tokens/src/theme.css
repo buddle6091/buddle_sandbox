@@ -35,11 +35,17 @@
   --color-border-default: var(--bs-color-border-default);
   --color-border-strong: var(--bs-color-border-strong);
 
+  /* inverse / overlay */
+  --color-bg-inverse: var(--bs-color-bg-inverse);
+  --color-fg-inverse: var(--bs-color-fg-inverse);
+  --color-overlay-bg: var(--bs-color-overlay-bg);
+
   /* accent */
   --color-accent-default: var(--bs-color-accent-default);
   --color-accent-hover: var(--bs-color-accent-hover);
   --color-accent-subtle-bg: var(--bs-color-accent-subtle-bg);
   --color-accent-fg-on: var(--bs-color-accent-fg-on);
+  --color-accent-fg-strong: var(--bs-color-accent-fg-strong);
   --color-accent-secondary: var(--bs-color-accent-secondary);
   --color-accent-tertiary: var(--bs-color-accent-tertiary);
   --color-danger-default: var(--bs-color-danger-default);
