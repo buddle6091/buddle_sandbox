@@ -34,7 +34,8 @@
 |---|---|
 | 표면 | `bg-bg-page`(페이지) `bg-bg-default` `bg-bg-subtle` `bg-bg-muted` |
 | 텍스트 | `text-fg-default` `text-fg-body`(본문) `text-fg-muted` `text-fg-subtle` `text-fg-link` — **알파 금지, 전부 불투명** |
-| accent | `bg-accent-default` `text-accent-secondary`(자운) `text-accent-tertiary`(청자) `bg-accent-subtle-bg` `text-accent-fg-on` |
+| 반전·오버레이 | `bg-bg-inverse` `text-fg-inverse`(Tooltip·Toast 불투명 표면, 다크에서는 뒤집힘) `bg-overlay-bg`(Dialog 오버레이, blur 4 는 컴포넌트) |
+| accent | `bg-accent-default` `text-accent-secondary`(자운) `text-accent-tertiary`(청자) `bg-accent-subtle-bg` `text-accent-fg-on`(solid 위) `text-accent-fg-strong`(subtle-bg 위 작은 글자) |
 | status | `bg-danger-default` `text-success-default` `bg-warning-default` |
 | glass | `bg-glass-{subtle,base,solid}-bg` `border-glass-{subtle,base,solid}-border` `border-glass-foot` `bg-glass-fallback-bg` `backdrop-blur-glass-{sm,md,lg}` |
 | glaze | `bg-glaze-pool`(고임 그래디언트) `bg-glaze-tint` |
