@@ -12,7 +12,7 @@
 | Phase | 상태 | 산출물 |
 |---|---|---|
 | 0 기반 | **완료** | `libs/tokens`, npm workspaces, nx targetDefaults, 경계 태그 |
-| 1 디자인시스템 | 다음 | `libs/ui` shadcn + Button/Input/Card/Tag + Storybook |
+| 1 디자인시스템 | **진행 중** | ✅ ESLint/경계 규칙/lint·typecheck 게이트 · ⬜ `libs/ui` shadcn + Button/Input/Card/Tag + Storybook |
 
 ## ⚠ 환경 — Node 24 필수
 `.nvmrc` = `24`. 세션 시작 시:
@@ -39,10 +39,65 @@ nvm use
 - **`--container-content`** — design.md 의 "블로그 본문 720px". `max-w-prose` 는 Tailwind 내장(65ch)이라 이름이 겹쳐 `content` 로 명명했다.
 
 ### 의도적으로 미룬 것 (Phase 1에서)
-- **`@nx/enforce-module-boundaries` ESLint 배선** — `project.json` 에 `tags`(`scope:shared`, `type:util`)는 넣었지만 규칙 자체는 미배선. 프로젝트가 1개라 검사할 교차 import 가 없다. `libs/ui` 가 생기면 그때 `eslint.config.mjs` 에 depConstraints 를 건다.
-- **`tsconfig.base.json` path 매핑** — 토큰은 CSS export 로 소비돼 TS import 이 없다. `libs/ui` 가 `@sandbox/ui` 로 필요해질 때 추가.
-- **lint 타깃** — `libs/tokens` 에 아직 없다. ESLint 를 세팅하는 Phase 1 에 함께.
-- **lefthook 설치** — `npm i -D lefthook && npx lefthook install`. Phase 1 에서 켜는 걸 권장. 지금은 커밋 전 수동으로 `npx nx affected -t lint test typecheck`.
+- ~~**`@nx/enforce-module-boundaries` ESLint 배선**~~ — **해소됨.** 아래 "Phase 1 진행 — 검증 게이트 배선" 참고.
+- ~~**`tsconfig.base.json` path 매핑**~~ — **해소됨.** `@sandbox/ui` 추가. 토큰은 여전히 CSS export 로만 소비하므로 path 매핑을 두지 않는다.
+- ~~**lint 타깃**~~ — **해소됨.** `libs/tokens` / `libs/ui` 양쪽에 `lint` + `typecheck` 추가.
+- **lefthook 설치** — `npm i -D lefthook && npx lefthook install`. 아직 안 켰다. 이제 게이트가 실제로 동작하므로 켤 준비는 됐다. 지금은 커밋 전 수동으로 `npx nx affected -t lint test typecheck`.
+
+## Phase 1 진행 — 검증 게이트 배선 (2026-09-04)
+
+### 배선 전에 뭐가 문제였나
+`npx nx affected -t lint test typecheck` 는 **`test` 하나만 돌고 있었다.** `lint`/`typecheck` 타깃이
+워크스페이스 어디에도 없어서 Nx 는 해당 타깃을 조용히 건너뛰었고, 명령은 성공을 보고했다.
+`CLAUDE.md` 와 `lefthook.yml` 이 이 명령을 검증 게이트로 명시하고 있었으니 **게이트가 실제보다 강해 보이는**
+상태였다. 이번에 그 간극을 메웠다.
+
+### 한 것
+- 루트 `eslint.config.mjs` (flat config) + `@nx/eslint-plugin` 22.6.5 배선.
+- `@nx/enforce-module-boundaries` depConstraints — `scope:*` 격리 + `type:*` 방향(`app -> feature -> ui -> util`).
+- `libs/tokens` / `libs/ui` 에 `lint`(@nx/eslint:lint) + `typecheck`(`tsc --noEmit`) 타깃.
+- `nx.json` 에 `typecheck` targetDefaults (캐시 + `tsconfig.base.json` 입력).
+- `tsconfig.base.json` 신설 (`@sandbox/ui` path 매핑).
+- `libs/ui` **프로젝트 셸** — 경계 규칙은 프로젝트가 2개 이상이어야 검사할 게 생긴다.
+
+### 규칙이 실제로 무는지 확인함 (통과만 보고 끝내지 않았다)
+고의 위반 import 를 주입해 세 방향 모두 확인하고 되돌렸다:
+
+| 케이스 | 기대 | 결과 |
+|---|---|---|
+| `tokens`(scope:shared) -> `ui`(scope:ui) | scope 위반 | ✅ `"scope:shared" can only depend on ... "scope:shared"` |
+| `tokens`(type:util) -> `ui`(type:ui), scope 동일하게 맞춤 | type 역방향 위반 | ✅ `"type:util" can only depend on ... "type:util"` |
+| `ui`(type:ui) -> `tokens`(type:util) | 허용 | ✅ 통과 |
+
+즉 규칙이 **전부 막는 것도, 전부 통과시키는 것도 아니라 방향을 구분한다.**
+
+### 이때 겪은 함정
+- **`nx reset` 없이 태그를 바꾸면 옛 태그로 판정한다.** 위 2번 케이스에서 scope 를 맞췄는데도 계속
+  scope 위반이 떴다. 프로젝트 그래프 캐시 때문. 태그를 만졌으면 `npx nx reset`.
+- **새 workspace 를 만들면 `npm install` 을 다시 돌려야 Nx 가 인식한다.** `libs/ui/package.json` 을 만든
+  직후 `nx run ui:lint` 가 `Could not find project "ui"` 로 죽었다.
+- **`@types/node` 가 없었다.** `libs/tokens/tsconfig.json` 이 `types: ["node"]` 를 선언해 뒀지만 패키지가
+  없어서 `typecheck` 를 켜자마자 TS2688 로 터졌다. 원래 있던 구멍이 lint/typecheck 배선으로 드러난 것.
+- **`@nx/eslint` 는 있었지만 `eslint` 본체와 `@nx/eslint-plugin` 은 없었다.** ESLint 10.9.1 이 transitive 로만
+  들어와 있었다. 셋 다 명시적 devDependency 로 고정했다.
+
+### 버전 고정 주의
+`@nx/eslint`, `@nx/eslint-plugin` 은 **nx core 와 같은 22.6.5 로 핀했다.** `latest`(23.x)로 올리면
+core 22.6.5 와 불일치한다. nx 를 올릴 때 셋을 같이 올린다.
+
+### 알려진 사각지대 (QA 지적 — 지금은 무해하지만 나중에 문다)
+- **`@sandbox/tokens` 에 path 매핑이 없다.** 토큰은 CSS 로만 소비하므로 의도적이다. 다만
+  여기에 TS export 를 추가하면서 `tsconfig.base.json` 매핑을 안 넣으면 Nx 가 의존 엣지를 못 만들어
+  경계 규칙이 **에러 없이 무검사로 통과**한다. `libs/tokens/CLAUDE.md` 에 경고를 박아뒀다.
+- **`libs/tokens/src/` 는 typecheck 대상이 아니다** (`tsconfig.json` 의 `include` 가 `tests/` + `vite.config.ts`).
+  현재 `src/` 는 CSS 전용이라 무해. `src/*.ts` 를 만들면 `include` 를 같이 넓혀야 한다.
+- **루트 파일은 어느 nx 프로젝트에도 속하지 않는다.** `eslint.config.mjs` 같은 파일은
+  `npx nx run-many -t lint` 이 커버하지 못한다. `npm run lint:root` 로 따로 돈다.
+
+### 남은 것
+- `libs/ui` 는 지금 **빈 셸**이다 (`src/index.ts` 가 `export {}`). shadcn init / Button·Input·Card·Tag /
+  Storybook 은 Phase 1 본 작업으로 `/new-component` 스킬 절차를 따라 진행한다.
+- `libs/ui` 에는 아직 `test` 타깃이 없다 (테스트할 컴포넌트가 없다). 첫 컴포넌트와 함께 추가.
 
 ## 다음 단계 (sandbox-roadmap.md)
 - **Phase 1**: `libs/ui` — shadcn init(모노레포) + Button/Input/Card/Tag(`../../design.md` §5) + Storybook → `/new-component` 스킬 사용

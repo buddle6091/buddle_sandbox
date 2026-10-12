@@ -1,0 +1,11 @@
+{
+  "name": "@sandbox/ui",
+  "version": "0.0.0",
+  "private": true,
+  "description": "shadcn 기반 공용 컴포넌트 (Phase 1 진행 중 — 현재는 프로젝트 셸)",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  }
+}
