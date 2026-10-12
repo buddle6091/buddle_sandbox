@@ -3,15 +3,19 @@
 > 세션 시작 시 이 파일 + `CLAUDE.md` 를 먼저 읽는다.
 > 계획 전체는 `sandbox-roadmap.md`, 토큰 스펙은 `../../design.md`.
 
-## 현재 상태 (2026-09-04)
+## 현재 상태 (2026-10-12)
 - Nx 22.6.5 모노레포(**npm** workspaces), 브랜치 `master`, 리모트 `github.com/buddle6091/buddle_sandbox`
 - **origin/master push 완료** (`f0505cc`). 이관 시점의 미push 상태는 해소됨.
 - **Phase 0 완료** — `libs/tokens` (아래 참고)
+- **Phase 0.5 완료** — 토큰 v0.2 (Glass). `design.md` v0.2 와 코드 일치.
+- **lefthook 켜짐** — 커밋 시 affected lint/test/typecheck 가 실제로 돈다.
+- 핸드오프 번들 `docs/handoff/blog-calendar/` (README → SCREENS → STATES → DATA → PROMPT). 다음 작업의 스펙.
 
 ### 완료된 Phase
 | Phase | 상태 | 산출물 |
 |---|---|---|
 | 0 기반 | **완료** | `libs/tokens`, npm workspaces, nx targetDefaults, 경계 태그 |
+| 0.5 토큰 v0.2 | **완료** | glass/glaze/shadow/orb 토큰, 타이포 v0.2, 모션·레이아웃 변수, 계약 테스트 114개 |
 | 1 디자인시스템 | **진행 중** | ✅ ESLint/경계 규칙/lint·typecheck 게이트 · ⬜ `libs/ui` shadcn + Button/Input/Card/Tag + Storybook |
 
 ## ⚠ 환경 — Node 24 필수
@@ -42,7 +46,28 @@ nvm use
 - ~~**`@nx/enforce-module-boundaries` ESLint 배선**~~ — **해소됨.** 아래 "Phase 1 진행 — 검증 게이트 배선" 참고.
 - ~~**`tsconfig.base.json` path 매핑**~~ — **해소됨.** `@sandbox/ui` 추가. 토큰은 여전히 CSS export 로만 소비하므로 path 매핑을 두지 않는다.
 - ~~**lint 타깃**~~ — **해소됨.** `libs/tokens` / `libs/ui` 양쪽에 `lint` + `typecheck` 추가.
-- **lefthook 설치** — `npm i -D lefthook && npx lefthook install`. 아직 안 켰다. 이제 게이트가 실제로 동작하므로 켤 준비는 됐다. 지금은 커밋 전 수동으로 `npx nx affected -t lint test typecheck`.
+- ~~**lefthook 설치**~~ — **해소됨(2026-10-12).** pre-commit = affected lint/test/typecheck, pre-push = affected build.
+
+## Phase 0.5 — 토큰 v0.2 Glass (2026-10-12)
+`../../design.md` 가 v0.1(indigo 1색) → v0.2(백자/벽청/청자/자운 + 유리)로 바뀌어 `libs/tokens` 를 따라 올렸다.
+픽스처 → Red(69 실패) → CSS → Green(114) 순서. Tailwind CLI 컴파일로 inline 동작·`--color-*` 누출 0 확인.
+
+### 한 것
+- `primitives.css`: gray 냉회색 교체, porcelain/obsidian/blue/celadon/violet/status/navy 추가, indigo 제거.
+- `semantic.css`: `bg/page` `fg/body` `fg/link` `accent/secondary|tertiary` + glass 8 + glaze 2 (색) / `--bs-shadow-*` 6, `--bs-glaze-pool`, `--bs-orb-*`, `--bs-glass-blur-*`·saturate (비색). 세 블록 키 패리티 유지. v0.1 의 별도 shadow 블록은 3블록으로 흡수.
+- `theme.css`: 타이포 v0.2(+`label`, letter-spacing), `--radius-xl`, `--ease-bs`, 브레이크포인트 `medium/expanded/wide`, `--bs-motion-*`. 색·그림자·그래디언트·blur 는 전부 `@theme inline`.
+- `index.css`: Pretendard Variable + JetBrains Mono 로드, `hover-fine:` variant, `--bs-layout-*`(compact 기본 → expanded 재정의).
+
+### 이때 내린 결정
+- **design.md §1.1 에 primitive 4개 추가** — `gray/550`(#5D6679, fg/muted 라이트), `white`/`black`(알파 베이스 전용), `obsidian/panel`(#161A22). semantic 레이어 raw hex 금지 규칙을 지키기 위해 표 밖 값에 이름을 줬다. white/black 은 표면색 금지가 그대로 유효하다.
+- **비색 semantic 토큰은 색 토큰과 같은 3블록에 둔다.** 모드에 따라 값이 바뀌기 때문. 대신 "var/color-mix 만" 규칙은 `--bs-color-*` 에만 걸고, 비색 토큰은 "안의 색이 primitive 를 거치는가 + hex 없음"을 검사한다.
+- **토큰 레이어는 모드 축만 가진다.** glass alpha/blur·radius/card·compact 타이포 같은 브레이크포인트 축은 컴포넌트 CSS 책임. semantic 에 미디어 쿼리를 넣지 않는다. 예외는 `index.css` 의 `--bs-layout-*`(셸 치수는 레이아웃 변수라 토큰이 아닌 plain 변수로 둠).
+- `--container-landing` 1120 유지(design.md §3 은 1200). Phase 0 결정값이라 이번 범위에서 바꾸지 않았다 — 랜딩 구현 시 재검토.
+- `--breakpoint-*` 이름은 design.md 용어(medium/expanded/wide)를 그대로 써서 Tailwind 기본 sm/md/lg 와 혼동을 끊었다.
+
+### 다음(Phase 1)에서 쓸 것
+- Card glass base = `bg-glass-base-bg bg-glaze-pool border-glass-base-border border-b-glass-foot shadow-glass backdrop-blur-glass-md` + `supports-[not(backdrop-filter:blur(1px))]:bg-glass-fallback-bg`. 레시피는 `libs/tokens/README.md`.
+- hover 는 `hover-fine:`, 모션은 `ease-bs duration-[var(--bs-motion-control)]`, `transition-all` 금지.
 
 ## Phase 1 진행 — 검증 게이트 배선 (2026-09-04)
 

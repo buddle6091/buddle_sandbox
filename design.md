@@ -28,6 +28,14 @@ v0.1의 뉴트럴 + Indigo 1색 구조를 **백자(porcelain) 뉴트럴 + 벽청
 
 `gray/0`은 순백이 아니다(`#FFFFFF` 금지). 유리 알파의 베이스가 되므로 설백 `#FDFDFE`를 쓴다.
 
+**특수 primitive** — semantic 레이어는 raw hex 를 쓰지 않으므로, 표 밖 값도 여기에 이름을 둔다.
+
+| Token      | Value     | 용도                                                                   |
+| ---------- | --------- | ---------------------------------------------------------------------- |
+| `gray/550` | `#5D6679` | `fg/muted` 라이트 전용. `gray/500`보다 어둡게 둔 텍스트 회색           |
+| `white`    | `#FFFFFF` | **알파 베이스 전용**(다크 glass 테두리·inset 하이라이트). 표면색 금지 |
+| `black`    | `#000000` | **알파 베이스 전용**(다크 그림자). 표면색 금지                          |
+
 **porcelain (라이트 표면)** / **obsidian (다크 표면)**
 
 | Token            | Value     |     | Token            | Value     |
@@ -36,7 +44,7 @@ v0.1의 뉴트럴 + Indigo 1색 구조를 **백자(porcelain) 뉴트럴 + 벽청
 | `porcelain/milk` | `#F7F9FD` |     | `obsidian/glaze` | `#131826` |
 | `porcelain/ash`  | `#EEF2F9` |     | `obsidian/ash`   | `#1B2233` |
 | `porcelain/blue` | `#E6EDF6` |     | `obsidian/foot`  | `#252E42` |
-| `porcelain/page` | `#F4F6FB` |     |                  |           |
+| `porcelain/page` | `#F4F6FB` |     | `obsidian/panel` | `#161A22` |
 
 **blue (벽청 — primary)**
 
@@ -83,13 +91,13 @@ v0.1 토큰 이름은 전부 유지한다(기존 컴포넌트 무수정). `glass
 | `bg/muted`       | `porcelain/ash`  | `obsidian/foot`  |
 | `fg/default`     | `gray/800`       | `gray/50`        |
 | `fg/body`        | `gray/700`       | `gray/300`       |
-| `fg/muted`       | `#5D6679`        | `gray/400`       |
+| `fg/muted`       | `gray/550`       | `gray/400`       |
 | `fg/subtle`      | `gray/400`       | `gray/500`       |
 | `fg/link`        | `blue/600`       | `blue/300`       |
 | `border/default` | `gray/200`       | `obsidian/foot`  |
 | `border/strong`  | `gray/300`       | `gray/700`       |
 
-`fg/muted` 라이트 값 `#5D6679`는 `gray/500`보다 어둡게 따로 둔 값이다. `bg/page`·`bg/subtle`·`gray/0` 위에서 4.5:1을 넘기기 위함. **텍스트에 알파 금지** — 유리 위 본문도 불투명 `fg/*`만 쓴다.
+`fg/muted` 라이트 값 `gray/550`(`#5D6679`)은 `gray/500`보다 어둡게 따로 둔 값이다. `bg/page`·`bg/subtle`·`gray/0` 위에서 4.5:1을 넘기기 위함. **텍스트에 알파 금지** — 유리 위 본문도 불투명 `fg/*`만 쓴다.
 
 **accent**
 
@@ -111,18 +119,18 @@ v0.1 토큰 이름은 전부 유지한다(기존 컴포넌트 무수정). `glass
 
 | Token                 | Light            | Dark                 |
 | --------------------- | ---------------- | -------------------- |
-| `glass/subtle-bg`     | `gray/0 @ 45%`   | `#FFFFFF @ 5%`       |
-| `glass/subtle-border` | `gray/0 @ 60%`   | `#FFFFFF @ 9%`       |
+| `glass/subtle-bg`     | `gray/0 @ 45%`   | `white @ 5%`         |
+| `glass/subtle-border` | `gray/0 @ 60%`   | `white @ 9%`         |
 | `glass/base-bg`       | `gray/0 @ 62%`   | `obsidian/ash @ 72%` |
-| `glass/base-border`   | `gray/0 @ 80%`   | `#FFFFFF @ 14%`      |
+| `glass/base-border`   | `gray/0 @ 80%`   | `white @ 14%`        |
 | `glass/foot`          | `blue/300 @ 42%` | `blue/300 @ 40%`     |
-| `glass/solid-bg`      | `gray/0 @ 80%`   | `#161A22 @ 78%`      |
-| `glass/solid-border`  | `gray/0 @ 90%`   | `#FFFFFF @ 18%`      |
+| `glass/solid-bg`      | `gray/0 @ 80%`   | `obsidian/panel @ 78%` |
+| `glass/solid-border`  | `gray/0 @ 90%`   | `white @ 18%`        |
 | `glass/blur-sm`       | 8px              | 8px                  |
 | `glass/blur-md`       | 16px             | 16px                 |
 | `glass/blur-lg`       | 28px             | 28px                 |
 | `glass/saturate`      | 150%             | 150%                 |
-| `glass/fallback-bg`   | `gray/0 @ 92%`   | `#161A22 @ 94%`      |
+| `glass/fallback-bg`   | `gray/0 @ 92%`   | `obsidian/panel @ 94%` |
 
 **glaze (고임 — 카드 아래 절반에만)**
 
@@ -136,12 +144,12 @@ v0.1 토큰 이름은 전부 유지한다(기존 컴포넌트 무수정). `glass
 
 | Token             | Light                                                    | Dark                                                     |
 | ----------------- | -------------------------------------------------------- | -------------------------------------------------------- |
-| `shadow/sm`       | `0 1px 2px navy @ 10%`                                   | `0 1px 2px #000 @ 40%`                                   |
-| `shadow/md`       | `0 6px 16px -6px navy @ 18%`                             | `0 8px 20px -8px #000 @ 55%`                             |
-| `shadow/lg`       | `0 28px 64px -20px navy @ 34%`                           | `0 28px 64px -20px #000 @ 70%`                           |
-| `shadow/glass`    | `inset 0 1px 0 #FFF @ 95%, 0 10px 30px -14px navy @ 18%` | `inset 0 1px 0 #FFF @ 12%, 0 18px 44px -14px #000 @ 65%` |
+| `shadow/sm`       | `0 1px 2px navy @ 10%`                                   | `0 1px 2px black @ 40%`                                  |
+| `shadow/md`       | `0 6px 16px -6px navy @ 18%`                             | `0 8px 20px -8px black @ 55%`                            |
+| `shadow/lg`       | `0 28px 64px -20px navy @ 34%`                           | `0 28px 64px -20px black @ 70%`                          |
+| `shadow/glass`    | `inset 0 1px 0 white @ 95%, 0 10px 30px -14px navy @ 18%` | `inset 0 1px 0 white @ 12%, 0 18px 44px -14px black @ 65%` |
 | `shadow/ring`     | `0 0 0 3px blue/500 @ 35%`                               | `0 0 0 3px blue/400 @ 40%`                               |
-| `shadow/intaglio` | `inset 0 1px 2px navy @ 8%`                              | `inset 0 2px 5px #000 @ 40%`                             |
+| `shadow/intaglio` | `inset 0 1px 2px navy @ 8%`                              | `inset 0 2px 5px black @ 40%`                            |
 
 **background (ambient — 페이지 배경 광원)**
 

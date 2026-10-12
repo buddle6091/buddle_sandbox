@@ -1,8 +1,12 @@
 /**
- * Semantic — design.md §1.2
+ * Semantic — design.md §1.2 (v0.2)
  *
- * 의미 기반 토큰. 값은 전부 primitives 참조이며 raw hex 를 쓰지 않는다.
+ * 의미 기반 토큰. 색 값은 전부 primitives 참조(var / color-mix)이며 raw hex 를 쓰지 않는다.
  * 컴포넌트/앱이 소비하는 유일한 색 레이어다.
+ *
+ * v0.2 에서 비색(非色) semantic 토큰이 추가됐다 — 그림자(--bs-shadow-*), 고임 그래디언트
+ * (--bs-glaze-pool), 배경 광원(--bs-orb-*), 유리 blur/saturate(--bs-glass-*). 모드에 따라
+ * 값이 달라지므로 색 토큰과 같은 3블록에 둔다. 안에 쓰는 색은 반드시 var(--bs-color-*).
  *
  * 다크모드는 세 블록으로 구성한다:
  *   1) :root                        — 라이트 기본값
@@ -12,86 +16,211 @@
  * @custom-variant 가 Tailwind 기본 media query 를 "대체"하므로 2)가 클래스 없는
  * 기본값을 담당한다. 세 블록의 키 집합은 반드시 동일해야 한다 —
  * tokens.contract.test.ts 의 패리티 테스트가 이를 강제한다.
+ * ⚠ 이 파일은 손으로 고치되, 2)와 3)은 항상 같은 내용이어야 한다.
+ *
+ * 브레이크포인트에 따라 바뀌는 값(glass alpha .72/.66/.62, blur 12/16, orb blur 24 등)은
+ * 여기 두지 않는다 — 토큰 레이어는 "모드" 축만 가진다. 그런 값은 AppShell/AmbientBackground
+ * 컴포넌트 CSS 의 컨테이너/미디어 쿼리가 담당한다.
  */
 
 :root {
+  /* surface */
+  --bs-color-bg-page: var(--bs-color-porcelain-page);
   --bs-color-bg-default: var(--bs-color-gray-0);
-  --bs-color-bg-subtle: var(--bs-color-gray-50);
-  --bs-color-bg-muted: var(--bs-color-gray-100);
+  --bs-color-bg-subtle: var(--bs-color-porcelain-milk);
+  --bs-color-bg-muted: var(--bs-color-porcelain-ash);
 
-  --bs-color-fg-default: var(--bs-color-gray-900);
-  --bs-color-fg-muted: var(--bs-color-gray-500);
+  /* text — 알파 금지, 전부 불투명 */
+  --bs-color-fg-default: var(--bs-color-gray-800);
+  --bs-color-fg-body: var(--bs-color-gray-700);
+  --bs-color-fg-muted: var(--bs-color-gray-550);
   --bs-color-fg-subtle: var(--bs-color-gray-400);
+  --bs-color-fg-link: var(--bs-color-blue-600);
 
+  /* border */
   --bs-color-border-default: var(--bs-color-gray-200);
   --bs-color-border-strong: var(--bs-color-gray-300);
 
-  --bs-color-accent-default: var(--bs-color-indigo-600);
-  --bs-color-accent-hover: var(--bs-color-indigo-700);
-  --bs-color-accent-subtle-bg: color-mix(in srgb, var(--bs-color-indigo-500) 10%, transparent);
+  /* accent */
+  --bs-color-accent-default: var(--bs-color-blue-500);
+  --bs-color-accent-hover: var(--bs-color-blue-600);
+  --bs-color-accent-subtle-bg: color-mix(in srgb, var(--bs-color-blue-500) 10%, transparent);
   --bs-color-accent-fg-on: var(--bs-color-gray-0);
-
+  --bs-color-accent-secondary: var(--bs-color-violet-500);
+  --bs-color-accent-tertiary: var(--bs-color-celadon-500);
   --bs-color-danger-default: var(--bs-color-red-500);
   --bs-color-success-default: var(--bs-color-green-500);
   --bs-color-warning-default: var(--bs-color-amber-500);
+
+  /* glass — 유리 3단계 (subtle / base / solid) + 굽선 + 폴백 */
+  --bs-color-glass-subtle-bg: color-mix(in srgb, var(--bs-color-gray-0) 45%, transparent);
+  --bs-color-glass-subtle-border: color-mix(in srgb, var(--bs-color-gray-0) 60%, transparent);
+  --bs-color-glass-base-bg: color-mix(in srgb, var(--bs-color-gray-0) 62%, transparent);
+  --bs-color-glass-base-border: color-mix(in srgb, var(--bs-color-gray-0) 80%, transparent);
+  --bs-color-glass-foot: color-mix(in srgb, var(--bs-color-blue-300) 42%, transparent);
+  --bs-color-glass-solid-bg: color-mix(in srgb, var(--bs-color-gray-0) 80%, transparent);
+  --bs-color-glass-solid-border: color-mix(in srgb, var(--bs-color-gray-0) 90%, transparent);
+  --bs-color-glass-fallback-bg: color-mix(in srgb, var(--bs-color-gray-0) 92%, transparent);
+  --bs-glass-blur-sm: 8px;
+  --bs-glass-blur-md: 16px;
+  --bs-glass-blur-lg: 28px;
+  --bs-glass-saturate: 150%;
+
+  /* glaze — 고임. 카드 아래 절반에만 깐다 */
+  --bs-color-glaze-tint: color-mix(in srgb, var(--bs-color-blue-500) 10%, transparent);
+  --bs-color-glaze-celadon: color-mix(in srgb, var(--bs-color-celadon-500) 16%, transparent);
+  --bs-glaze-pool: radial-gradient(150% 86% at 50% 116%, var(--bs-color-glaze-celadon) 0%, var(--bs-color-glaze-tint) 38%, transparent 66%);
+
+  /* shadow — 라이트는 navy 알파만 (중성 검정 금지, design.md §7-3) */
+  --bs-shadow-sm: 0 1px 2px color-mix(in srgb, var(--bs-color-navy-shadow) 10%, transparent);
+  --bs-shadow-md: 0 6px 16px -6px color-mix(in srgb, var(--bs-color-navy-shadow) 18%, transparent);
+  --bs-shadow-lg: 0 28px 64px -20px color-mix(in srgb, var(--bs-color-navy-shadow) 34%, transparent);
+  --bs-shadow-glass: inset 0 1px 0 color-mix(in srgb, var(--bs-color-white) 95%, transparent), 0 10px 30px -14px color-mix(in srgb, var(--bs-color-navy-shadow) 18%, transparent);
+  --bs-shadow-ring: 0 0 0 3px color-mix(in srgb, var(--bs-color-blue-500) 35%, transparent);
+  --bs-shadow-intaglio: inset 0 1px 2px color-mix(in srgb, var(--bs-color-navy-shadow) 8%, transparent);
+
+  /* orb — 페이지 배경 광원. 정적, 애니메이션 금지 */
+  --bs-orb-primary: radial-gradient(closest-side, color-mix(in srgb, var(--bs-color-blue-500) 38%, transparent), transparent);
+  --bs-orb-tertiary: radial-gradient(closest-side, color-mix(in srgb, var(--bs-color-celadon-500) 32%, transparent), transparent);
+  --bs-orb-secondary: radial-gradient(closest-side, color-mix(in srgb, var(--bs-color-violet-500) 15%, transparent), transparent);
+  --bs-orb-size-primary: 720px;
+  --bs-orb-size-tertiary: 640px;
+  --bs-orb-size-secondary: 680px;
+  --bs-orb-blur: 30px;
 }
 
 /* 시스템 다크 — 사용자가 라이트를 명시적으로 고르지 않았을 때만 */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bs-color-bg-default: var(--bs-color-gray-950);
-    --bs-color-bg-subtle: var(--bs-color-gray-900);
-    --bs-color-bg-muted: var(--bs-color-gray-800);
+    /* surface */
+    --bs-color-bg-page: var(--bs-color-obsidian-ink);
+    --bs-color-bg-default: var(--bs-color-obsidian-glaze);
+    --bs-color-bg-subtle: var(--bs-color-obsidian-ash);
+    --bs-color-bg-muted: var(--bs-color-obsidian-foot);
 
+    /* text — 알파 금지, 전부 불투명 */
     --bs-color-fg-default: var(--bs-color-gray-50);
+    --bs-color-fg-body: var(--bs-color-gray-300);
     --bs-color-fg-muted: var(--bs-color-gray-400);
     --bs-color-fg-subtle: var(--bs-color-gray-500);
+    --bs-color-fg-link: var(--bs-color-blue-300);
 
-    --bs-color-border-default: var(--bs-color-gray-800);
+    /* border */
+    --bs-color-border-default: var(--bs-color-obsidian-foot);
     --bs-color-border-strong: var(--bs-color-gray-700);
 
-    --bs-color-accent-default: var(--bs-color-indigo-400);
-    --bs-color-accent-hover: var(--bs-color-indigo-300);
-    --bs-color-accent-subtle-bg: color-mix(in srgb, var(--bs-color-indigo-400) 16%, transparent);
-    --bs-color-accent-fg-on: var(--bs-color-gray-950);
-
+    /* accent */
+    --bs-color-accent-default: var(--bs-color-blue-400);
+    --bs-color-accent-hover: var(--bs-color-blue-300);
+    --bs-color-accent-subtle-bg: color-mix(in srgb, var(--bs-color-blue-400) 16%, transparent);
+    --bs-color-accent-fg-on: var(--bs-color-obsidian-ink);
+    --bs-color-accent-secondary: var(--bs-color-violet-300);
+    --bs-color-accent-tertiary: var(--bs-color-celadon-300);
     --bs-color-danger-default: var(--bs-color-red-500);
     --bs-color-success-default: var(--bs-color-green-500);
     --bs-color-warning-default: var(--bs-color-amber-500);
+
+    /* glass — 유리 3단계 (subtle / base / solid) + 굽선 + 폴백 */
+    --bs-color-glass-subtle-bg: color-mix(in srgb, var(--bs-color-white) 5%, transparent);
+    --bs-color-glass-subtle-border: color-mix(in srgb, var(--bs-color-white) 9%, transparent);
+    --bs-color-glass-base-bg: color-mix(in srgb, var(--bs-color-obsidian-ash) 72%, transparent);
+    --bs-color-glass-base-border: color-mix(in srgb, var(--bs-color-white) 14%, transparent);
+    --bs-color-glass-foot: color-mix(in srgb, var(--bs-color-blue-300) 40%, transparent);
+    --bs-color-glass-solid-bg: color-mix(in srgb, var(--bs-color-obsidian-panel) 78%, transparent);
+    --bs-color-glass-solid-border: color-mix(in srgb, var(--bs-color-white) 18%, transparent);
+    --bs-color-glass-fallback-bg: color-mix(in srgb, var(--bs-color-obsidian-panel) 94%, transparent);
+    --bs-glass-blur-sm: 8px;
+    --bs-glass-blur-md: 16px;
+    --bs-glass-blur-lg: 28px;
+    --bs-glass-saturate: 150%;
+
+    /* glaze — 고임. 카드 아래 절반에만 깐다 */
+    --bs-color-glaze-tint: color-mix(in srgb, var(--bs-color-blue-400) 14%, transparent);
+    --bs-color-glaze-celadon: color-mix(in srgb, var(--bs-color-celadon-500) 14%, transparent);
+    --bs-glaze-pool: linear-gradient(200deg, transparent 46%, var(--bs-color-glaze-tint) 78%, var(--bs-color-glaze-celadon));
+
+    /* shadow — 다크는 black 알파 */
+    --bs-shadow-sm: 0 1px 2px color-mix(in srgb, var(--bs-color-black) 40%, transparent);
+    --bs-shadow-md: 0 8px 20px -8px color-mix(in srgb, var(--bs-color-black) 55%, transparent);
+    --bs-shadow-lg: 0 28px 64px -20px color-mix(in srgb, var(--bs-color-black) 70%, transparent);
+    --bs-shadow-glass: inset 0 1px 0 color-mix(in srgb, var(--bs-color-white) 12%, transparent), 0 18px 44px -14px color-mix(in srgb, var(--bs-color-black) 65%, transparent);
+    --bs-shadow-ring: 0 0 0 3px color-mix(in srgb, var(--bs-color-blue-400) 40%, transparent);
+    --bs-shadow-intaglio: inset 0 2px 5px color-mix(in srgb, var(--bs-color-black) 40%, transparent);
+
+    /* orb — 페이지 배경 광원. 정적, 애니메이션 금지 */
+    --bs-orb-primary: radial-gradient(closest-side, color-mix(in srgb, var(--bs-color-blue-400) 26%, transparent), transparent);
+    --bs-orb-tertiary: radial-gradient(closest-side, color-mix(in srgb, var(--bs-color-celadon-500) 18%, transparent), transparent);
+    --bs-orb-secondary: radial-gradient(closest-side, color-mix(in srgb, var(--bs-color-violet-500) 12%, transparent), transparent);
+    --bs-orb-size-primary: 720px;
+    --bs-orb-size-tertiary: 640px;
+    --bs-orb-size-secondary: 680px;
+    --bs-orb-blur: 30px;
   }
 }
 
 /* 명시적 다크 선택 — next-themes 등이 붙이는 클래스/속성 */
 .dark, [data-theme="dark"] {
-  --bs-color-bg-default: var(--bs-color-gray-950);
-  --bs-color-bg-subtle: var(--bs-color-gray-900);
-  --bs-color-bg-muted: var(--bs-color-gray-800);
+  /* surface */
+  --bs-color-bg-page: var(--bs-color-obsidian-ink);
+  --bs-color-bg-default: var(--bs-color-obsidian-glaze);
+  --bs-color-bg-subtle: var(--bs-color-obsidian-ash);
+  --bs-color-bg-muted: var(--bs-color-obsidian-foot);
 
+  /* text — 알파 금지, 전부 불투명 */
   --bs-color-fg-default: var(--bs-color-gray-50);
+  --bs-color-fg-body: var(--bs-color-gray-300);
   --bs-color-fg-muted: var(--bs-color-gray-400);
   --bs-color-fg-subtle: var(--bs-color-gray-500);
+  --bs-color-fg-link: var(--bs-color-blue-300);
 
-  --bs-color-border-default: var(--bs-color-gray-800);
+  /* border */
+  --bs-color-border-default: var(--bs-color-obsidian-foot);
   --bs-color-border-strong: var(--bs-color-gray-700);
 
-  --bs-color-accent-default: var(--bs-color-indigo-400);
-  --bs-color-accent-hover: var(--bs-color-indigo-300);
-  --bs-color-accent-subtle-bg: color-mix(in srgb, var(--bs-color-indigo-400) 16%, transparent);
-  --bs-color-accent-fg-on: var(--bs-color-gray-950);
-
+  /* accent */
+  --bs-color-accent-default: var(--bs-color-blue-400);
+  --bs-color-accent-hover: var(--bs-color-blue-300);
+  --bs-color-accent-subtle-bg: color-mix(in srgb, var(--bs-color-blue-400) 16%, transparent);
+  --bs-color-accent-fg-on: var(--bs-color-obsidian-ink);
+  --bs-color-accent-secondary: var(--bs-color-violet-300);
+  --bs-color-accent-tertiary: var(--bs-color-celadon-300);
   --bs-color-danger-default: var(--bs-color-red-500);
   --bs-color-success-default: var(--bs-color-green-500);
   --bs-color-warning-default: var(--bs-color-amber-500);
-}
 
-/**
- * Shadow — design.md §4.
- * design.md 에 다크모드 값이 없어 라이트 값을 그대로 쓴다. 검은 알파는 어두운
- * 배경에서 잘 안 보이므로 Phase 1 에서 다크 전용 값을 정할 때 여기만 고치면 된다.
- * (semantic 레이어이므로 소비자는 --shadow-* 유틸리티만 계속 쓰면 된다.)
- */
-:root, :host {
-  --bs-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
-  --bs-shadow-md: 0 4px 12px rgb(0 0 0 / 0.08);
-  --bs-shadow-lg: 0 12px 32px rgb(0 0 0 / 0.12);
+  /* glass — 유리 3단계 (subtle / base / solid) + 굽선 + 폴백 */
+  --bs-color-glass-subtle-bg: color-mix(in srgb, var(--bs-color-white) 5%, transparent);
+  --bs-color-glass-subtle-border: color-mix(in srgb, var(--bs-color-white) 9%, transparent);
+  --bs-color-glass-base-bg: color-mix(in srgb, var(--bs-color-obsidian-ash) 72%, transparent);
+  --bs-color-glass-base-border: color-mix(in srgb, var(--bs-color-white) 14%, transparent);
+  --bs-color-glass-foot: color-mix(in srgb, var(--bs-color-blue-300) 40%, transparent);
+  --bs-color-glass-solid-bg: color-mix(in srgb, var(--bs-color-obsidian-panel) 78%, transparent);
+  --bs-color-glass-solid-border: color-mix(in srgb, var(--bs-color-white) 18%, transparent);
+  --bs-color-glass-fallback-bg: color-mix(in srgb, var(--bs-color-obsidian-panel) 94%, transparent);
+  --bs-glass-blur-sm: 8px;
+  --bs-glass-blur-md: 16px;
+  --bs-glass-blur-lg: 28px;
+  --bs-glass-saturate: 150%;
+
+  /* glaze — 고임. 카드 아래 절반에만 깐다 */
+  --bs-color-glaze-tint: color-mix(in srgb, var(--bs-color-blue-400) 14%, transparent);
+  --bs-color-glaze-celadon: color-mix(in srgb, var(--bs-color-celadon-500) 14%, transparent);
+  --bs-glaze-pool: linear-gradient(200deg, transparent 46%, var(--bs-color-glaze-tint) 78%, var(--bs-color-glaze-celadon));
+
+  /* shadow — 다크는 black 알파 */
+  --bs-shadow-sm: 0 1px 2px color-mix(in srgb, var(--bs-color-black) 40%, transparent);
+  --bs-shadow-md: 0 8px 20px -8px color-mix(in srgb, var(--bs-color-black) 55%, transparent);
+  --bs-shadow-lg: 0 28px 64px -20px color-mix(in srgb, var(--bs-color-black) 70%, transparent);
+  --bs-shadow-glass: inset 0 1px 0 color-mix(in srgb, var(--bs-color-white) 12%, transparent), 0 18px 44px -14px color-mix(in srgb, var(--bs-color-black) 65%, transparent);
+  --bs-shadow-ring: 0 0 0 3px color-mix(in srgb, var(--bs-color-blue-400) 40%, transparent);
+  --bs-shadow-intaglio: inset 0 2px 5px color-mix(in srgb, var(--bs-color-black) 40%, transparent);
+
+  /* orb — 페이지 배경 광원. 정적, 애니메이션 금지 */
+  --bs-orb-primary: radial-gradient(closest-side, color-mix(in srgb, var(--bs-color-blue-400) 26%, transparent), transparent);
+  --bs-orb-tertiary: radial-gradient(closest-side, color-mix(in srgb, var(--bs-color-celadon-500) 18%, transparent), transparent);
+  --bs-orb-secondary: radial-gradient(closest-side, color-mix(in srgb, var(--bs-color-violet-500) 12%, transparent), transparent);
+  --bs-orb-size-primary: 720px;
+  --bs-orb-size-tertiary: 640px;
+  --bs-orb-size-secondary: 680px;
+  --bs-orb-blur: 30px;
 }

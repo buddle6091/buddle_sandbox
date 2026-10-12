@@ -1,10 +1,10 @@
 /**
- * Tailwind v4 theme 매핑 — design.md §2 §3 §4
+ * Tailwind v4 theme 매핑 — design.md §2 §3 §4 (v0.2)
  *
  * 두 블록으로 나뉘고, 그 구분이 다크모드의 생사를 가른다:
  *
- *   @theme inline  — 모드에 따라 "변하는" 색.
- *     inline 은 값(`var(--bs-color-*)` 라는 텍스트 자체)을 유틸리티 본문에
+ *   @theme inline  — 모드에 따라 "변하는" 값(색·그림자·고임·orb·blur).
+ *     inline 은 값(`var(--bs-…)` 라는 텍스트 자체)을 유틸리티 본문에
  *     그대로 심는다. 해석이 요소 스코프에서 런타임에 일어나므로
  *     .dark 재정의가 그대로 흐른다.
  *
@@ -18,25 +18,66 @@
  */
 
 @theme inline {
+  /* surface */
+  --color-bg-page: var(--bs-color-bg-page);
   --color-bg-default: var(--bs-color-bg-default);
   --color-bg-subtle: var(--bs-color-bg-subtle);
   --color-bg-muted: var(--bs-color-bg-muted);
 
+  /* text */
   --color-fg-default: var(--bs-color-fg-default);
+  --color-fg-body: var(--bs-color-fg-body);
   --color-fg-muted: var(--bs-color-fg-muted);
   --color-fg-subtle: var(--bs-color-fg-subtle);
+  --color-fg-link: var(--bs-color-fg-link);
 
+  /* border */
   --color-border-default: var(--bs-color-border-default);
   --color-border-strong: var(--bs-color-border-strong);
 
+  /* accent */
   --color-accent-default: var(--bs-color-accent-default);
   --color-accent-hover: var(--bs-color-accent-hover);
   --color-accent-subtle-bg: var(--bs-color-accent-subtle-bg);
   --color-accent-fg-on: var(--bs-color-accent-fg-on);
-
+  --color-accent-secondary: var(--bs-color-accent-secondary);
+  --color-accent-tertiary: var(--bs-color-accent-tertiary);
   --color-danger-default: var(--bs-color-danger-default);
   --color-success-default: var(--bs-color-success-default);
   --color-warning-default: var(--bs-color-warning-default);
+
+  /* glass — bg-glass-base-bg / border-glass-base-border 처럼 쓴다 */
+  --color-glass-subtle-bg: var(--bs-color-glass-subtle-bg);
+  --color-glass-subtle-border: var(--bs-color-glass-subtle-border);
+  --color-glass-base-bg: var(--bs-color-glass-base-bg);
+  --color-glass-base-border: var(--bs-color-glass-base-border);
+  --color-glass-foot: var(--bs-color-glass-foot);
+  --color-glass-solid-bg: var(--bs-color-glass-solid-bg);
+  --color-glass-solid-border: var(--bs-color-glass-solid-border);
+  --color-glass-fallback-bg: var(--bs-color-glass-fallback-bg);
+
+  /* glaze */
+  --color-glaze-tint: var(--bs-color-glaze-tint);
+  --color-glaze-celadon: var(--bs-color-glaze-celadon);
+
+  /* shadow — shadow-sm … shadow-intaglio. 라이트 navy / 다크 black 은 semantic 에서 갈린다 */
+  --shadow-sm: var(--bs-shadow-sm);
+  --shadow-md: var(--bs-shadow-md);
+  --shadow-lg: var(--bs-shadow-lg);
+  --shadow-glass: var(--bs-shadow-glass);
+  --shadow-ring: var(--bs-shadow-ring);
+  --shadow-intaglio: var(--bs-shadow-intaglio);
+
+  /* background-image — bg-glaze-pool / bg-orb-primary */
+  --background-image-glaze-pool: var(--bs-glaze-pool);
+  --background-image-orb-primary: var(--bs-orb-primary);
+  --background-image-orb-tertiary: var(--bs-orb-tertiary);
+  --background-image-orb-secondary: var(--bs-orb-secondary);
+
+  /* backdrop-blur-glass-sm|md|lg */
+  --blur-glass-sm: var(--bs-glass-blur-sm);
+  --blur-glass-md: var(--bs-glass-blur-md);
+  --blur-glass-lg: var(--bs-glass-blur-lg);
 }
 
 @theme {
@@ -45,61 +86,78 @@
      p-7 같은 표 밖 값도 계속 동작한다. */
   --spacing: 4px;
 
-  /* Typography — design.md §2.
-     v4 의 --text-*--line-height / --font-weight 동반 문법 덕에
-     text-h1 하나로 size+leading+weight 가 모두 적용된다. */
-  --font-sans: Pretendard, system-ui, -apple-system, sans-serif;
+  /* Breakpoints — design.md §3.1. Tailwind 기본(sm/md/lg/xl)을 쓰지 않고 이름으로 부른다.
+     compact 는 기본(모바일 퍼스트), medium: / expanded: / wide: 변형이 생긴다. */
+  --breakpoint-medium: 600px;
+  --breakpoint-expanded: 1024px;
+  --breakpoint-wide: 1440px;
+
+  /* Typography — design.md §2. 세리프 토큰은 존재하지 않는다(display 포함 전부 Pretendard).
+     v4 의 --text-*--line-height / --font-weight / --letter-spacing 동반 문법 덕에
+     text-h1 하나로 size+leading+weight+tracking 이 모두 적용된다.
+     compact 축소(display 36/44, h1 26/34)와 다크 모드 weight 한 단계 하향은 컴포넌트 CSS 책임. */
+  --font-sans: "Pretendard Variable", Pretendard, system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --text-display: 48px;
-  --text-display--line-height: 56px;
-  --text-display--font-weight: 700;
+  --text-display: 56px;
+  --text-display--line-height: 64px;
+  --text-display--font-weight: 800;
+  --text-display--letter-spacing: -0.03em;
 
   --text-h1: 32px;
   --text-h1--line-height: 40px;
   --text-h1--font-weight: 700;
+  --text-h1--letter-spacing: -0.02em;
 
   --text-h2: 24px;
   --text-h2--line-height: 32px;
-  --text-h2--font-weight: 600;
+  --text-h2--font-weight: 700;
+  --text-h2--letter-spacing: -0.015em;
 
   --text-h3: 20px;
   --text-h3--line-height: 28px;
   --text-h3--font-weight: 600;
+  --text-h3--letter-spacing: -0.01em;
 
-  --text-body-lg: 18px;
-  --text-body-lg--line-height: 28px;
+  --text-body-lg: 17px;
+  --text-body-lg--line-height: 30px;
   --text-body-lg--font-weight: 400;
+  --text-body-lg--letter-spacing: 0;
 
-  --text-body: 16px;
-  --text-body--line-height: 24px;
+  --text-body: 15px;
+  --text-body--line-height: 26px;
   --text-body--font-weight: 400;
+  --text-body--letter-spacing: 0;
 
   --text-body-sm: 14px;
   --text-body-sm--line-height: 20px;
   --text-body-sm--font-weight: 400;
+  --text-body-sm--letter-spacing: 0;
+
+  --text-label: 13px;
+  --text-label--line-height: 18px;
+  --text-label--font-weight: 600;
+  --text-label--letter-spacing: 0;
 
   --text-caption: 12px;
   --text-caption--line-height: 16px;
   --text-caption--font-weight: 500;
+  --text-caption--letter-spacing: 0;
 
-  --text-code: 14px;
+  --text-code: 13px;
   --text-code--line-height: 22px;
   --text-code--font-weight: 400;
+  --text-code--letter-spacing: 0;
 
-  /* Radius — design.md §4 */
+  /* Radius — design.md §4. radius/card(12/14/16 by breakpoint)는 Card 컴포넌트 CSS 책임. */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
+  --radius-xl: 24px;
   --radius-full: 999px;
 
-  /* Shadow — design.md §4.
-     design.md 에 다크모드 그림자가 정의돼 있지 않다. 검은 알파는 어두운
-     배경에서 거의 안 보이므로, Phase 1 에서 소비자 수정 없이 조정할 수 있게
-     --bs-shadow-* 를 한 번 거치게 해 둔다. */
-  --shadow-sm: var(--bs-shadow-sm);
-  --shadow-md: var(--bs-shadow-md);
-  --shadow-lg: var(--bs-shadow-lg);
+  /* Motion — design.md §4. 이징은 이것 하나만(ease-bs). 다른 --ease-* 를 추가하지 않는다. */
+  --ease-bs: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* 콘텐츠 최대 폭 — design.md §3.
      --container-* 네임스페이스는 max-w-landing / max-w-content 를 만든다
@@ -108,4 +166,18 @@
      블로그 본문 폭은 content 로 부른다. */
   --container-landing: 1120px;
   --container-content: 720px;
+}
+
+/**
+ * Motion 지속시간 — Tailwind 에는 duration 네임스페이스가 없어 plain 변수로 둔다.
+ * 소비: `duration-[var(--bs-motion-control)]` 또는 컴포넌트 CSS 의 transition-duration.
+ *   control 170 — 버튼·탭·링크 색 전환
+ *   surface 300 — 테두리·그림자·열림
+ *   pool    420 — 고임 차오름
+ * `transition: all` 금지, reduced-motion 에서는 transform 전환 제거(컴포넌트 책임).
+ */
+:root {
+  --bs-motion-control: 170ms;
+  --bs-motion-surface: 300ms;
+  --bs-motion-pool: 420ms;
 }

@@ -15,21 +15,23 @@
 ## 절대 규칙
 1. **`../../design.md` 가 먼저다.** 토큰을 바꾸려면 `../../design.md` → 픽스처 → 테스트(Red) → CSS(Green) 순서. 코드에서 시작하지 않는다.
 2. **`@theme inline` 의 `inline` 을 지우지 않는다.** 지우면 다크모드가 무증상으로 죽는다 (`theme.css` 주석 참고).
-3. **semantic 값에 raw hex 를 쓰지 않는다.** 항상 `var(--bs-color-*)` 또는 `color-mix()`.
+3. **semantic 값에 raw hex 를 쓰지 않는다.** 색 토큰은 `var(--bs-color-*)` 또는 `color-mix()`. 비색 토큰(`--bs-shadow-*` `--bs-glaze-pool` `--bs-orb-*`) 안의 색도 반드시 `var(--bs-color-*)` 경유 — 표에 이름이 없는 값이면 `../../design.md` §1.1 에 primitive 를 먼저 추가한다(`gray/550` `white` `black` `obsidian/panel` 이 그 예).
 4. **다크모드 3블록의 키 집합을 항상 일치시킨다.** 토큰을 추가하면 `:root` / `@media` / `.dark` 세 곳 모두에 넣는다.
-5. 모드에 따라 변하는 값은 `@theme inline`, 불변 스케일은 일반 `@theme`.
+5. 모드에 따라 변하는 값(색·그림자·그래디언트·blur)은 `@theme inline`, 불변 스케일은 일반 `@theme`.
+6. **토큰 레이어는 모드 축만 가진다.** 브레이크포인트별로 바뀌는 값(glass alpha, radius/card, compact 타이포)은 컴포넌트 CSS 책임. semantic 에 `@media (min-width)` 를 넣지 않는다.
+7. 이징은 `--ease-bs` 하나. 다른 `--ease-*` 를 추가하지 않는다.
 
 ## 검증
 ```bash
 npx nx test tokens
 ```
-계약 테스트 45개. 브라우저 불필요(CSS 텍스트 파싱).
+계약 테스트 114개. 브라우저 불필요(CSS 텍스트 파싱).
 
 CSS 를 크게 바꿨다면 실제 컴파일 결과도 확인한다:
 ```bash
 npx @tailwindcss/cli -i libs/tokens/src/index.css -o /tmp/out.css
 ```
-`.bg-bg-default` 가 `var(--bs-color-bg-default)` 를 참조하는지(=inline 동작), 전역 `--color-*` 가 `:root` 로 새지 않는지 본다.
+`.bg-bg-default` 가 `var(--bs-color-bg-default)` 를 참조하는지(=inline 동작), 전역 `--color-*` 가 `:root` 로 새지 않는지 본다. `@tailwindcss/cli` 는 설치돼 있지 않으니 `--content` 로 probe HTML 을 주고 `npx` 로 돌린다.
 
 ## 알려진 이름 충돌
 - `max-w-prose` 는 Tailwind 내장(65ch). 블로그 본문 폭은 `max-w-content`.
