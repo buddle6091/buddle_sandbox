@@ -1,0 +1,129 @@
+/**
+ * @sandbox/ui 스타일 진입점.
+ *
+ * 토큰 한 줄이 Tailwind + design.md v0.2 토큰 + 폰트 + variant 전부를 켠다.
+ * shadcn 이 심는 `:root { --background … }` 블록은 쓰지 않는다 — 색은 전부 토큰 유틸리티
+ * (bg-bg-default, text-fg-default …)로만 표현한다.
+ */
+@import "@sandbox/tokens/index.css";
+
+/* Tailwind 가 클래스 후보를 스캔할 소스 */
+@source "./components";
+@source "./hooks";
+@source "../.storybook";
+
+/**
+ * 베이스 — design.md §2 §3 §7.
+ * 한글 제목은 keep-all + balance, 본문은 pretty. 다크 display/h1 은 weight 한 단계 하향.
+ */
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background-color: var(--bs-color-bg-page);
+    color: var(--bs-color-fg-default);
+    min-height: 100dvh;
+  }
+  :where(h1, h2, h3, .text-display, .text-h1, .text-h2, .text-h3) {
+    word-break: keep-all;
+    text-wrap: balance;
+  }
+  :where(p) {
+    text-wrap: pretty;
+  }
+  :where(.dark, [data-theme="dark"]) :where(.text-display, .text-h1) {
+    font-weight: 700;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) :where(.text-display, .text-h1) {
+      font-weight: 700;
+    }
+  }
+}
+
+/**
+ * 유리 표면 유틸리티 — design.md §5. 세 단계만, 같은 화면에서 겹치지 않는다.
+ * 폴백 필수. 굽선은 라이트 bottom / 다크 top.
+ */
+@utility glass-subtle {
+  background-color: var(--bs-color-glass-subtle-bg);
+  border: 1px solid var(--bs-color-glass-subtle-border);
+  -webkit-backdrop-filter: blur(var(--bs-glass-blur-sm)) saturate(var(--bs-glass-saturate));
+  backdrop-filter: blur(var(--bs-glass-blur-sm)) saturate(var(--bs-glass-saturate));
+  @supports not (backdrop-filter: blur(1px)) {
+    background-color: var(--bs-color-glass-fallback-bg);
+  }
+}
+
+@utility glass-base {
+  background-color: var(--bs-color-glass-base-bg);
+  background-image: var(--bs-glaze-pool);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: 50% 100%;
+  border: 1px solid var(--bs-color-glass-base-border);
+  border-bottom-color: var(--bs-color-glass-foot);
+  box-shadow: var(--bs-shadow-glass);
+  -webkit-backdrop-filter: blur(var(--bs-glass-blur-md)) saturate(var(--bs-glass-saturate));
+  backdrop-filter: blur(var(--bs-glass-blur-md)) saturate(var(--bs-glass-saturate));
+  @supports not (backdrop-filter: blur(1px)) {
+    background-color: var(--bs-color-glass-fallback-bg);
+  }
+  &:where(.dark *, [data-theme="dark"] *) {
+    border-bottom-color: var(--bs-color-glass-base-border);
+    border-top-color: var(--bs-color-glass-foot);
+  }
+}
+
+/* glass-base 에서 blur 만 뺀 것 — compact 리스트 안 카드(화면당 blur 2개 제한) */
+@utility glass-base-flat {
+  background-color: var(--bs-color-glass-fallback-bg);
+  background-image: var(--bs-glaze-pool);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: 50% 100%;
+  border: 1px solid var(--bs-color-glass-base-border);
+  border-bottom-color: var(--bs-color-glass-foot);
+  box-shadow: var(--bs-shadow-sm);
+}
+
+@utility glass-solid {
+  background-color: var(--bs-color-glass-solid-bg);
+  border: 1px solid var(--bs-color-glass-solid-border);
+  box-shadow: var(--bs-shadow-lg);
+  -webkit-backdrop-filter: blur(var(--bs-glass-blur-lg)) saturate(var(--bs-glass-saturate));
+  backdrop-filter: blur(var(--bs-glass-blur-lg)) saturate(var(--bs-glass-saturate));
+  @supports not (backdrop-filter: blur(1px)) {
+    background-color: var(--bs-color-glass-fallback-bg);
+  }
+}
+
+/* 포커스 링 — design.md §6.1 focus-visible(shadow/ring) */
+@utility focus-ring {
+  outline: none;
+  &:focus-visible {
+    box-shadow: var(--bs-shadow-ring);
+  }
+}
+
+/* 터치 타깃 최소 치수 — compact 44 / expanded 36 */
+@utility touch-target {
+  min-height: var(--bs-layout-touch);
+  min-width: var(--bs-layout-touch);
+}
+
+/* 스켈레톤 펄스 — STATES.md: 투명도 .6↔1, 1.2s */
+@keyframes bs-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+@utility animate-bs-pulse {
+  animation: bs-pulse 1.2s var(--ease-bs) infinite;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 0.8;
+  }
+}

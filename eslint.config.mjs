@@ -1,4 +1,5 @@
 import nxPlugin from '@nx/eslint-plugin';
+import reactHooks from 'eslint-plugin-react-hooks';
 import tseslint from 'typescript-eslint';
 
 /**
@@ -18,6 +19,7 @@ export default [
       '**/coverage/**',
       '**/.nx/**',
       '**/storybook-static/**',
+      '**/dist/**',
     ],
   },
 
@@ -57,4 +59,12 @@ export default [
     ...config,
     files: ['**/*.ts', '**/*.tsx'],
   })),
+  // React 훅 규칙 — libs/ui / apps 의 tsx 전반.
+  {
+    files: ['**/*.tsx'],
+    plugins: { 'react-hooks': reactHooks },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+    },
+  },
 ];

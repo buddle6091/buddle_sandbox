@@ -3,7 +3,9 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "lib": ["ES2022"],
+    "lib": [
+      "ES2022"
+    ],
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
@@ -11,7 +13,12 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@sandbox/ui": ["libs/ui/src/index.ts"]
+      "@sandbox/ui": [
+        "libs/ui/src/index.ts"
+      ],
+      "@sandbox/ui/*": [
+        "libs/ui/src/*"
+      ]
     }
   }
 }

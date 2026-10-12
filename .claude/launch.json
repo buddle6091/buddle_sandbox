@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "storybook-ui",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["nx", "storybook", "ui"],
+      "port": 6006
+    }
+  ]
+}
