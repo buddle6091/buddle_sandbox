@@ -52,7 +52,7 @@ nvm use
 ## 구조 변경 — `libs/` → `packages/` (2026-10-20)
 - 공용 패키지 폴더를 `packages/` 로 통일. Nx 에서 `libs` 는 관례일 뿐 내장 이름이 아니라서 `git mv` + 참조 치환(`package.json` workspaces, `tsconfig.base.json` paths, `project.json`, ESLint, 스킬/에이전트, 문서)으로 끝났다. lockfile 재생성, `npx nx reset` 후 lint/test/typecheck/build-storybook 전부 통과.
 - 폴더 트리·depth 규칙은 `docs/structure.md` 가 SSOT. 루트 `CLAUDE.md` 가 가리킨다.
-- `.claude/worktrees/sweet-jones-e2baff` 는 머지 끝난 옛 워크트리라 `libs/` 를 그대로 갖고 있다. 참조하지 말 것(`git worktree remove` 로 지워도 됨).
+- 머지 끝난 옛 워크트리 `.claude/worktrees/sweet-jones-e2baff`(`libs/` 잔존)와 브랜치 `claude/sweet-jones-e2baff` 는 제거했다. 리포 어디에도 `libs/` 는 남아 있지 않다.
 
 ## Phase 1 결과 — packages/ui (2026-10-12)
 `docs/handoff/blog-calendar/PROMPT.md` Step 1 전부. 커밋 `20f510e`(스캐폴드+Button) → `5145eec` → `31a7953` → `d861d45`.

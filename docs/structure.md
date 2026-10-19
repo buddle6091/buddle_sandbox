@@ -84,4 +84,4 @@ buddle_sandbox/
 
 ## 추적하지 않는 것
 
-`node_modules/` `.nx/` `dist/`(Storybook 산출물 `dist/storybook/ui`) `.idea/` `.claude/worktrees/`(옛 워크트리, `libs/` 잔존 — 참조 금지) `docs/*.zip`(추출본이 `docs/handoff/` 에 있음)
+`node_modules/` `.nx/` `dist/`(Storybook 산출물 `dist/storybook/ui`) `.idea/` `docs/*.zip`(추출본이 `docs/handoff/` 에 있음)
