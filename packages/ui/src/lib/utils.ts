@@ -7,7 +7,7 @@ import { extendTailwindMerge } from 'tailwind-merge';
  * 기본 설정의 tailwind-merge 는 `text-label` 같은 이름을 모르므로 "텍스트 색"으로 분류하고,
  * 뒤에 오는 `text-accent-fg-on` 과 충돌한다며 지워버린다 — 에러 없이 타이포가 빠진다.
  * 여기 등록한 이름은 올바른 그룹(font-size / color / shadow …)으로 분류된다.
- * libs/tokens 에 토큰을 추가하면 여기도 같이 늘린다.
+ * packages/tokens 에 토큰을 추가하면 여기도 같이 늘린다.
  */
 export const TOKEN_TEXT_STYLES = [
   'display',

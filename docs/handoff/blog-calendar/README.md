@@ -28,7 +28,7 @@
 - 이 번들의 와이어프레임도 같은 기준으로 그렸다 (`--ds-font-serif`는 Pretendard로 재지정된 상태).
 
 ## ⚠ 먼저 확인할 것 — 토큰 레이어 불일치
-`libs/tokens/src/semantic.css` 는 아직 **v0.1(indigo, glass 토큰 없음)** 이다. `design.md` 는 v0.2(벽청/청자/자운 + glass/glaze/shadow). 화면 구현 전에 토큰을 v0.2로 올려야 한다 → `PROMPT.md` Step 0.
+`packages/tokens/src/semantic.css` 는 아직 **v0.1(indigo, glass 토큰 없음)** 이다. `design.md` 는 v0.2(벽청/청자/자운 + glass/glaze/shadow). 화면 구현 전에 토큰을 v0.2로 올려야 한다 → `PROMPT.md` Step 0.
 
 ## 파일
 - `PROMPT.md` — Claude Code에 붙여넣을 작업 프롬프트 (Step 0~5)

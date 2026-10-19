@@ -1,8 +1,8 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "name": "tokens",
-  "root": "libs/tokens",
-  "sourceRoot": "libs/tokens/src",
+  "root": "packages/tokens",
+  "sourceRoot": "packages/tokens/src",
   "projectType": "library",
   "tags": [
     "scope:shared",
@@ -15,7 +15,7 @@
         "{options.reportsDirectory}"
       ],
       "options": {
-        "config": "libs/tokens/vite.config.ts"
+        "config": "packages/tokens/vite.config.ts"
       }
     },
     "lint": {
@@ -25,12 +25,12 @@
       ],
       "options": {
         "lintFilePatterns": [
-          "libs/tokens/**/*.ts",
-          "libs/tokens/**/*.tsx",
-          "libs/tokens/**/*.js",
-          "libs/tokens/**/*.jsx",
-          "libs/tokens/**/*.mjs",
-          "libs/tokens/**/*.cjs"
+          "packages/tokens/**/*.ts",
+          "packages/tokens/**/*.tsx",
+          "packages/tokens/**/*.js",
+          "packages/tokens/**/*.jsx",
+          "packages/tokens/**/*.mjs",
+          "packages/tokens/**/*.cjs"
         ]
       }
     },
@@ -42,7 +42,7 @@
         "^production"
       ],
       "options": {
-        "cwd": "libs/tokens",
+        "cwd": "packages/tokens",
         "command": "tsc --noEmit -p tsconfig.json"
       }
     }

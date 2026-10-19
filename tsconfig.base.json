@@ -14,10 +14,10 @@
     "baseUrl": ".",
     "paths": {
       "@sandbox/ui": [
-        "libs/ui/src/index.ts"
+        "packages/ui/src/index.ts"
       ],
       "@sandbox/ui/*": [
-        "libs/ui/src/*"
+        "packages/ui/src/*"
       ]
     }
   }

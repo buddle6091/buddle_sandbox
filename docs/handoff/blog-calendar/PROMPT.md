@@ -17,15 +17,15 @@
 - Conventional Commits, 제목 영문 소문자, 본문 한글 불릿.
 - 이모지·장식 아이콘·가짜 수치 금지. 아이콘은 lucide-react만, 의미 있는 자리에만.
 
-## Step 0 — libs/tokens v0.1 → v0.2 (선행, 필수)
-`libs/tokens/src/semantic.css` 가 아직 indigo 1색 v0.1이다. `design.md` §1 기준으로:
+## Step 0 — packages/tokens v0.1 → v0.2 (선행, 필수)
+`packages/tokens/src/semantic.css` 가 아직 indigo 1색 v0.1이다. `design.md` §1 기준으로:
 1. `primitives.css`: gray(냉회색 값 교체) / porcelain / obsidian / blue(벽청) / celadon / violet / status / navy 추가. indigo 제거.
 2. `semantic.css`: `fg/body`, `fg/link`, `bg/page`, `accent/secondary|tertiary`, `glass/*`, `glaze/*`, `shadow/*`(sm·md·lg·glass·ring·intaglio), `orb/*` 추가. 세 블록(:root / media dark / .dark) **키 패리티 유지**.
 3. `theme.css`: 타이포 스케일을 §2 표로 교체(display 56/64 800 … caption 12/16 500). `--container-content` 720 유지. `font-sans` Pretendard, 세리프 토큰 **만들지 않는다**.
 4. `tests/fixtures/expected-tokens.ts` 먼저 고쳐 Red → `src/*.css` Green. `npx nx test tokens`.
 5. `docs/state/handoff.md` 에 "Phase 0.5 토큰 v0.2" 로 flush.
 
-## Step 1 — libs/ui 기반 컴포넌트 (Phase 1과 합침)
+## Step 1 — packages/ui 기반 컴포넌트 (Phase 1과 합침)
 shadcn 모노레포 init 후 `/new-component` 로, 각각 light/dark × variant × 390/768/1280 story:
 - Button(primary/glass/secondary/ghost/outline/danger), Input/Textarea(+error), Card(glass base/flat + hover pool/lift/edge), Badge, Tabs(알약 + 밑줄형), Dialog/Sheet(compact=하단 Sheet), Popover, DropdownMenu, Tooltip(불투명, compact 미사용), Toast, Skeleton, Avatar
 - AppShell: TopBar(**스크롤 전 투명 → 스크롤 후 glass base**, h 52/60) + compact TabBar 56 + medium Rail 72 + expanded Sidebar 248. 같은 `navItems` 배열에서 렌더. AmbientBackground(orb 3개 + 먹선, 정적).

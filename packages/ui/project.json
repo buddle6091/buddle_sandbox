@@ -1,8 +1,8 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "name": "ui",
-  "root": "libs/ui",
-  "sourceRoot": "libs/ui/src",
+  "root": "packages/ui",
+  "sourceRoot": "packages/ui/src",
   "projectType": "library",
   "tags": ["scope:ui", "type:ui"],
   "targets": {
@@ -11,12 +11,12 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "libs/ui/**/*.ts",
-          "libs/ui/**/*.tsx",
-          "libs/ui/**/*.js",
-          "libs/ui/**/*.jsx",
-          "libs/ui/**/*.mjs",
-          "libs/ui/**/*.cjs"
+          "packages/ui/**/*.ts",
+          "packages/ui/**/*.tsx",
+          "packages/ui/**/*.js",
+          "packages/ui/**/*.jsx",
+          "packages/ui/**/*.mjs",
+          "packages/ui/**/*.cjs"
         ]
       }
     },
@@ -25,7 +25,7 @@
       "cache": true,
       "inputs": ["default", "^production"],
       "options": {
-        "cwd": "libs/ui",
+        "cwd": "packages/ui",
         "command": "tsc --noEmit -p tsconfig.json"
       }
     },
@@ -33,13 +33,13 @@
       "executor": "@nx/vitest:test",
       "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "config": "libs/ui/vite.config.ts"
+        "config": "packages/ui/vite.config.ts"
       }
     },
     "storybook": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "libs/ui",
+        "cwd": "packages/ui",
         "command": "storybook dev -p 6006 --no-open"
       }
     },
@@ -49,7 +49,7 @@
       "inputs": ["default", "^production"],
       "outputs": ["{workspaceRoot}/dist/storybook/ui"],
       "options": {
-        "cwd": "libs/ui",
+        "cwd": "packages/ui",
         "command": "storybook build -o ../../dist/storybook/ui"
       }
     },

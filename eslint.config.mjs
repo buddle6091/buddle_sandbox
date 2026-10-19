@@ -59,7 +59,7 @@ export default [
     ...config,
     files: ['**/*.ts', '**/*.tsx'],
   })),
-  // React 훅 규칙 — libs/ui / apps 의 tsx 전반.
+  // React 훅 규칙 — packages/ui / apps 의 tsx 전반.
   {
     files: ['**/*.tsx'],
     plugins: { 'react-hooks': reactHooks },

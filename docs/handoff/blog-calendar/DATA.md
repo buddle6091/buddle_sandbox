@@ -1,6 +1,6 @@
 # DATA — 모델 · API · 권한 · 동기화
 
-> Supabase(Postgres + Auth + RLS). 스키마는 `libs/schema`(zod)에 두고 프론트/서버 공유.
+> Supabase(Postgres + Auth + RLS). 스키마는 `packages/schema`(zod)에 두고 프론트/서버 공유.
 
 ## 테이블
 ```

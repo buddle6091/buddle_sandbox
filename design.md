@@ -6,7 +6,7 @@ v0.1의 뉴트럴 + Indigo 1색 구조를 **백자(porcelain) 뉴트럴 + 벽청
 
 -   네이밍 컨벤션: `category/group/name` (Figma variables 기준), 코드에서는 `--bs-color-bg-default` 형태
 -   Figma 구성: `Primitives` / `Semantic` 두 개의 variable collection, Semantic에 Light·Dark 모드
--   코드 단일 출처: `libs/tokens/index.css` (CSS 변수 + Tailwind v4 `@theme`). 이 문서와 코드가 다르면 질문한다.
+-   코드 단일 출처: `packages/tokens/index.css` (CSS 변수 + Tailwind v4 `@theme`). 이 문서와 코드가 다르면 질문한다.
 -   콘셉트 한 줄: 백자 표면 위에 청자 유약이 아래쪽으로 고인 유리. 블롭 그래디언트·장식 패턴·세리프 서체는 쓰지 않는다.
 
 ---

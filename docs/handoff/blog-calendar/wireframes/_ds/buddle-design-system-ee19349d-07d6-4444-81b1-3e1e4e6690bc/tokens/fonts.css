@@ -1,5 +1,5 @@
 /* 2026-10: Hahmlet·Diphylleia 제거 — 모든 역할을 Pretendard가 담당 */
-/* Webfonts — Google Fonts import as in libs/tokens/src/index.css; Pretendard declared directly (same file the jsDelivr CSS serves) */
+/* Webfonts — Google Fonts import as in packages/tokens/src/index.css; Pretendard declared directly (same file the jsDelivr CSS serves) */
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap");
 
 @font-face {

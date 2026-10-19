@@ -10,17 +10,21 @@
 ## 스택 (확정)
 - 모노레포: **Nx** (현재 **npm** workspaces / package-lock.json)
 - 웹: **Next.js 16** (App Router, Turbopack 기본). Cache Components(`"use cache"`)는 필요할 때만 opt-in.
-- UI: **shadcn/ui 기반** → `libs/ui` 공용 컴포넌트. **Tailwind v4 + CSS 변수** 토큰.
-- 토큰: `design.md`(Primitive→Semantic Light/Dark) → `libs/tokens`(`--bs-color-*` CSS 변수 + Tailwind `@theme`)
+- UI: **shadcn/ui 기반** → `packages/ui` 공용 컴포넌트. **Tailwind v4 + CSS 변수** 토큰.
+- 토큰: `design.md`(Primitive→Semantic Light/Dark) → `packages/tokens`(`--bs-color-*` CSS 변수 + Tailwind `@theme`)
 - 테스트: **Vitest + Testing Library**, **Playwright**(E2E 최소), **Storybook**
 - 배포: **Vercel + 커스텀 도메인**. 2번째 모듈은 **Next.js Multi-Zones**로 같은 도메인 분리 배포.
 - 최소 버전: **Node 20.19+** (`.nvmrc`=24 — vitest 4/vite 8 요구. 20.16 에서는 설치·테스트가 깨진다), **TypeScript 5.1+**
 
-## 타겟 구조
+## 폴더 구조
+> 전체 트리·depth 규칙은 **`docs/structure.md`** 가 SSOT. 새 폴더/패키지를 만들면 그 문서를 갱신한다.
+> 공용 패키지 폴더 이름은 **`packages/`** (Nx 관례의 `libs/` 를 쓰지 않는다 — 2026-10-20 결정).
+
+### 타겟 구조
 ```
 apps/
   web/            # 메인 zone: 랜딩 + 블로그. (추후) 도메인 라우터 역할
-libs/
+packages/
   ui/             # shadcn 기반 공용 컴포넌트 (@sandbox/ui)
   tokens/         # design.md 토큰 → CSS 변수 + Tailwind theme (SSOT)
   schema/         # 프론트/백 공용 스키마 (zod)
@@ -50,7 +54,7 @@ tools/            # Nx generators, 스크립트
 **배선 완료.** 루트 `eslint.config.mjs` 의 `depConstraints` 가 강제한다.
 
 - 태그: `scope:web|ui|shared`, `type:app|feature|ui|util`
-- 의존 방향: `app -> feature -> ui -> util` (역방향 금지). `libs/ui`는 앱을 참조할 수 없다.
+- 의존 방향: `app -> feature -> ui -> util` (역방향 금지). `packages/ui`는 앱을 참조할 수 없다.
 - **새 프로젝트에는 `project.json` 에 `tags` 를 반드시 넣는다.** 태그가 없으면
   이 규칙은 그 프로젝트에 대해 아무것도 잡지 못한다 (조용히 통과한다).
 - 규칙이 실제로 무는지 확인하려면 위반 import 를 잠깐 넣고 `npx nx run <proj>:lint` 를 돌려본다.
@@ -58,8 +62,8 @@ tools/            # Nx generators, 스크립트
 - 태그를 바꾼 뒤 lint 결과가 이상하면 프로젝트 그래프가 캐시된 것이다 -> `npx nx reset`.
 
 ## 디자인 시스템 규칙 (중요)
-- 색/간격/타이포/radius/shadow는 **절대 하드코딩 금지.** 반드시 `libs/tokens` 변수 / Tailwind theme을 쓴다.
-- `libs/tokens` 는 구현 완료(Phase 0). 사용법·주의사항은 `libs/tokens/README.md` 참고.
+- 색/간격/타이포/radius/shadow는 **절대 하드코딩 금지.** 반드시 `packages/tokens` 변수 / Tailwind theme을 쓴다.
+- `packages/tokens` 는 구현 완료(Phase 0). 사용법·주의사항은 `packages/tokens/README.md` 참고.
   소비는 `@import "@sandbox/tokens/index.css";` 한 줄이면 된다.
 - 새 컴포넌트는 반드시 **`/new-component` 스킬 절차**를 따른다.
 
@@ -69,4 +73,4 @@ tools/            # Nx generators, 스크립트
 - 커밋 전 `lefthook`이 `nx affected` lint/test/typecheck를 강제한다.
 
 ## 하위 CLAUDE.md
-패키지별 세부 규칙은 `libs/ui/CLAUDE.md`, `apps/web/CLAUDE.md` 등에 따로 둔다(스캐폴드 시 생성).
+패키지별 세부 규칙은 `packages/ui/CLAUDE.md`, `apps/web/CLAUDE.md` 등에 따로 둔다(스캐폴드 시 생성).

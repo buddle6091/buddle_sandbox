@@ -1,4 +1,4 @@
-# libs/ui — 패키지 규칙
+# packages/ui — 패키지 규칙
 
 shadcn 기반 공용 컴포넌트(`@sandbox/ui`). 스펙은 `../../design.md` §5~§7, 화면 맥락은 `../../docs/handoff/blog-calendar/SCREENS.md`.
 새 컴포넌트는 반드시 `/new-component` 스킬 절차로. 완료 판정은 `qa-verifier`.

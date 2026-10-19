@@ -1,4 +1,4 @@
-# libs/tokens — 패키지 규칙
+# packages/tokens — 패키지 규칙
 
 `../../design.md` 토큰의 SSOT. 사용법은 `README.md`, 배경은 루트 `CLAUDE.md`.
 
@@ -29,7 +29,7 @@ npx nx test tokens
 
 CSS 를 크게 바꿨다면 실제 컴파일 결과도 확인한다:
 ```bash
-npx @tailwindcss/cli -i libs/tokens/src/index.css -o /tmp/out.css
+npx @tailwindcss/cli -i packages/tokens/src/index.css -o /tmp/out.css
 ```
 `.bg-bg-default` 가 `var(--bs-color-bg-default)` 를 참조하는지(=inline 동작), 전역 `--color-*` 가 `:root` 로 새지 않는지 본다. `@tailwindcss/cli` 는 설치돼 있지 않으니 `--content` 로 probe HTML 을 주고 `npx` 로 돌린다.
 

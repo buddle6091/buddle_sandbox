@@ -1,4 +1,4 @@
-/* Type tokens — mirrors libs/ui/tailwind-preset.ts fontFamily / fontSize */
+/* Type tokens — mirrors packages/ui/tailwind-preset.ts fontFamily / fontSize */
 :root {
   --ds-font-sans: "Pretendard Variable", Pretendard, system-ui, sans-serif; /* @kind font */
   --ds-font-serif: "Pretendard Variable", Pretendard, system-ui, sans-serif; /* 2026-10: 세리프 폐기, 역할(제목)은 유지 */ /* @kind font */

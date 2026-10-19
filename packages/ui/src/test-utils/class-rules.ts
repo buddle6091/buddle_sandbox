@@ -1,7 +1,7 @@
 import { expect } from 'vitest';
 
 /**
- * libs/ui/CLAUDE.md 의 className 규칙을 테스트에서 강제한다.
+ * packages/ui/CLAUDE.md 의 className 규칙을 테스트에서 강제한다.
  * - transition-all 금지 (design.md §4)
  * - `hover:` 금지 → `hover-fine:` (hover 는 hover:hover + pointer:fine 안에서만)
  * - raw hex / rgb / Tailwind 기본 팔레트(bg-neutral-500 등) 금지 — 토큰 유틸리티만
