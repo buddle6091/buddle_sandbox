@@ -28,7 +28,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary: 'bg-accent-default text-accent-fg-on shadow-md hover-fine:bg-accent-hover',
-        glass: 'glass-base text-fg-default hover-fine:border-b-accent-default',
+        // compact 는 blur 없는 flat 유리(화면당 backdrop-filter 2개 = TopBar·TabBar), medium 부터 유리
+        glass: 'glass-base-flat medium:glass-base text-fg-default hover-fine:border-b-accent-default',
         secondary:
           'bg-bg-muted text-fg-default hover-fine:bg-accent-subtle-bg hover-fine:text-accent-hover',
         ghost: 'text-fg-default hover-fine:bg-accent-subtle-bg hover-fine:text-accent-hover',

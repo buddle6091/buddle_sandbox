@@ -15,7 +15,7 @@ describe('Button — design.md §6.1', () => {
 
   it.each([
     ['primary', ['bg-accent-default', 'text-accent-fg-on', 'shadow-md']],
-    ['glass', ['glass-base', 'text-fg-default']],
+    ['glass', ['glass-base-flat', 'medium:glass-base', 'text-fg-default']],
     ['secondary', ['bg-bg-muted', 'text-fg-default']],
     ['ghost', ['hover-fine:bg-accent-subtle-bg']],
     ['outline', ['border-border-default', 'hover-fine:border-accent-default']],

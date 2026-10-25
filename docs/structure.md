@@ -18,7 +18,7 @@
 - 패키지 이름(npm)은 `@sandbox/<폴더명>`. import 는 `@sandbox/ui`, `@sandbox/ui/components/button`, CSS 는 `@sandbox/tokens/index.css`.
 - 경계 태그(`project.json` `tags`)는 필수: `scope:web|ui|shared` + `type:app|feature|ui|util`. 없으면 ESLint 경계 규칙이 조용히 통과한다.
 
-## 현재 트리 (2026-10-20, depth 4까지)
+## 현재 트리 (2026-10-25, depth 4까지)
 
 ```
 buddle_sandbox/
@@ -68,19 +68,33 @@ buddle_sandbox/
 │     │  └─ test-utils/class-rules.ts   className 규칙 강제 (transition-all·hover:·hex 금지)
 │     └─ tests/setup.ts          jsdom 폴리필
 │
-└─ apps/                         (Phase 2 에서 생성) web — Next.js 16, scope:web type:app
+├─ apps/
+│  └─ web/                       @sandbox/web — Next.js 16 App Router (scope:web type:app)
+│     ├─ CLAUDE.md · project.json · package.json · next.config.ts · tsconfig.json · postcss.config.mjs · vite.config.ts
+│     ├─ app/                    라우트(서버 컴포넌트): layout.tsx(Ambient + Shell) · shell.tsx · page.tsx(/) · blog/ · calendar/ · globals.css
+│     ├─ src/landing/            랜딩 전용
+│     │  ├─ content/landing.ts   내용 SSOT (이력서 기반)
+│     │  ├─ scroll/              progress.ts(순수 함수·키프레임) · store.ts · scroll-driver.tsx(Lenis)
+│     │  ├─ observe/use-in-view.ts
+│     │  ├─ sections/            section.tsx(래퍼) + 섹션 9개 + use-count-up.ts
+│     │  ├─ three/               hero-canvas.tsx(dynamic) · scene.tsx(달항아리·링·리그) · palette.ts(CSS 변수→색)
+│     │  └─ landing.tsx          컴포지션
+│     └─ tests/setup.ts
+│
+└─ tools/
+   └─ capture-landing.mjs        Playwright 캡처(1280/390 × 스크롤 단계) — dev 서버 필요
 ```
 
 ## 앞으로 생길 폴더 (예약)
 
 | 경로 | 역할 | 태그 |
 |---|---|---|
-| `apps/web/` | 블로그 + 비공개 캘린더 zone. `app/` 라우트, `lib/supabase/`, `template.tsx` | `scope:web` `type:app` |
+| `apps/web/` (생성됨) | 랜딩 `/` + 블로그 `/blog` + 캘린더 `/calendar`. Step 2~5 에서 `lib/supabase/`, `template.tsx` 추가 | `scope:web` `type:app` |
 | `apps/web-e2e/` | Playwright | `scope:web` `type:app` |
 | `packages/schema/` | zod 스키마 (프론트/서버 공유) | `scope:shared` `type:util` |
 | `packages/utils/` | 순수 유틸 | `scope:shared` `type:util` |
 | `supabase/` | 루트. `migrations/*.sql` `seed.sql` `config.toml` — 로컬 Supabase CLI | (Nx 프로젝트 아님) |
-| `tools/` | Nx generators, 스크립트 | — |
+| `tools/` (생성됨) | 스크립트(캡처 등), 추후 Nx generators | — |
 
 ## 추적하지 않는 것
 

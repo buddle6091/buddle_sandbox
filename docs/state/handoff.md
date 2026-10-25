@@ -8,7 +8,8 @@
 - **origin/master push 완료** (`f0505cc`). 이관 시점의 미push 상태는 해소됨.
 - **Phase 0 완료** — `packages/tokens` (아래 참고)
 - **Phase 0.5 완료** — 토큰 v0.2 (Glass). `design.md` v0.2 와 코드 일치.
-- **Phase 1 완료** — `packages/ui` (아래 "Phase 1 결과"). 다음은 Phase 2 `apps/web` (PROMPT.md Step 2~5).
+- **Phase 1 완료** — `packages/ui` (아래 "Phase 1 결과").
+- **Phase 2a 완료** — `apps/web` 신설 + 메인 도메인 `/` 랜딩(스크롤 3D). 블로그·캘린더(PROMPT.md Step 2~5)는 라우트 자리만. 아래 "Phase 2a 결과".
 - **lefthook 켜짐** — 커밋 시 affected lint/test/typecheck 가 실제로 돈다.
 - 핸드오프 번들 `docs/handoff/blog-calendar/` (README → SCREENS → STATES → DATA → PROMPT). 다음 작업의 스펙.
 
@@ -18,6 +19,7 @@
 | 0 기반 | **완료** | `packages/tokens`, npm workspaces, nx targetDefaults, 경계 태그 |
 | 0.5 토큰 v0.2 | **완료** | glass/glaze/shadow/orb 토큰, 타이포 v0.2, 모션·레이아웃 변수, 계약 테스트 114개 |
 | 1 디자인시스템 | **완료** | `packages/ui` 컴포넌트 22개 + 훅 3개 + Storybook 10, ESLint 경계 규칙, lefthook 게이트 |
+| 2a 랜딩 | **완료** | `apps/web` Next 16 + 이력서 기반 랜딩 9섹션 + Three.js 달항아리 리그 + `/blog` `/calendar` 자리 |
 
 ## ⚠ 환경 — Node 24 필수
 `.nvmrc` = `24`. 세션 시작 시:
@@ -48,6 +50,31 @@ nvm use
 - ~~**`tsconfig.base.json` path 매핑**~~ — **해소됨.** `@sandbox/ui` 추가. 토큰은 여전히 CSS export 로만 소비하므로 path 매핑을 두지 않는다.
 - ~~**lint 타깃**~~ — **해소됨.** `packages/tokens` / `packages/ui` 양쪽에 `lint` + `typecheck` 추가.
 - ~~**lefthook 설치**~~ — **해소됨(2026-10-12).** pre-commit = affected lint/test/typecheck, pre-push = affected build.
+
+## Phase 2a 결과 — apps/web 랜딩 (2026-10-25)
+플랜: `~/.claude/plans/distributed-dreaming-scone.md`(2026-10-25 판). qa-verifier 판정: **PASS** (2026-10-25) — lint/test/typecheck/build(4 라우트 정적) · 테스트 26 · hex/rgb 0(팔레트 폴백 1건 예외) · 경계 위반 0 · 이력서 수치·9섹션·dynamic ssr:false·frameloop demand·자동 회전 없음 확인. 보고된 compact 3번째 blur(hero glass Button)는 Button glass 를 compact 에서 glass-base-flat 로 강등해 해소.
+
+### 한 것
+- **`apps/web`** Next.js 16 App Router(turbopack), `scope:web type:app`. Nx 타깃 dev/build/start/lint/typecheck/test. 스타일은 `app/globals.css` 의 `@import "@sandbox/ui/styles.css"` 한 줄(+ `@source` 로 ui 소스 스캔). `app/layout.tsx` = AmbientBackground + AppShell(sideNav=false, 라우터 Link 주입). 4 라우트 전부 정적 프리렌더.
+- **랜딩 `/`** — 이력서(이상원 강사 이력서, 4쪽) 기반 9섹션: hero · stats(34곳/800h+/1,200명+/48과정/3년차, in-view 롤링) · philosophy · curriculum · audience(기관 칩 + 시간, masked 플래그) · mentoring · experience(강의 이력 + 화이트블록 실무 + 항해커톤) · feedback · contact. 내용은 `src/landing/content/landing.ts` 한 파일. 전화번호·생년월일 없음(테스트로 고정).
+- **스크롤**: 네이티브 스크롤이 SSOT. `ScrollDriver` 가 rAF 스로틀로 0~1 진행도를 `scrollStore`(ref) 에 쓰고, fine-pointer 데스크톱(+reduced-motion 아님)에서만 Lenis 로 부드럽게. 섹션 리빌은 `useInView`(IO) 가 `data-inview` 만 토글 → CSS(`[data-reveal]`, 300ms ease-bs, 30ms 스태거).
+- **3D**: 고정 캔버스 1장(`next/dynamic ssr:false`, `frameloop="demand"`, dpr 1~1.5). 달항아리(LatheGeometry + SplineCurve, MeshPhysicalMaterial clearcoat/sheen) + 청자 유약 수위(클리핑 평면이 스크롤에 따라 차오름) + 유리 링(MeshTransmissionMaterial, compact 는 물리 재질) + 캔버스 안 저알파 3색 백드롭 + Lightformer 3장(HDR 네트워크 로드 없음). 섹션당 키프레임 1개를 `sample()` 로 보간, useFrame 에서 damp, 수렴 중에만 invalidate. 색은 `palette.ts` 가 CSS 변수에서 읽음.
+- **테스트 26개**(순수 함수 13 · IO 훅 5 · 랜딩 렌더 6 + …), 전부 Red 먼저. Three 는 jsdom 밖 → Playwright 캡처(`tools/capture-landing.mjs`)로 1280 light/dark × 4단계, 390 × 3단계 확인: 콘솔 에러 0, 가로 스크롤 0, compact backdrop-filter 3개.
+
+### 이때 내린 결정
+- **`/` 는 랜딩, 글 목록은 `/blog`.** PROMPT.md Step 2 의 `/`=목록은 `/blog` 로 옮긴다(Step 2 구현 시 `/blog`, `/blog/[slug]`, `/write` …).
+- **스크롤 드라이버 = 네이티브 + Lenis(선택적)**, drei ScrollControls·GSAP 제외(이유: 플랜 "리서치 반영").
+- **3D 프레이밍**: 카메라가 기물을 바라보되 시선점을 기물보다 1.35 왼쪽(full) / 1.35 아래(lite) 로 두어 기물이 우측 1/3(데스크톱) · 상단(모바일)에 머문다. `scene.tsx` Rig 의 shiftX/shiftY/zoom.
+- **백자 색은 primitive `gray/0`** — 다크에서도 흰 기물. `palette.ts` 가 primitive 를 읽는 유일한 예외로 주석에 명시.
+- **React Compiler lint(react-hooks)**: useFrame 콜백 안에서 prop/useMemo 값을 mutate 하면 `immutability` 오류. 프레임마다 바뀌는 상태는 모듈 변수(`rigState`, `glazePlane`)로, `gl.localClippingEnabled` 는 Canvas `onCreated` 에서.
+- **Playwright 는 devDependency 로 추가**(캡처 스크립트). E2E 는 Step 2 와 함께.
+
+### 의도적으로 미룬 것
+- 2열 섹션(mentoring·experience)에서 우측 열 텍스트가 기물과 겹치는 구간 — 가독성 보강(텍스트 열 뒤 저알파 스크림 또는 기물 alpha 감소) 필요.
+- 숫자 롤링 외의 "흐름" 인터랙션(섹션 간 연결선·진행 표시) 미구현.
+- 미디엄 이상 backdrop-filter 13개(유리 카드) — 성능 측정 후 `glass-base-flat` 로 낮출지 결정.
+- Lighthouse/실기기 60fps 측정 미실시. Playwright E2E 미작성.
+- `metadataBase` 가 `https://buddle.dev` 로 가정 — 실제 도메인 확정 시 교체.
 
 ## 구조 변경 — `libs/` → `packages/` (2026-10-20)
 - 공용 패키지 폴더를 `packages/` 로 통일. Nx 에서 `libs` 는 관례일 뿐 내장 이름이 아니라서 `git mv` + 참조 치환(`package.json` workspaces, `tsconfig.base.json` paths, `project.json`, ESLint, 스킬/에이전트, 문서)으로 끝났다. lockfile 재생성, `npx nx reset` 후 lint/test/typecheck/build-storybook 전부 통과.
