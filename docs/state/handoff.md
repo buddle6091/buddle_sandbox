@@ -11,6 +11,7 @@
 - **Phase 1 완료** — `packages/ui` (아래 "Phase 1 결과").
 - **Phase 2a 완료** — `apps/web` 신설 + 메인 도메인 `/` 랜딩(스크롤 3D). 아래 "Phase 2a 결과".
 - **Phase 2b 완료** — 랜딩 v2 교체(영상 히어로 · 백자/흑유 3D · 10섹션 · ThemeToggle). 블로그·캘린더(PROMPT.md Step 2~5)는 라우트 자리만. 아래 "Phase 2b 결과".
+- **QA 원장** `docs/state/qa-log.md` — 버그·컨벤션·미룬 결함 히스토리(2026-11-01 신설). PR/푸시마다 갱신.
 - **lefthook 켜짐** — 커밋 시 affected lint/test/typecheck 가 실제로 돈다.
 - 핸드오프 번들 `docs/handoff/blog-calendar/` (README → SCREENS → STATES → DATA → PROMPT). 블로그·캘린더 작업의 스펙.
 - **Phase 2b 예정 — 랜딩 v2 교체** (2026-11-01 결정). `/` 는 그대로 랜딩, 내부를 `docs/handoff/landing-v2/` 시안으로 교체. 아래 "Phase 2b — 랜딩 v2 (예정)".

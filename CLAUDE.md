@@ -58,6 +58,9 @@ tools/            # Nx generators, 스크립트
 4. 결정/상태는 이 파일 또는 `docs/state/<domain>.md` 상태 원장에 flush한다.
 5. 커밋 메시지는 **Conventional Commits** (`feat:` `fix:` `chore:` `docs:` `test:` `refactor:`).
    제목은 영문 소문자 한 줄, 본문은 한글 불릿으로 "왜"를 남긴다.
+6. **QA 이력을 남긴다.** PR/푸시 묶음마다 `docs/state/qa-log.md` 에 한 절을 추가한다 —
+   qa-verifier 지적, 개발 중 발견한 버그(증상→원인→조치), 컨벤션 위반, 재현 안 되는 간헐 이슈, 미룬 결함.
+   PR 본문에도 같은 내용을 "QA · 알려진 이슈" 섹션으로 넣는다. 유지보수·에러 핸들링 히스토리의 SSOT 다.
 
 ## 패키지 경계 (`@nx/enforce-module-boundaries`)
 **배선 완료.** 루트 `eslint.config.mjs` 의 `depConstraints` 가 강제한다.
