@@ -48,7 +48,7 @@ export function SectionIndicator() {
               active === n.id && 'scale-125 bg-accent-default',
             )}
           />
-          <span className="pointer-events-none absolute right-6 rounded-sm bg-bg-inverse px-2 py-1 text-caption whitespace-nowrap text-fg-inverse opacity-0 transition-opacity duration-[var(--bs-motion-control)] ease-bs group-hover-fine:opacity-100 group-focus-visible:opacity-100">
+          <span className="pointer-events-none absolute right-6 inline-flex h-7 items-center rounded-sm bg-bg-inverse px-2.5 text-caption leading-none whitespace-nowrap text-fg-inverse opacity-0 transition-opacity duration-[var(--bs-motion-control)] ease-bs group-hover-fine:opacity-100 group-focus-visible:opacity-100">
             {n.label}
           </span>
         </a>

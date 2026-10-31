@@ -52,7 +52,7 @@ function Deck() {
       role="region"
       aria-label={t.deckLabel}
       tabIndex={0}
-      className="landing-deck focus-ring flex snap-x snap-mandatory gap-6 overflow-x-auto px-[max(16px,calc((100%-1120px)/2))] pt-8 pb-12 [perspective:1400px] [scrollbar-width:thin]"
+      className="landing-deck focus-ring flex snap-x snap-mandatory gap-6 overflow-x-auto px-[max(16px,calc((100%-1120px)/2))] pt-8 pb-12 [perspective:1400px]"
     >
       {t.courses.map((c) => (
         <article

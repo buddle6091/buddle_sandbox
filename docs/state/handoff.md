@@ -48,6 +48,11 @@
 - **Claude 앱 브라우저 패인은 rAF 가 초당 ~2프레임**으로 스로틀된다(백그라운드 뷰). 애니메이션 성능 판단에 쓰지 말 것.
 - React Compiler lint: useFrame 에서 useMemo/prop 값을 mutate 하면 오류 → 모듈 변수(`hero-state.ts`, uniforms) 사용.
 
+### 후속 다듬기 (2026-11-01, 사용자 피드백 3건)
+- **섹션 전환 부드럽게**: `html { scroll-behavior: smooth; scroll-snap-type: y proximity }` + `[data-section] { scroll-snap-align: start }`. **Lenis 제거** — 스크립트 스크롤이 CSS scroll-snap 과 충돌(스냅이 튀거나 먹지 않음). 네이티브 스크롤이 SSOT 라는 규칙 3 과도 맞다. reduced-motion 은 둘 다 끈다.
+- **강의 덱 스크롤바 숨김**: `.landing-deck { scrollbar-width: none }` + `::-webkit-scrollbar { display: none }`. 가로 스크롤·키보드 포커스는 그대로.
+- **칩·툴팁 정렬**: `Badge` 를 `inline-flex items-center justify-center leading-none` 으로, 문자열 children 은 안쪽 `span.truncate` 로 감싸 높이·세로 중앙을 고정(이전엔 `truncate` 가 블록이라 글자가 위로 치우침). 섹션 인디케이터 툴팁도 `inline-flex h-7 px-2.5 leading-none`. `badge.test.tsx`/`states.test.tsx` 는 `closest('[data-slot="badge"]')` 로 루트를 집는다.
+
 ### 의도적으로 미룬 것
 - 미디엄 이상 backdrop-filter 21개(유리 카드) — 성능 측정 후 `glass-base-flat` 로 낮출지.
 - LazySection 으로 가려진 본문의 검색 노출(현재 제목만 SSR). Lighthouse · 실기기 60fps · Playwright E2E.

@@ -7,6 +7,30 @@
 /* Tailwind 가 ui 패키지 소스의 클래스도 스캔하게 한다 */
 @source "../../../packages/ui/src";
 
+/* 섹션 전환 — 부드러운 스크롤 + 섹션 시작점에 느슨하게 스냅(proximity: 긴 섹션 안에서는 자유 스크롤) */
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+}
+[data-section] {
+  scroll-snap-align: start;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+  }
+}
+
+/* 가로 덱 — 스크롤바 숨김(스크롤·스냅·키보드는 그대로) */
+.landing-deck {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.landing-deck::-webkit-scrollbar {
+  display: none;
+}
+
 /* ───────── 랜딩 v2 — 리빌 (시안: rotateX 16° · translateY 40 → 0, 700/1000ms, 스태거 60ms) ───────── */
 [data-reveal] {
   opacity: 0;
