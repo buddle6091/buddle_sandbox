@@ -9,9 +9,11 @@
 - **Phase 0 완료** — `packages/tokens` (아래 참고)
 - **Phase 0.5 완료** — 토큰 v0.2 (Glass). `design.md` v0.2 와 코드 일치.
 - **Phase 1 완료** — `packages/ui` (아래 "Phase 1 결과").
-- **Phase 2a 완료** — `apps/web` 신설 + 메인 도메인 `/` 랜딩(스크롤 3D). 블로그·캘린더(PROMPT.md Step 2~5)는 라우트 자리만. 아래 "Phase 2a 결과".
+- **Phase 2a 완료** — `apps/web` 신설 + 메인 도메인 `/` 랜딩(스크롤 3D). 아래 "Phase 2a 결과".
+- **Phase 2b 완료** — 랜딩 v2 교체(영상 히어로 · 백자/흑유 3D · 10섹션 · ThemeToggle). 블로그·캘린더(PROMPT.md Step 2~5)는 라우트 자리만. 아래 "Phase 2b 결과".
 - **lefthook 켜짐** — 커밋 시 affected lint/test/typecheck 가 실제로 돈다.
-- 핸드오프 번들 `docs/handoff/blog-calendar/` (README → SCREENS → STATES → DATA → PROMPT). 다음 작업의 스펙.
+- 핸드오프 번들 `docs/handoff/blog-calendar/` (README → SCREENS → STATES → DATA → PROMPT). 블로그·캘린더 작업의 스펙.
+- **Phase 2b 예정 — 랜딩 v2 교체** (2026-11-01 결정). `/` 는 그대로 랜딩, 내부를 `docs/handoff/landing-v2/` 시안으로 교체. 아래 "Phase 2b — 랜딩 v2 (예정)".
 
 ### 완료된 Phase
 | Phase | 상태 | 산출물 |
@@ -20,6 +22,50 @@
 | 0.5 토큰 v0.2 | **완료** | glass/glaze/shadow/orb 토큰, 타이포 v0.2, 모션·레이아웃 변수, 계약 테스트 114개 |
 | 1 디자인시스템 | **완료** | `packages/ui` 컴포넌트 22개 + 훅 3개 + Storybook 10, ESLint 경계 규칙, lefthook 게이트 |
 | 2a 랜딩 | **완료** | `apps/web` Next 16 + 이력서 기반 랜딩 9섹션 + Three.js 달항아리 리그 + `/blog` `/calendar` 자리 |
+| 2b 랜딩 v2 | **완료** | 영상 히어로 + 백자/흑유 테마별 3D + 10섹션 + LazySection + ThemeToggle(packages/ui) |
+
+## Phase 2b 결과 — 랜딩 v2 (2026-11-01)
+스펙 `docs/handoff/landing-v2/README.md` + 시안 `design/Profile.dc.html` + Claude Design 캔버스 "청자 유약 흐름 배경"의 아트보드 **D(히어로 배경 영상)**. 플랜 `~/.claude/plans/distributed-dreaming-scone.md`(11-01 판). qa-verifier 판정: **PASS** (2026-11-01, 전체 + 셰이더 재질 수정분 범위 재검증) — lint/test/typecheck/build(ui·web) · 테스트 ui 119 / web 41 · hex 0(팔레트 폴백·마스크 예외) · 경계 0 · 이력서 수치·10섹션·영상·LazySection·3D 두 장면·테마 토글·a11y 확인.
+
+### 내린 결정 (열린 질문 4개 — 사용자 답)
+1. feedback 유지, 고객사는 업종 마스킹("물류 대기업 — … 교육 담당자" / "IT 서비스 대기업 — 교육 담당자").
+2. 문의 이메일 `sangwon.lee@buddle.it.kr`. 3. 도메인 `https://buddle.it.kr`(`metadataBase`). 4. 새 제목 3개 시안 그대로.
+
+### 사용자 추가 요구 2개
+- **히어로 배경 영상**: 캔버스 아트보드 D 의 12초 루프 MP4(2.0MB)·포스터(1280×720)를 아티팩트 에셋에서 내려받아 `apps/web/public/hero/glaze-loop.mp4` · `glaze-poster.jpg`. 섹션 전체 cover, 아래 40% 마스크, 좌측 흰 막(bg/page 78→45→0%), reduced-motion 은 포스터만. 다크는 어두운 막(92→80→68%)으로 톤만 맞춤(시안 D 는 라이트만 있었음 — 결정).
+- **뷰포인트 감지 → 다음 컴포넌트 렌더**: `observe/lazy-section.tsx`. about~feedback 7개 섹션 본문을 IO(rootMargin 아래 40%) 교차 때 마운트, 그 전엔 `min-height` 자리표시(CLS 방지). SSR HTML 에는 섹션 제목만 내려가고 본문은 클라이언트가 채운다 — 검색 노출이 필요해지면 `LazySection` 을 `content-visibility` 로 바꾸는 선택지 기록.
+
+### 한 것
+- **packages/ui**: `ThemeToggle`(44px 아이콘 버튼, 라벨이 다음 상태) + `useThemeMode`(useSyncExternalStore · `html[data-theme]` · localStorage `bs-theme` · 시스템 추종 · 다른 탭 storage). next-themes 없음. 테스트 8개.
+- **apps/web 랜딩 v2** 10섹션: top(영상 + 우측 3D) · about(카운트업 1.6s easeOutQuart, 기울임) · expertise(flip 리빌) · philosophy(스크롤 진행 단어 하이라이트) · audience(막대 14, scaleX) · teaching(3D 가로 덱, scroll-snap) · mentoring(5) · career(타임라인 + 교육·자격증) · feedback · contact(유약 고임 카드). 진행 막대(TopBar 아래 2px) + expanded 우측 섹션 점. AppShell 라우트 내비는 그대로.
+- **3D**: 히어로 우측 캔버스만(전면 fixed 폐기). 라이트 「백자」(유약 방울 Icosahedron + 고리 2 + 위성 2 + 먼지 520) / 다크 「흑유」(흑요석 구체 + 성운 원반 4,200 + 별 900 + 빛무리). `hero-rig.tsx` 가 `mix` 를 dt·2.2 로 수렴(≈1초 크로스페이드), 포인터 기울기·스크롤 회전/이동/축소. `frameloop` 은 히어로 in-view && !reduced 일 때만 `always`. 색은 `palette.ts` 가 CSS 변수 → `#rrggbb`.
+- 순수 함수 `fx/{deck,words,bars,tilt,theme-mix}.ts` + 테스트. 총 테스트 ui 119 · web 41. lint/typecheck/build Green, 4 라우트 정적.
+- 캡처: `tools/capture-landing.mjs` 가 시스템 Chrome(GPU) 우선. 1280 light/dark × 5단계 + 토글 크로스페이드 + 390. 콘솔 에러 0(간헐 404 1건은 dev HMR 청크, 재현 안 됨), 가로 스크롤 0, compact backdrop-filter 2개.
+
+### 이때 배운 것 (다음 세션 주의)
+- **R3F 의 `<shaderMaterial uniforms={obj}>` 는 재질에 다른 uniforms 객체를 붙인다.** useFrame 에서 `obj.uTime.value` 를 바꿔도 셰이더에 닿지 않아 다크 장면이 통째로 안 보였다(드로우 콜은 나감). 재질은 `new THREE.ShaderMaterial({ uniforms })` 로 직접 만들어 `material={}` 로 넘긴다.
+- **Playwright headless shell 은 소프트웨어 WebGL** — 3D 프레임이 수백 ms 라 1초 크로스페이드가 캡처 시점에 끝나지 않는다. 시스템 Chrome(`channel: 'chrome'`, Metal) 로 띄우면 60fps.
+- **Claude 앱 브라우저 패인은 rAF 가 초당 ~2프레임**으로 스로틀된다(백그라운드 뷰). 애니메이션 성능 판단에 쓰지 말 것.
+- React Compiler lint: useFrame 에서 useMemo/prop 값을 mutate 하면 오류 → 모듈 변수(`hero-state.ts`, uniforms) 사용.
+
+### 의도적으로 미룬 것
+- 미디엄 이상 backdrop-filter 21개(유리 카드) — 성능 측정 후 `glass-base-flat` 로 낮출지.
+- LazySection 으로 가려진 본문의 검색 노출(현재 제목만 SSR). Lighthouse · 실기기 60fps · Playwright E2E.
+- 덱 키보드 조작(←/→ 로 카드 이동)은 네이티브 스크롤에 맡김(포커스 가능).
+- `window.__heroState`(dev 전용) · `data-canvas-inview` 진단 속성은 남겨 둠.
+
+## 내린 결정
+- **라우트**: 도메인 루트 `/` = 랜딩(그대로). 별도 앱으로 분리하지 않고 `apps/web/src/landing/` 를 교체한다.
+- **디자인 기준**: Claude Design 캔버스의 "강사 프로필 랜딩" 시안. Phase 2a 의 달항아리 3D · 9섹션 구성을 대체한다.
+- **내용**: 2026-10 공개용 이력서 기준으로 수치 갱신(34곳/800h+/48과정 → 38곳/1,000h+/51과정). curriculum → expertise, experience → teaching + career 분리.
+- **3D**: 전면 고정 캔버스 → 히어로 우측 캔버스. 라이트 「백자」(유약 방울 · 궤도 고리) / 다크 「흑유」(흑요석 구체 · 성운 원반) 별개 장면, 1초 크로스페이드. Phase 2a 의 "자동 회전 없음" 규칙은 히어로 한정으로 완화 — `apps/web/CLAUDE.md` 규칙 4·6 갱신. Phase 2a 의 미룬 항목 "2열 섹션 텍스트 · 기물 겹침"은 이 변경으로 해소 예정.
+- **테마 토글**: `packages/ui` 에 `ThemeToggle`(/new-component). next-themes 미사용 결정 유지.
+
+### 열린 질문 (구현 전 확인)
+1. feedback 섹션(고객사 실명 포함 후기 2건) 유지 방식 — 마스킹 유지 / 제거
+2. 문의 이메일 — `buddle6091@naver.com` vs `sangwon.lee@buddle.it.kr`
+3. 실제 도메인 (`metadataBase` 가 `https://buddle.dev` 가정)
+4. 시안에서 새로 쓴 섹션 제목 3개 확정
 
 ## ⚠ 환경 — Node 24 필수
 `.nvmrc` = `24`. 세션 시작 시:

@@ -18,7 +18,7 @@
 - 패키지 이름(npm)은 `@sandbox/<폴더명>`. import 는 `@sandbox/ui`, `@sandbox/ui/components/button`, CSS 는 `@sandbox/tokens/index.css`.
 - 경계 태그(`project.json` `tags`)는 필수: `scope:web|ui|shared` + `type:app|feature|ui|util`. 없으면 ESLint 경계 규칙이 조용히 통과한다.
 
-## 현재 트리 (2026-10-25, depth 4까지)
+## 현재 트리 (2026-11-01, depth 4까지)
 
 ```
 buddle_sandbox/
@@ -39,9 +39,13 @@ buddle_sandbox/
 ├─ docs/
 │  ├─ structure.md               ← 이 문서
 │  ├─ state/handoff.md           상태 원장 (Phase 결과·결정·미룬 것)
-│  └─ handoff/blog-calendar/     Claude Design 핸드오프 번들
-│     ├─ README.md → SCREENS.md → STATES.md → DATA.md → PROMPT.md
-│     └─ wireframes/             Wireframes.dc.html (참고용, 코드 복사 금지)
+│  └─ handoff/
+│     ├─ blog-calendar/          Claude Design 핸드오프 번들 (/blog · /calendar)
+│     │  ├─ README.md → SCREENS.md → STATES.md → DATA.md → PROMPT.md
+│     │  └─ wireframes/          Wireframes.dc.html (참고용, 코드 복사 금지)
+│     └─ landing-v2/             랜딩 v2 교체 번들 (/ 도메인 루트)
+│        ├─ README.md → PROMPT.md
+│        └─ design/              Profile.dc.html (참고용, 코드 복사 금지)
 │
 ├─ packages/                     공용 패키지 (@sandbox/*)
 │  ├─ tokens/                    @sandbox/tokens — design.md → CSS 변수 + Tailwind @theme (scope:shared type:util)
@@ -66,6 +70,21 @@ buddle_sandbox/
 │     │  ├─ lib/utils.ts         cn (tailwind-merge 토큰 테마 확장)
 │     │  ├─ stories/matrix.tsx   스토리 공용 헬퍼
 │     │  └─ test-utils/class-rules.ts   className 규칙 강제 (transition-all·hover:·hex 금지)
+│     └─ tests/setup.ts          jsdom 폴리필
+│
+├─ apps/
+│  └─ web/                       @sandbox/web — Next.js 16 App Router (scope:web type:app)
+│     ├─ CLAUDE.md · project.json · package.json · next.config.ts · tsconfig.json · postcss.config.mjs · vite.config.ts
+│     ├─ app/                    라우트(서버 컴포넌트): layout.tsx(Ambient + Shell) · shell.tsx · page.tsx(/) · blog/ · calendar/ · globals.css
+│     ├─ public/hero/            glaze-loop.mp4 · glaze-poster.jpg (Claude Design 캔버스 아트보드 D)
+│     ├─ src/landing/            랜딩 v2 전용
+│     │  ├─ content/landing.ts   내용 SSOT (2026-10 공개용 이력서)
+│     │  ├─ scroll/              progress.ts · store.ts · scroll-driver.tsx(Lenis) · scroll-progress-bar.tsx
+│     │  ├─ observe/             use-in-view.ts · lazy-section.tsx(뷰포인트 마운트) · section-indicator.tsx
+│     │  ├─ fx/                  deck · words · bars · tilt · theme-mix (순수 함수 + 테스트)
+│     │  ├─ sections/            section.tsx(래퍼) + 10개 섹션 + use-count-up · use-tilt
+│     │  ├─ three/               hero-canvas(dynamic) · hero-rig · scene-light(백자) · scene-dark(흑유) · hero-state · palette
+│     │  └─ landing.tsx          컴포지션
 │     └─ tests/setup.ts          jsdom 폴리필
 │
 ├─ apps/

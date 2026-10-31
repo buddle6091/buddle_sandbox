@@ -16,6 +16,15 @@
 - 배포: **Vercel + 커스텀 도메인**. 2번째 모듈은 **Next.js Multi-Zones**로 같은 도메인 분리 배포.
 - 최소 버전: **Node 20.19+** (`.nvmrc`=24 — vitest 4/vite 8 요구. 20.16 에서는 설치·테스트가 깨진다), **TypeScript 5.1+**
 
+## 라우트 (apps/web, 메인 zone)
+| 경로 | 내용 |
+|---|---|
+| `/` | **랜딩 v2** — 도메인 루트로 접속하면 바로 보이는 페이지. 스펙 `docs/handoff/landing-v2/` (2026-11-01 적용) |
+| `/blog` | 개발 블로그 → `docs/handoff/blog-calendar/` |
+| `/calendar` | 비공개 캘린더 → `docs/handoff/blog-calendar/` |
+
+- 랜딩 작업과 블로그·캘린더 작업은 **핸드오프 번들과 상태 원장 섹션을 따로** 쓴다. 한 세션에서 섞지 않는다.
+
 ## 폴더 구조
 > 전체 트리·depth 규칙은 **`docs/structure.md`** 가 SSOT. 새 폴더/패키지를 만들면 그 문서를 갱신한다.
 > 공용 패키지 폴더 이름은 **`packages/`** (Nx 관례의 `libs/` 를 쓰지 않는다 — 2026-10-20 결정).
