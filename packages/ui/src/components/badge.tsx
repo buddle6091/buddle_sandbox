@@ -13,11 +13,11 @@ import { cn } from '@sandbox/ui/lib/utils';
  */
 const badgeVariants = cva(
   [
-    // inline-block + leading-5(=22h - 1px 테두리×2) — flex 컨테이너는 직접 텍스트를 말줄임하지 못한다
-    'inline-block h-5.5 w-fit shrink-0 rounded-sm border border-transparent px-2.25 align-middle leading-5',
-    'text-caption font-semibold whitespace-nowrap max-w-[16ch] truncate',
+    // inline-flex 로 세로 가운데 정렬(h-8 등으로 키워도 글자가 중앙). 말줄임은 문자열 children 을 감싼 내부 span 이 맡는다
+    'inline-flex h-5.5 w-fit max-w-[16ch] shrink-0 items-center justify-center gap-1 rounded-sm border border-transparent px-2.25 align-middle',
+    'text-caption leading-none font-semibold whitespace-nowrap',
     'transition-colors duration-[var(--bs-motion-control)] ease-bs',
-    'focus-ring [&>svg]:pointer-events-none [&>svg]:mr-1 [&>svg]:inline-block [&>svg]:size-3 [&>svg]:align-[-2px]',
+    'focus-ring [&>svg]:pointer-events-none [&>svg]:shrink-0 [&>svg]:size-3',
   ],
   {
     variants: {
@@ -43,8 +43,10 @@ type BadgeProps = React.ComponentProps<'span'> &
     asChild?: boolean;
   };
 
-function Badge({ className, variant = 'default', asChild = false, ...props }: BadgeProps) {
+function Badge({ className, variant = 'default', asChild = false, children, ...props }: BadgeProps) {
   const Comp = asChild ? Slot.Root : 'span';
+  // 문자열은 말줄임 span 으로 감싼다(flex 컨테이너는 직접 텍스트를 말줄임하지 못한다). asChild 는 자식 그대로.
+  const content = !asChild && typeof children === 'string' ? <span className="truncate">{children}</span> : children;
 
   return (
     <Comp
@@ -52,7 +54,9 @@ function Badge({ className, variant = 'default', asChild = false, ...props }: Ba
       data-variant={variant}
       className={cn(badgeVariants({ variant }), className)}
       {...props}
-    />
+    >
+      {content}
+    </Comp>
   );
 }
 

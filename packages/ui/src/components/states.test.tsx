@@ -37,7 +37,7 @@ describe('ErrorState — Badge warning + 「다시 시도」 primary + Mono capt
   it('구성과 재시도 콜백', async () => {
     const onRetry = vi.fn();
     render(<ErrorState title="글 목록을 불러오지 못했어요" onRetry={onRetry} debug="GET /posts · 503" />);
-    expect(screen.getByText('오류')).toHaveAttribute('data-variant', 'warning');
+    expect(screen.getByText('오류').closest('[data-slot="badge"]')).toHaveAttribute('data-variant', 'warning');
     expect(screen.getByRole('heading', { name: '글 목록을 불러오지 못했어요' })).toBeInTheDocument();
     const retry = screen.getByRole('button', { name: '다시 시도' });
     expect(retry).toHaveAttribute('data-variant', 'primary');

@@ -7,10 +7,13 @@ import { expectTokenOnly } from '../test-utils/class-rules';
 describe('Badge — design.md §6.4', () => {
   it('치수 — 22h, 좌우 9, radius/sm, caption 600, 16자 말줄임', () => {
     render(<Badge>개발</Badge>);
-    const el = screen.getByText('개발');
+    const inner = screen.getByText('개발');
+    const el = inner.closest('[data-slot="badge"]') as HTMLElement;
     expect(el.tagName).toBe('SPAN');
     expect(el).toHaveClass('h-5.5', 'px-2.25', 'rounded-sm', 'text-caption', 'font-semibold');
-    expect(el).toHaveClass('max-w-[16ch]', 'truncate');
+    // 세로 가운데 정렬(inline-flex) + 말줄임은 내부 span
+    expect(el).toHaveClass('inline-flex', 'items-center', 'max-w-[16ch]');
+    expect(inner).toHaveClass('truncate');
   });
 
   it.each([
@@ -23,7 +26,7 @@ describe('Badge — design.md §6.4', () => {
     ['danger', ['border-danger-default/40', 'text-fg-default']],
   ] as const)('variant=%s', (variant, classes) => {
     render(<Badge variant={variant}>x</Badge>);
-    const el = screen.getByText('x');
+    const el = screen.getByText('x').closest('[data-slot="badge"]') as HTMLElement;
     for (const c of classes) expect(el).toHaveClass(c);
     expect(el).toHaveAttribute('data-variant', variant);
     expectTokenOnly(badgeVariants({ variant }));
