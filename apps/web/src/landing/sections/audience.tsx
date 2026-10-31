@@ -1,52 +1,31 @@
 'use client';
 
-import { Badge } from '@sandbox/ui/components/badge';
-import { cn } from '@sandbox/ui/lib/utils';
-
 import { LANDING } from '../content/landing';
+import { barPercent } from '../fx/bars';
+import { LazySection } from '../observe/lazy-section';
 import { Reveal, Section } from './section';
-
-/** 누적 시간이 많을수록 진한 칩 — 이력서 "색이 진할수록" 규칙을 세 단계로 */
-function tone(hours: number) {
-  if (hours >= 200) return 'bg-accent-default text-accent-fg-on';
-  if (hours >= 30) return 'bg-accent-subtle-bg text-accent-fg-strong';
-  return 'border border-border-default bg-bg-default text-fg-body';
-}
 
 export function Audience() {
   const a = LANDING.audience;
   return (
-    <Section id="audience" eyebrow={a.eyebrow} title={a.title}>
-      <ul className="flex flex-wrap gap-2">
-        {a.orgs.map((o, i) => (
-          <Reveal
-            key={o.name}
-            index={i}
-            as="li"
-            className={cn('inline-flex h-9 items-center gap-2 rounded-full px-3.5 text-body-sm', tone(o.hours))}
-          >
-            {o.masked ? (
-              <>
-                <span aria-label="비공개 기관" className="inline-block h-3 w-14 rounded-sm bg-[repeating-linear-gradient(135deg,var(--bs-color-border-strong)_0_2px,transparent_2px_6px)]" />
-                <Badge variant="outline">비공개</Badge>
-              </>
-            ) : (
-              <span className="font-semibold">{o.name}</span>
-            )}
-            <span className="text-caption tabular-nums opacity-90">{o.hours}h</span>
-          </Reveal>
-        ))}
-        <Reveal
-          index={a.orgs.length}
-          as="li"
-          className="inline-flex h-9 items-center gap-2 rounded-full border border-dashed border-border-strong px-3.5 text-body-sm text-fg-muted"
-        >
-          그 외 {a.rest.count}곳 <span className="text-caption tabular-nums">{a.rest.hours}h</span>
+    <Section id="audience" eyebrow={a.eyebrow} title={a.title} lead={a.note} variant="tinted">
+      <LazySection minHeight={520}>
+        <Reveal index={1} as="ol" className="flex flex-col gap-2.5">
+          {a.bars.map((b, i) => (
+            <li key={b.name} className="grid grid-cols-[minmax(96px,150px)_minmax(0,1fr)_56px] items-center gap-3">
+              <span className="text-body-sm font-semibold text-fg-default">{b.name}</span>
+              <div className="h-2.5 overflow-hidden rounded-full bg-bg-muted">
+                <div
+                  data-slot="bar"
+                  className="landing-bar-fill h-full rounded-full bg-gradient-to-r from-accent-default to-accent-tertiary"
+                  style={{ width: `${barPercent(b.hours, a.max)}%`, '--i': i } as React.CSSProperties}
+                />
+              </div>
+              <span className="text-right text-caption font-semibold tabular-nums text-fg-muted">{b.hours}h</span>
+            </li>
+          ))}
         </Reveal>
-      </ul>
-      <Reveal index={a.orgs.length + 1} as="p" className="text-caption text-fg-muted">
-        {a.note}
-      </Reveal>
+      </LazySection>
     </Section>
   );
 }

@@ -1,39 +1,44 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-
+import { LANDING } from './content/landing';
+import { SectionIndicator } from './observe/section-indicator';
 import { ScrollDriver } from './scroll/scroll-driver';
+import { ScrollProgressBar } from './scroll/scroll-progress-bar';
+import { About } from './sections/about';
 import { Audience } from './sections/audience';
+import { Career } from './sections/career';
 import { Contact } from './sections/contact';
-import { Curriculum } from './sections/curriculum';
-import { Experience } from './sections/experience';
+import { Expertise } from './sections/expertise';
 import { Feedback } from './sections/feedback';
 import { Hero } from './sections/hero';
 import { Mentoring } from './sections/mentoring';
 import { Philosophy } from './sections/philosophy';
-import { Stats } from './sections/stats';
-
-/** three 는 클라이언트 전용 — SSR 번들에서 제외 */
-const HeroCanvas = dynamic(() => import('./three/hero-canvas').then((m) => m.HeroCanvas), { ssr: false });
+import { Teaching } from './sections/teaching';
 
 /**
- * 랜딩 = 고정 캔버스 1장(z-1) 위에 DOM 섹션 9개(z-10).
- * 스크롤은 네이티브(ScrollDriver 가 진행도만 스토어에 씀), 리빌은 IO + CSS.
+ * 랜딩 v2 — 히어로(영상 배경 + 우측 3D) 아래로 섹션 9개.
+ * 스크롤은 네이티브(ScrollDriver 가 스토어에만 씀), 섹션 본문은 LazySection 이 뷰포트 접근 시 마운트,
+ * 리빌은 IO + CSS. 진행 막대(TopBar 아래 2px)와 우측 섹션 점은 AppShell 내비를 대체하지 않는다.
  */
 export function Landing() {
   return (
     <>
       <ScrollDriver />
-      <HeroCanvas />
+      <ScrollProgressBar />
+      <SectionIndicator />
       <Hero />
-      <Stats />
+      <About />
+      <Expertise />
       <Philosophy />
-      <Curriculum />
       <Audience />
+      <Teaching />
       <Mentoring />
-      <Experience />
+      <Career />
       <Feedback />
       <Contact />
+      <footer className="border-t border-border-default px-4 pt-6 pb-12 medium:px-8">
+        <p className="mx-auto max-w-[1120px] text-caption text-fg-muted">{LANDING.footer}</p>
+      </footer>
     </>
   );
 }

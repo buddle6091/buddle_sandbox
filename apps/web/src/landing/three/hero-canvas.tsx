@@ -2,69 +2,60 @@
 
 import * as React from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Preload } from '@react-three/drei';
 
-import { shouldRender3D, type RenderMode } from '../scroll/progress';
+import { useThemeMode } from '@sandbox/ui/hooks/use-theme-mode';
+
+import { LANDING } from '../content/landing';
+import { HeroRig } from './hero-rig';
 import { readPalette, type Palette } from './palette';
-import { Scene } from './scene';
 
-function detect(): { mode: RenderMode; palette: Palette | null } {
-  let webgl = false;
+function hasWebGL() {
   try {
     const c = document.createElement('canvas');
-    webgl = !!(c.getContext('webgl2') || c.getContext('webgl'));
+    return !!(c.getContext('webgl2') || c.getContext('webgl'));
   } catch {
-    webgl = false;
+    return false;
   }
-  const mode = shouldRender3D({
-    webgl,
-    reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-    compact: !window.matchMedia('(min-width: 600px)').matches,
-  });
-  return { mode, palette: mode ? readPalette() : null };
+}
+
+function useMedia(query: string) {
+  const subscribe = React.useCallback(
+    (cb: () => void) => {
+      const m = window.matchMedia(query);
+      m.addEventListener('change', cb);
+      return () => m.removeEventListener('change', cb);
+    },
+    [query],
+  );
+  return React.useSyncExternalStore(subscribe, () => window.matchMedia(query).matches, () => false);
 }
 
 /**
- * 고정 배경 캔버스 1장. next/dynamic(ssr:false) 로만 로드된다.
- * frameloop="demand": 스크롤 스토어 변화·리사이즈·테마 변경에만 그린다(Scene 안의 Rig 가 invalidate).
+ * 히어로 우측 캔버스 — next/dynamic(ssr:false) 로만 로드된다.
+ * frameloop: 히어로 in-view && reduced-motion 아님 → always, 그 외 demand(테마·리사이즈에만 그림).
+ * 테마가 바뀌면 팔레트를 다시 읽는다(useThemeMode.set 이 data-theme 을 동기 적용한 뒤 리렌더).
  */
-export function HeroCanvas() {
-  // ssr:false 로만 로드되므로 첫 렌더에서 바로 감지한다(effect 안 setState 금지)
-  const [env, setEnv] = React.useState<{ mode: RenderMode; palette: Palette | null }>(() => detect());
+export function HeroCanvas({ inView }: { inView: boolean }) {
+  const { resolved } = useThemeMode();
+  const reduce = useMedia('(prefers-reduced-motion: reduce)');
+  const compact = !useMedia('(min-width: 520px)');
+  const [webgl] = React.useState(() => hasWebGL());
+  const palette: Palette = React.useMemo(() => readPalette(), [resolved]); // eslint-disable-line react-hooks/exhaustive-deps -- resolved 가 바뀌면 CSS 변수가 바뀐다
 
-  React.useEffect(() => {
-    const mql = [
-      window.matchMedia('(prefers-reduced-motion: reduce)'),
-      window.matchMedia('(min-width: 600px)'),
-      window.matchMedia('(prefers-color-scheme: dark)'),
-    ];
-    const update = () => setEnv(detect());
-    for (const m of mql) m.addEventListener('change', update);
-    const obs = new MutationObserver(update); // data-theme 토글
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
-    return () => {
-      for (const m of mql) m.removeEventListener('change', update);
-      obs.disconnect();
-    };
-  }, []);
-
-  if (!env.mode || !env.palette) return null;
+  if (!webgl) return null;
+  const dark = resolved === 'dark';
+  const label = dark ? LANDING.hero.canvasLabel.dark : LANDING.hero.canvasLabel.light;
 
   return (
-    <div data-slot="hero-canvas" aria-hidden="true">
+    <div data-slot="hero-canvas" role="img" aria-label={label} className="absolute inset-0">
       <Canvas
-        frameloop="demand"
-        dpr={env.mode === 'lite' ? 1 : [1, 1.5]}
+        frameloop={inView && !reduce ? 'always' : 'demand'}
+        dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-        camera={{ position: [0, 0.6, 7], fov: 32, near: 0.1, far: 40 }}
-        performance={{ min: 0.5 }}
-        onCreated={({ gl }) => {
-          gl.localClippingEnabled = true; // 유약 수위 클리핑
-        }}
+        camera={{ position: [0, 0, compact ? 8.2 : 7], fov: 35, near: 0.1, far: 100 }}
         style={{ background: 'transparent' }}
       >
-        <Scene mode={env.mode} palette={env.palette} />
-        <Preload all />
+        <HeroRig palette={palette} dark={dark} reduce={reduce} />
       </Canvas>
     </div>
   );

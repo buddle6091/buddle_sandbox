@@ -1,28 +1,37 @@
 /**
- * 스크롤 진행도 스토어 — SSOT 는 브라우저 스크롤이고, 이건 그 값을 3D 가 리렌더 없이 읽기 위한 ref.
- * React 상태가 아니다: 프레임마다 바뀌는 값을 state 에 넣으면 전체 트리가 리렌더된다.
+ * 스크롤 스토어 — SSOT 는 브라우저 스크롤이고, 이건 그 값을 리렌더 없이 읽기 위한 ref.
+ * progress(0~1)와 raw scrollY(px) 둘 다 둔다: 진행 막대는 progress, 3D 리그는 scrollY 를 쓴다.
  */
-export type ScrollListener = (progress: number) => void;
+export type ScrollListener = (progress: number, scrollY: number) => void;
 
 const listeners = new Set<ScrollListener>();
 
-export const scrollStore = {
-  /** 0~1 */
+type ScrollStore = {
+  progress: number;
+  scrollY: number;
+  set(progress: number, scrollY?: number): void;
+  subscribe(listener: ScrollListener): () => void;
+  reset(): void;
+};
+
+export const scrollStore: ScrollStore = {
   progress: 0,
-  set(progress: number) {
-    if (progress === scrollStore.progress) return;
+  scrollY: 0,
+  set(progress, scrollY = scrollStore.scrollY) {
+    if (progress === scrollStore.progress && scrollY === scrollStore.scrollY) return;
     scrollStore.progress = progress;
-    for (const l of listeners) l(progress);
+    scrollStore.scrollY = scrollY;
+    for (const l of listeners) l(progress, scrollY);
   },
-  subscribe(listener: ScrollListener) {
+  subscribe(listener) {
     listeners.add(listener);
     return () => {
       listeners.delete(listener);
     };
   },
-  /** 테스트용 */
   reset() {
     scrollStore.progress = 0;
+    scrollStore.scrollY = 0;
     listeners.clear();
   },
 };

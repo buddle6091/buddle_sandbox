@@ -1,235 +1,238 @@
 /**
- * 랜딩 내용 — 유일한 수정 지점. 출처: 「이상원 강사 이력서」(2026-10).
- * 규칙: 이력서에 없는 수치·채움 문장 금지. 전화번호·생년월일·주소는 싣지 않는다(공개 페이지).
+ * 랜딩 v2 내용 — 유일한 수정 지점. 출처: 2026-10 공개용 이력서(docs/handoff/landing-v2/design/Profile.dc.html 의 _data()).
+ * 규칙: 이력서에 없는 수치·채움 문장 금지. 전화번호·생년월일·주소·사진 없음(공개 페이지).
+ * 기업 고객사는 업종·대상·일반화된 주제로만, 지자체·학교·공공기관은 실명.
  */
 
 export const SECTION_IDS = [
-  'hero',
-  'stats',
+  'top',
+  'about',
+  'expertise',
   'philosophy',
-  'curriculum',
   'audience',
+  'teaching',
   'mentoring',
-  'experience',
+  'career',
   'feedback',
   'contact',
 ] as const;
 export type SectionId = (typeof SECTION_IDS)[number];
 
-export type Stat = {
-  /** 숫자(롤링 대상) */
-  value: number;
-  /** 단위·접미(곳, h, 명, 과정, 년 차) */
-  unit: string;
-  /** "이상" 표기(이력서의 ▲) */
-  plus?: boolean;
-  label: string;
-};
+/** 진행 막대·우측 인디케이터가 가리키는 내비 대상(시안 navDefs) */
+export const NAV_SECTIONS: Array<{ id: SectionId; label: string }> = [
+  { id: 'about', label: '소개' },
+  { id: 'expertise', label: '전문 분야' },
+  { id: 'teaching', label: '강의 이력' },
+  { id: 'mentoring', label: '멘토링' },
+  { id: 'career', label: '개발 경력' },
+  { id: 'contact', label: '문의' },
+];
 
-export type Org = { name: string; hours: number; masked?: boolean };
+export type Stat = { value: number; unit: string; plus?: boolean; label: string };
+export type Course = { date: string; hours: string; industry: string; target: string; title: string; tool: string };
+export type CareerItem = { period: string; title: string; stack?: string; summary?: string; bullets: string[] };
+
+export const HERO_VIDEO = {
+  src: '/hero/glaze-loop.mp4',
+  poster: '/hero/glaze-poster.jpg',
+  /** 시안 D 의 videoStrength */
+  opacity: 0.85,
+} as const;
 
 export const LANDING = {
   hero: {
+    badge: 'AI · 프론트엔드 교육 강사',
     name: '이상원',
-    latin: 'SANGWON LEE',
     role: 'Frontend Developer · AX Instructor',
     tagline:
-      '주니어 시절부터 시니어처럼 모든 프로젝트에 책임을 가지고 처음부터 끝까지 개발을 이끌어간 경험을 바탕으로, 수강생이 AX 분야에서 비즈니스 문제를 스스로 해결할 수 있게 컨설팅하는 강의를 합니다.',
+      '주니어 시절부터 시니어처럼 모든 프로젝트에 책임을 가지고, 처음부터 끝까지 개발을 이끌어 간 경험을 바탕으로 수강생이 AX 분야에서 비즈니스 문제를 스스로 해결할 수 있도록 눈높이를 맞춘 컨설팅형 강의를 진행합니다.',
     ctas: [
-      { label: '글 보기', href: '/blog' },
-      { label: '캘린더', href: '/calendar' },
+      { label: '강의 문의하기', href: '#contact' },
+      { label: '강의 이력 보기', href: '#teaching' },
     ],
-    links: [
-      { label: 'GitHub', href: 'https://github.com/buddle6091' },
-      { label: 'velog', href: 'https://velog.io/@buddle6091' },
-    ],
-  },
-
-  stats: [
-    { value: 34, unit: '곳', label: '담당 기업 · 기관' },
-    { value: 800, unit: 'h', plus: true, label: '누적 강의 시간' },
-    { value: 1200, unit: '명', plus: true, label: '누적 수강 인원' },
-    { value: 48, unit: '과정', label: '담당 과정 수' },
-    { value: 3, unit: '년 차', label: '프론트엔드 실무 경력' },
-  ] satisfies Stat[],
-
-  philosophy: {
-    eyebrow: 'Teaching Philosophy',
-    title: '직접 해 보고, 스스로 풀 수 있다는 자신감까지',
-    paragraphs: [
-      '직접 실습해 보고 그 실습 안에서 얻는 CS 지식과 내 업무의 Pain Point 를 내 스스로 해결할 수 있겠다는 자신감을 가질 수 있게 하는 교육을 지향합니다.',
-      '개발자로서 비즈니스 문제를 해결했던 경험을, 이제는 교육생 스스로 수업을 통해 자신의 비즈니스 문제를 해결할 수 있는 능력을 가질 수 있게 방향을 제시해 주는 사람이 되려고 합니다.',
-    ],
-    method: {
-      label: '강의 자료 설계 방식',
-      steps: ['문제', '원인 분석', '해결', '검증', '학습 포인트', '예방 조치'],
-      note: '실무에서 남긴 1,200줄 규모의 트러블슈팅 기록 구조를 그대로 강의 자료에 씁니다.',
+    canvasLabel: {
+      light: '청자 유약 방울이 궤도 고리 안에서 천천히 일렁이는 3D 장식',
+      dark: '흑요석 구체 둘레로 청자빛 성운 원반이 천천히 도는 3D 장식',
     },
   },
 
-  curriculum: {
-    eyebrow: 'Curriculum Coverage',
-    title: '담당 가능 커리큘럼',
+  about: {
+    stats: [
+      { value: 38, unit: '곳', label: '담당 기업 · 기관' },
+      { value: 1000, unit: 'h', plus: true, label: '누적 강의 시간' },
+      { value: 1200, unit: '명', plus: true, label: '누적 수강 인원' },
+      { value: 51, unit: '과정', label: '담당 과정 수' },
+      { value: 3, unit: '년 차', label: '프론트엔드 실무 경력' },
+    ] satisfies Stat[],
+    clientsLabel: 'Clients',
+    clientsLine: '노원 미래산업고 · S 반도체 기업 외 기업 · 기관 출강 36곳',
+  },
+
+  expertise: {
+    eyebrow: 'EXPERTISE & SKILLS',
+    title: '현업 개발 역량을 그대로 교육으로',
     groups: [
       {
-        label: '웹 개발',
-        items: [
+        title: '개발 스택',
+        chips: [
           '프론트엔드 파트 리드 개발',
-          'React · Vue3 · Next.js',
-          'Monorepo (Nx · Turborepo)',
+          'React · Vue3 · NextJS',
+          'Python',
+          'Monorepo (Nx, Turborepo)',
           'Module Federation',
           '디자인시스템 구축 (Storybook)',
-          '외부 기기(프린터 · 태블릿) 연동',
+          '외부 기기 (프린터, 태블릿) 기능 연동',
         ],
       },
       {
-        label: 'AI · AX',
-        items: [
-          'AI Literacy',
-          '바이브코딩',
-          'Agent Orchestration 구축',
-          'Agent · RAG (Python 코드 개발)',
-          'Claude Code',
-          'ChatGPT',
-          'Gemini',
-        ],
+        title: 'AI · AX',
+        chips: ['AI Literacy', '바이브코딩', 'Agent Orchestration 구축', 'Agent · RAG (Python 코드 개발)', 'Claude Code', 'ChatGPT', 'Gemini'],
       },
       {
-        label: '과정 운영',
-        items: ['해커톤 등 PBL 과정', '개발 현업 경험이 필요한 개발 교육', '해커톤 TA · 기술 지원'],
+        title: '과정 운영',
+        chips: ['해커톤 · PBL 과정 운영 및 TA', '개발 현업 경험이 필요한 AI 개발 교육', 'AI 프로젝트 개발 멘토링 (온 · 오프라인)'],
       },
     ],
+  },
+
+  philosophy: {
+    eyebrow: 'TEACHING PHILOSOPHY',
+    sentence:
+      '직접 실습해 보고, 그 실습 안에서 얻는 CS 지식과 내 업무의 Pain Point를 스스로 해결할 수 있겠다는 자신감을 갖게 하는 교육을 지향합니다.',
+    support:
+      '개발자로서 비즈니스 문제를 해결했던 경험을 바탕으로, 이제는 교육생이 수업을 통해 자신의 비즈니스 문제를 스스로 해결할 수 있는 능력을 갖추도록 방향을 제시하는 사람이 되려고 합니다.',
   },
 
   audience: {
-    eyebrow: 'Audience',
-    title: '교육 대상 기업 · 기관',
-    note: '누적 34곳. 표기 시간은 강의 이력에 기재된 확정 과정 기준입니다.',
-    orgs: [
-      { name: '삼성전자', hours: 329 },
-      { name: '포스코DX', hours: 256 },
-      { name: '포스코인터내셔널', hours: 35 },
-      { name: '한솔그룹', hours: 35 },
+    eyebrow: 'AUDIENCE',
+    title: '교육 대상 산업군',
+    note: '산업군별 누적 강의 시간입니다.',
+    max: 329,
+    bars: [
+      { name: '전자/반도체', hours: 329 },
+      { name: 'IT/제조', hours: 256 },
+      { name: '종합상사', hours: 35 },
+      { name: '제조 지주', hours: 35 },
       { name: '노원 미래산업고', hours: 35 },
-      { name: '팀스파르타 AX 교육팀', hours: 25 },
-      { name: '삼성인력개발원', hours: 24 },
-      { name: '삼성바이오에피스', hours: 24 },
-      { name: '세방전지', hours: 21 },
-      { name: '씨젠의료재단', hours: 19 },
-      { name: '롯데월드', hours: 16 },
-      { name: '농심', hours: 16 },
-      { name: '애드이피션시', hours: 15 },
-    ] as Org[],
-    rest: { count: 19, hours: 119 },
+      { name: '에듀테크', hours: 25 },
+      { name: '그룹 연수원', hours: 24 },
+      { name: '바이오', hours: 24 },
+      { name: '제조/배터리', hours: 21 },
+      { name: '의료', hours: 19 },
+      { name: '레저/서비스', hours: 16 },
+      { name: '식품', hours: 16 },
+      { name: '광고/마케팅', hours: 15 },
+      { name: '그 외 19곳', hours: 119 },
+    ],
+  },
+
+  teaching: {
+    eyebrow: 'TEACHING EXPERIENCE',
+    title: '주요 강의 이력',
+    policy:
+      '기업 고객사는 비밀유지 의무에 따라 업종 · 대상 계층 · 일반화된 교육 주제로만 표기하고, 지자체 · 학교 · 공공기관은 실명으로 표기합니다. 옆으로 넘겨 보세요.',
+    deckLabel: '주요 강의 이력 카드 목록',
+    courses: [
+      { date: '2026.09.28 ~ 10.08', hours: '64h', industry: '전자/반도체', target: '개발자', title: 'AI Agent 아키텍트 과정 — Agent 설계 · RAG · MCP · Multi-Agent (8일)', tool: 'Claude Code · OpenAI API' },
+      { date: '2026.04.06 ~ 06.22', hours: '256h', industry: '철강', target: '개발자', title: '전문개발 과정 — Agent · RAG 코드 개발 (8회, 회차별 2~5일 블록)', tool: 'Claude Code' },
+      { date: '2026.06.11 ~ 07.30', hours: '152h', industry: '전자/반도체', target: '임원', title: '임원 AI 교육 (8차수, 2일씩 총 16일분)', tool: 'Claude Code' },
+      { date: '2026.08.24 ~ 09.18', hours: '72h', industry: '전자/반도체', target: '보직장', title: '코딩 에이전트 설계 교육', tool: 'Gemini · Claude Code' },
+      { date: '2026.10.12 ~ 10.23', hours: '45h', industry: '전자/반도체', target: '보직장', title: '보직장 바이브코딩 교육 (5일)', tool: 'Claude Code' },
+      { date: '2026.10.13 ~ 10.22', hours: '28.5h', industry: '생명보험', target: '핵심인재', title: 'AI-EXPERT PBL 멘토링 (3일)', tool: 'Claude' },
+      { date: '2026.09.09 ~ 09.30', hours: '21h', industry: '제조/배터리', target: '핵심인재', title: '하반기 핵심인재 PBL (3일 강의 + 2주간 집중 개발 멘토링)', tool: 'Claude Code' },
+      { date: '2026.09.28 ~ 10.15', hours: '6h+', industry: '양주시', target: '공모전 참가자', title: 'AI 공모전 개발 멘토링', tool: 'Claude Code' },
+      { date: '2026.01.13 ~ 03.16', hours: '20h', industry: '그룹 연수원', target: '임직원', title: '연수원 순회 AI 교육 (3개 연수소, 5회)', tool: 'Claude Code' },
+      { date: '2024', hours: '40h', industry: '노원 미래산업고', target: '고교생', title: '파이썬 기초 과정 및 데이터 시각화 교육', tool: 'Python' },
+    ] satisfies Course[],
   },
 
   mentoring: {
-    eyebrow: 'Mentoring',
-    title: '멘토링 · 실습 지도',
+    eyebrow: 'MENTORING',
+    title: '멘토링 · 실습 지도 · 트러블슈팅',
     items: [
-      {
-        title: '1:1 실습 밀착 지도',
-        body: '강의 중 실습 구간에서 개별 진도를 확인하며 막힌 지점을 직접 잡아 드립니다. 컴퓨터 사용이 익숙하지 않은 리더급 수강생도 결과물을 완성하고 돌아가는 것을 기준으로 삼습니다.',
-      },
-      {
-        title: '수준별 눈높이 조정',
-        body: '사장단 · 임원부터 실무자, 대졸 신입, 고교생, 비개발 직군까지 담당했습니다. 같은 주제라도 대상의 업무 맥락에 맞춰 실습 과제와 예시를 다시 설계합니다.',
-      },
-      {
-        title: '팀 리드 · 코드리뷰',
-        body: '프론트엔드 팀장으로 팀을 리드하며 컨벤션 수립과 코드리뷰로 동료 개발자의 성장을 지원했고, 아키텍처 문서와 트러블슈팅 기록을 팀 학습 자산으로 남겼습니다.',
-      },
-      {
-        title: 'PBL · 해커톤 코칭',
-        body: '해커톤 · 미니 프로젝트 과정에서 TA 로 팀별 기술 지원을 맡아, 문제 정의부터 데모까지 각 팀의 막힌 구간을 함께 풀어냅니다.',
-      },
+      { title: '1:1 실습 밀착 지도', body: '강의 중 실습 구간에서 개별 진도를 확인하며 막힌 지점을 직접 잡아 드립니다. 컴퓨터 사용이 익숙하지 않은 리더급 수강생도 결과물을 완성하고 돌아가는 것을 기준으로 삼습니다.' },
+      { title: '수준별 눈높이 조정', body: '사장단 · 임원부터 실무자, 대졸 신입, 고교생, 비개발 직군까지 담당했습니다. 같은 주제라도 대상의 업무 맥락에 맞춰 실습 과제와 예시를 다시 설계합니다.' },
+      { title: '강의실 환경 대응', body: '네트워크에 대한 이해를 바탕으로 강의실의 망 · 접속 문제를 빠르게 파악하고, 수강생이 납득할 수 있게 원인을 안내하며 해결합니다.' },
+      { title: '실습 에러 핸들링', body: '웹 서비스를 처음부터 끝까지 개발 · 운영한 경험으로 실습과 AI 툴에서 발생하는 대부분의 에러를 직접 처리해, 수업 중 병목에 빠르고 유연하게 대처합니다.' },
+      { title: 'PBL · 해커톤 코칭', body: '해커톤 · 미니 프로젝트 과정에서 TA로 팀별 기술 지원을 맡아, 문제 정의부터 데모까지 각 팀의 막힌 구간을 함께 풀어냅니다.' },
     ],
   },
 
-  experience: {
-    eyebrow: 'Experience',
-    title: '강의 이력과 그 근거가 된 실무',
-    teaching: [
+  career: {
+    eyebrow: 'DEVELOPER CAREER',
+    title: '가르치는 내용은 직접 만들어 본 것들입니다',
+    items: [
       {
-        year: '2026',
-        role: '기업 · 기관 대상 AI · 개발 교육 (강사)',
-        items: [
-          { org: '삼성전자', course: '임원 AI 교육 (8차수 · 16일)', hours: 152 },
-          { org: '삼성전자', course: 'DS 보직장 교육 (9회)', hours: 72 },
-          { org: '삼성전자', course: 'DS부문 B Track : AI Agent 설계 (8일)', hours: 64 },
-          { org: '포스코DX', course: '전문개발 과정 — Agent · RAG 코드 개발 (8회)', hours: 256 },
-          { org: '포스코인터내셔널', course: '바이브코딩 교육 (2일 차수 × 2회)', hours: 28 },
-          { org: '한솔그룹 · 한솔홀딩스', course: '서울역 교육 (3회) · 클로드 코드 교육', hours: 35 },
-          { org: '세방전지', course: '하반기 핵심인재 PBL (3일)', hours: 21 },
-          { org: '삼성바이오에피스', course: 'Claude Code 교육 (2일) · 운영지표 리포팅', hours: 24 },
-        ],
-        more: '씨젠의료재단 · 롯데월드 · 농심 · 애드이피션시 · 셀트리온 · 카카오페이 · LIG D&A · 크래프톤 · 현대중공업 등',
-      },
-      {
-        year: '2024',
-        role: '팀스파르타 DX 교육팀 AI 기술 튜터 (프리랜서)',
-        items: [
-          { org: '팀스파르타', course: 'AI 해커톤 TA (24시간 연속) · TA OT', hours: 25 },
-          { org: '노원 미래산업고', course: '튜터 근무 (5회)', hours: 35 },
-          { org: '롯데지주', course: '튜터 근무 (2일)', hours: 11 },
-          { org: '한국투자증권', course: '기술튜터 근무', hours: 8 },
-        ],
-        more: '애드이피션시 · 한섬',
-      },
-    ],
-    career: [
-      {
-        org: '(주) 화이트블록',
-        role: '프론트엔드 · 팀 리드',
-        period: '2024.08 – 2025.12',
-        stack: 'React 19 · TypeScript · Next.js · Nx · Module Federation · Rspack · Vite · Jotai · TanStack Query · Radix UI · Tailwind · AG Grid · GitHub Actions',
-        summary: '대학 캠퍼스 F&B 플랫폼 1인 담당 · 도입 학교 20개교 이상 · 3개 모노레포 / 약 205K LOC / 1,323 commits',
-        highlights: [
-          'Next.js 단일 앱의 한계를 진단하고 컨벤션 · 폴더 구조 · 패키지 전략을 재수립한 뒤, SPA + Module Federation 아키텍처(3 host / 11 remote)로 직접 마이그레이션',
-          'React 18 → 19, Next 14 → 15 메이저 업그레이드를 단독 수행. use 훅 적용 중 발견한 React 코어 버그를 오픈소스 이슈로 등록 · 원인 규명',
-          'OpenAPI 스키마 기반 코드 생성 파이프라인(약 1,000줄)으로 55개 도메인의 타입 815개 · React Query 훅 308개를 자동 생성',
-          '아키텍처 문서, 1,200줄 규모의 트러블슈팅 기록, 클린 아키텍처 가이드 작성',
+        period: '2024.08 ~ 2025.12',
+        title: '(주) 화이트블록 — 프론트엔드 개발자 (1인 담당)',
+        stack: 'React 19 · TypeScript · Next.js · Nx · Module Federation · Rspack · Vite · Jotai · TanStack Query · Radix UI · Tailwind · AG Grid Enterprise · GitHub Actions',
+        summary: '대학 캠퍼스 플랫폼 ‘잇츠미 엔터프라이즈’ 프론트엔드 전담 · 3개 모노레포 / 약 205K LOC / 1,323 commits',
+        bullets: [
+          '잇츠미 엔터프라이즈를 지속 고도화하며 도입 대학을 8개교에서 20개교 이상으로 확장 (경희대, 한국외대, 시립대, 제주대 등), 학교별 요구사항을 공통 기능으로 흡수해 신규 도입 비용 절감',
+          'Next.js 단일 앱을 SPA + Module Federation 아키텍처(3 host / 11 remote)로 단독 마이그레이션, 컨벤션 · 폴더 구조 · 패키지 전략 재수립',
+          'OpenAPI 스키마 기반 코드 생성 파이프라인 구축 — 55개 도메인의 타입 815개 · React Query 훅 308개 자동 생성으로 API 연동 수작업 제거',
+          'React 18 → 19, Next 14 → 15 메이저 업그레이드 단독 수행, 적용 중 발견한 React 코어 버그를 오픈소스 이슈로 등록 · 원인 규명',
+          'GitHub Copilot Bot 기반 PR QA 체계 구축 — 코드 컨벤션 · 보안 · 수정사항을 1인 개발 환경에서도 PR 단계에서 자체 관리',
+          'PAGER · KDS 외부 기기 연동 프로그램, 현대자동차 블루핸즈 결제 시스템 외주 개발 병행',
         ],
       },
       {
-        org: '(주) 스왈라비 · (주) 클라 코퍼레이션',
-        role: '프론트엔드',
-        period: '2023.07 – 2024.01',
-        stack: 'React · Next.js · TypeScript · Recoil · React Query · Emotion · Styled-Components · AWS Amplify · Figma',
-        summary: '소상공인 프로젝트 전 페이지 제작 · 크리에이터-광고주 매칭 플랫폼 초기 빌딩, 디자인 시스템 부재 속 공통 컴포넌트 개발',
-        highlights: [],
+        period: '2023.11 ~ 2024.01',
+        title: '(주) 스왈라비 — 일경험 프로그램 체험형 인턴',
+        stack: 'React · TypeScript · Recoil · React Query · Emotion · CSS · Axios · Figma',
+        bullets: ['소상공인 대상 서비스 프론트엔드 전담 — 전 페이지 · 기능 구현, Figma 공통 컴포넌트를 props 기반으로 설계해 중복 코드 최소화'],
       },
-    ],
-    award: { title: '2023 항해커톤 우승 (팀스파르타 주최)', body: '한글 코딩 서비스 「호랑에듀」 LMS 기업 과제 — 동일 기업 과제 및 전체 참가 팀 중 최우수 작품' },
+      {
+        period: '2023.09',
+        title: '2023 항해커톤 우승 (팀스파르타 주최)',
+        bullets: ['한글 코딩 서비스 ‘호랑에듀’ LMS 기업 과제 수행, 전체 참가 팀 중 최우수 작품으로 우승 (상금 500만 원)'],
+      },
+      {
+        period: '2023.07 ~ 2023.09',
+        title: '(주) 클라 코퍼레이션',
+        stack: 'NextJS · TypeScript · Recoil · React Query · Styled-Components · CSS · Axios · AWS Amplify · Figma',
+        bullets: ['크리에이터 · 광고주 매칭 플랫폼 ‘크리플래닛’ 초기 빌딩, 디자인 시스템 없이 공통 컴포넌트 체계 구축'],
+      },
+    ] satisfies CareerItem[],
+    education: { title: '교육', school: '한국 IT 직업 전문학교 (학점은행제) 졸업', detail: '2017.03 ~ 2022.02 · 정보보호학 학사 취득' },
+    certs: {
+      title: '자격증',
+      items: [
+        { name: 'NCS 확인강사 — 정보기술개발', date: '2026.10' },
+        { name: '정보처리 산업기사', date: '2018.12' },
+        { name: '네트워크 관리사 2급', date: '2018.12' },
+        { name: 'GTQ 1급', date: '2012.12' },
+      ],
+    },
   },
 
   feedback: {
-    eyebrow: 'Feedback',
+    eyebrow: 'FEEDBACK',
     title: '수강생 · 교육 담당자 후기',
+    note: '고객사 실명은 비공개 원칙에 따라 업종으로 표기합니다.',
     quotes: [
       {
-        quote:
-          '기술 강사님의 실습 중 지도로 인해 컴퓨터 사용에 어려움을 가진 팀장님조차 AI 활용에 자신감을 얻게 되었습니다. 큰 도움이 되어 주셔서 감사합니다!',
-        from: '롯데 글로벌 로직스 — 영업 / 마케팅 / 신사업 반 교육 담당자',
+        quote: '기술 강사님의 실습 중 지도로 인해 컴퓨터 사용에 어려움을 가진 팀장님조차 AI 활용에 자신감을 얻게 되었습니다. 큰 도움이 되어 주셔서 감사합니다!',
+        from: '물류 대기업 — 영업 / 마케팅 / 신사업 반 교육 담당자',
       },
       {
-        quote:
-          '3개월 간의 Agent, RAG 코드 개발 교육에서 힘써 주신 덕분에 3개월(8회차) 교육의 평점이 4.8 / 5 를 달성할 수 있었습니다! 감사함에 따로 편지 드려요!',
-        from: '포스코 DX — 교육 담당자',
+        quote: '3개월 간의 Agent, RAG 코드 개발 교육에서 힘써 주신 덕분에 3개월(8회차) 교육의 평점이 4.8 / 5 를 달성할 수 있었습니다! 감사함에 따로 편지 드려요!',
+        from: 'IT 서비스 대기업 — 교육 담당자',
       },
     ],
   },
 
   contact: {
-    eyebrow: 'Contact',
-    title: '강의 · 멘토링 문의',
-    body: '기업 · 기관 AI 교육, 프론트엔드 실무 교육, 해커톤 TA 를 맡습니다. 대상과 기간을 알려 주시면 커리큘럼을 함께 설계합니다.',
-    email: 'buddle6091@naver.com',
+    title: '팀에 맞는 AX 교육을 함께 설계합니다',
+    body: '임원부터 실무자, 개발자, 고교생까지 대상의 업무 맥락에 맞춰 과정을 구성합니다.',
+    email: 'sangwon.lee@buddle.it.kr',
     links: [
       { label: 'GitHub', href: 'https://github.com/buddle6091' },
-      { label: 'velog', href: 'https://velog.io/@buddle6091' },
+      { label: 'Tech Blog', href: 'https://velog.io/@buddle6091' },
     ],
   },
+
+  footer: 'buddle · 공개용 프로필 — 고객사 실명과 증빙 자료는 제출용 이력서에 별도로 기재합니다.',
 } as const;
 
 export type Landing = typeof LANDING;

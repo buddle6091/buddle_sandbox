@@ -11,67 +11,93 @@ vi.mock('./three/hero-canvas', () => ({
 vi.mock('./scroll/scroll-driver', () => ({
   ScrollDriver: () => null,
 }));
+// jsdom 에는 IntersectionObserver 가 없으므로 LazySection 은 즉시 렌더한다(폴백).
 
-describe('Landing — 이력서 기반 정보 흐름 9섹션', () => {
-  it('섹션 9개가 content 순서대로, 각자 id 와 landmark 를 가진다', () => {
+describe('Landing v2 — 시안 10섹션', () => {
+  it('섹션 10개가 content 순서대로, 각자 id · landmark · 제목', () => {
     render(<Landing />);
     const sections = document.querySelectorAll('section[data-section]');
     expect([...sections].map((s) => s.id)).toEqual([...SECTION_IDS]);
-    for (const s of sections) {
-      expect(s).toHaveAttribute('data-inview');
-      expect(s.querySelector('h1, h2')).not.toBeNull();
-    }
+    for (const s of sections) expect(s.querySelector('h1, h2')).not.toBeNull();
   });
 
-  it('h1 은 하나(이름), 역할·소개·CTA·외부 링크', () => {
+  it('히어로 — h1 하나(이름), 배지, 역할, CTA 는 섹션 앵커', () => {
     render(<Landing />);
     const h1s = screen.getAllByRole('heading', { level: 1 });
     expect(h1s).toHaveLength(1);
     expect(h1s[0]).toHaveTextContent(LANDING.hero.name);
-    expect(screen.getByText(LANDING.hero.role)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: '글 보기' })).toHaveAttribute('href', '/blog');
-    expect(screen.getByRole('link', { name: '캘린더' })).toHaveAttribute('href', '/calendar');
-    const gh = screen.getAllByRole('link', { name: /GitHub/ })[0];
+    expect(screen.getByText(LANDING.hero.badge)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '강의 문의하기' })).toHaveAttribute('href', '#contact');
+    expect(screen.getByRole('link', { name: '강의 이력 보기' })).toHaveAttribute('href', '#teaching');
+  });
+
+  it('히어로 배경 영상(시안 D) — muted · loop · playsinline · poster, 장식(aria-hidden)', () => {
+    render(<Landing />);
+    const video = document.querySelector('video') as HTMLVideoElement;
+    expect(video).not.toBeNull();
+    expect(video).toHaveAttribute('src', '/hero/glaze-loop.mp4');
+    expect(video).toHaveAttribute('poster', '/hero/glaze-poster.jpg');
+    expect(video.muted).toBe(true);
+    expect(video).toHaveAttribute('loop');
+    expect(video).toHaveAttribute('playsinline');
+    expect(video.closest('[aria-hidden="true"]')).not.toBeNull();
+  });
+
+  it('숫자는 공개용 이력서 값 — 38 · 1,000+ · 1,200+ · 51 · 3', () => {
+    render(<Landing />);
+    const about = document.getElementById('about')!;
+    const items = within(about).getAllByRole('listitem');
+    expect(items).toHaveLength(5);
+    expect(items[0]).toHaveTextContent('38');
+    expect(items[1]).toHaveTextContent('1,000');
+    expect(items[1]).toHaveTextContent('+');
+    expect(items[2]).toHaveTextContent('1,200');
+    expect(items[3]).toHaveTextContent('51');
+    expect(within(about).getByText(/기업 · 기관 출강 36곳/)).toBeInTheDocument();
+  });
+
+  it('확정한 제목 3개와 섹션 구성(칩 · 막대 14 · 덱 10 · 멘토링 5 · 경력 4 · 후기 2)', () => {
+    render(<Landing />);
+    expect(screen.getByRole('heading', { name: '현업 개발 역량을 그대로 교육으로' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '가르치는 내용은 직접 만들어 본 것들입니다' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '팀에 맞는 AX 교육을 함께 설계합니다' })).toBeInTheDocument();
+    expect(screen.getByText('Module Federation')).toBeInTheDocument();
+    expect(document.querySelectorAll('#audience [data-slot="bar"]')).toHaveLength(14);
+    expect(within(screen.getByRole('region', { name: LANDING.teaching.deckLabel })).getAllByRole('article')).toHaveLength(10);
+    for (const m of LANDING.mentoring.items) expect(screen.getByText(m.title)).toBeInTheDocument();
+    expect(document.querySelectorAll('#career ol > li')).toHaveLength(4);
+    for (const q of LANDING.feedback.quotes) expect(screen.getByText(q.quote)).toBeInTheDocument();
+  });
+
+  it('철학 문장은 단어 span 으로 쪼개져 진행도 하이라이트 대상이 된다', () => {
+    render(<Landing />);
+    const words = document.querySelectorAll('#philosophy [data-word]');
+    expect(words.length).toBe(LANDING.philosophy.sentence.split(' ').length);
+  });
+
+  it('연락처 — 새 이메일 mailto, 외부 링크 noopener', () => {
+    render(<Landing />);
+    expect(screen.getByRole('link', { name: /sangwon\.lee@buddle\.it\.kr/ })).toHaveAttribute('href', 'mailto:sangwon.lee@buddle.it.kr');
+    const gh = screen.getByRole('link', { name: 'GitHub' });
     expect(gh).toHaveAttribute('href', 'https://github.com/buddle6091');
     expect(gh).toHaveAttribute('rel', expect.stringContaining('noopener'));
   });
 
-  it('숫자는 이력서 값 그대로 5개, 롤링 전에는 0 이 아니라 최종값을 노출(SSR/noscript)', () => {
-    render(<Landing />);
-    const stats = screen.getByRole('region', { name: LANDING.stats[0].label.includes('기업') ? '숫자로 보는 이력' : '' });
-    const items = within(stats).getAllByRole('listitem');
-    expect(items).toHaveLength(5);
-    expect(items[0]).toHaveTextContent('34');
-    expect(items[1]).toHaveTextContent('800');
-    expect(items[2]).toHaveTextContent('1,200');
-    expect(items[0]).toHaveTextContent('담당 기업 · 기관');
-  });
-
-  it('커리큘럼 칩, 기관 칩(시간 포함), 멘토링 4개, 후기 2개, 연락처', () => {
-    render(<Landing />);
-    expect(screen.getByText('Module Federation')).toBeInTheDocument();
-    expect(screen.getByText('Claude Code')).toBeInTheDocument();
-    const audience = document.getElementById('audience')!;
-    expect(within(audience).getByText('삼성전자').closest('li')).toHaveTextContent('329h');
-    expect(screen.getByText(/그 외 19곳/)).toHaveTextContent('119h');
-    for (const m of LANDING.mentoring.items) expect(screen.getByText(m.title)).toBeInTheDocument();
-    for (const q of LANDING.feedback.quotes) expect(screen.getByText(q.quote)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /buddle6091@naver.com/ })).toHaveAttribute(
-      'href',
-      'mailto:buddle6091@naver.com',
-    );
-  });
-
-  it('전화번호·생년월일은 어디에도 없다', () => {
+  it('비공개 원칙 — 고객사 실명 · 전화번호 · 생년월일 · 옛 이메일이 없다', () => {
     const { container } = render(<Landing />);
-    expect(container.textContent).not.toMatch(/010[- ]?\d{4}[- ]?\d{4}/);
-    expect(container.textContent).not.toMatch(/1998/);
+    const text = container.textContent ?? '';
+    for (const name of ['삼성', '포스코', '롯데', '한솔', '농심', '씨젠', '세방', '카카오', 'LIG', '크래프톤', '현대중공업']) {
+      expect(text, name).not.toContain(name);
+    }
+    expect(text).not.toMatch(/010[- ]?\d{4}[- ]?\d{4}/);
+    expect(text).not.toMatch(/1998/);
+    expect(text).not.toContain('naver.com');
   });
 
-  it('캔버스 자리(고정 배경)가 있고, 리빌 요소는 data-reveal 로만 표시된다', async () => {
+  it('캔버스 자리는 히어로 안(전면 고정 아님), 리빌 요소 다수', async () => {
     render(<Landing />);
-    // next/dynamic(ssr:false) 는 비동기로 마운트된다
-    expect(await screen.findByTestId('hero-canvas')).toBeInTheDocument();
+    const canvas = await screen.findByTestId('hero-canvas');
+    expect(canvas.closest('#top')).not.toBeNull();
     expect(document.querySelectorAll('[data-reveal]').length).toBeGreaterThan(10);
   });
 });
