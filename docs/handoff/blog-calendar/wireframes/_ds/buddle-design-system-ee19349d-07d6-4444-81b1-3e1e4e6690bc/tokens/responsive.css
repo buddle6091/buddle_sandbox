@@ -1,0 +1,43 @@
+/* @buddle/tokens — 반응형 토큰 (mobile first, base = compact 390~599) */
+:root {
+  --ds-bp-medium: 600px; /* @kind spacing */
+  --ds-bp-expanded: 1024px; /* @kind spacing */
+  --ds-bp-wide: 1440px; /* @kind spacing */
+  --ds-app-min: 390px; /* @kind spacing */
+
+  --ds-safe-top: env(safe-area-inset-top, 0px); /* @kind spacing */
+  --ds-safe-bottom: env(safe-area-inset-bottom, 0px); /* @kind spacing */
+  --ds-safe-left: env(safe-area-inset-left, 0px); /* @kind spacing */
+  --ds-safe-right: env(safe-area-inset-right, 0px); /* @kind spacing */
+
+  --ds-topbar-h: 52px; /* @kind spacing */
+  --ds-tabbar-h: 56px; /* @kind spacing */
+  --ds-rail-w: 72px; /* @kind spacing */
+  --ds-sidebar-w: 248px; /* @kind spacing */
+  --ds-content-max: 1200px; /* @kind spacing */
+
+  --ds-display-1: clamp(34px, 6vw, 64px); /* @kind font */
+  --ds-heading-1: clamp(22px, 2.4vw, 28px); /* @kind font */
+  --ds-gutter: clamp(16px, 4vw, 32px); /* @kind spacing */
+
+  --ds-glass-alpha: 0.72; /* @kind color */
+  --ds-glass-blur: 12px; /* @kind spacing */
+  --ds-radius-card: 12px; /* @kind radius */
+  --ds-touch: 44px; /* @kind spacing */
+}
+@media (min-width: 600px) {
+  :root { --ds-glass-alpha: 0.66; /* @kind color */ --ds-glass-blur: 16px; /* @kind spacing */ --ds-radius-card: 14px; /* @kind radius */ }
+}
+@media (min-width: 1024px) {
+  :root { --ds-glass-alpha: 0.62; /* @kind color */ --ds-radius-card: 16px; /* @kind radius */ --ds-touch: 36px; /* @kind spacing */ --ds-topbar-h: 60px; /* @kind spacing */ }
+}
+
+.grid-cards {
+  display: grid;
+  gap: var(--ds-gutter);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.tabbar {
+  height: calc(var(--ds-tabbar-h) + var(--ds-safe-bottom));
+  padding-bottom: var(--ds-safe-bottom);
+}

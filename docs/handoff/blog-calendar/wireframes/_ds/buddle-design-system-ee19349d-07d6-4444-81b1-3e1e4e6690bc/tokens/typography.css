@@ -1,0 +1,30 @@
+/* Type tokens — mirrors packages/ui/tailwind-preset.ts fontFamily / fontSize */
+:root {
+  --ds-font-sans: "Pretendard Variable", Pretendard, system-ui, sans-serif; /* @kind font */
+  --ds-font-serif: "Pretendard Variable", Pretendard, system-ui, sans-serif; /* 2026-10: 세리프 폐기, 역할(제목)은 유지 */ /* @kind font */
+  --ds-font-hero: "Pretendard Variable", Pretendard, system-ui, sans-serif; /* 2026-10: 히어로도 Pretendard 700 */ /* @kind font */
+  --ds-font-mono: "JetBrains Mono", ui-monospace, monospace; /* @kind font */
+
+  /* display-1 size lives in responsive.css (--ds-display-1: clamp(34px, 6vw, 64px)) */
+  --ds-display-1-lh: 1.16; /* @kind font */ --ds-display-1-ls: -0.03em; /* @kind font */ --ds-display-1-wt: 700; /* @kind font */
+  --ds-display-2: 44px; /* @kind font */ --ds-display-2-lh: 1.24; /* @kind font */ --ds-display-2-ls: -0.03em; /* @kind font */ --ds-display-2-wt: 700; /* @kind font */
+  /* heading-1 size lives in responsive.css (--ds-heading-1: clamp(22px, 2.4vw, 28px)) */
+  --ds-heading-1-lh: 1.35; /* @kind font */ --ds-heading-1-ls: -0.03em; /* @kind font */ --ds-heading-1-wt: 700; /* @kind font */
+  --ds-heading-2: 20px; /* @kind font */ --ds-heading-2-lh: 1.4; /* @kind font */ --ds-heading-2-ls: -0.015em; /* @kind font */ --ds-heading-2-wt: 600; /* @kind font */
+  --ds-body-lg: 17px; /* @kind font */ --ds-body-lg-lh: 1.75; /* @kind font */
+  --ds-body: 15px; /* @kind font */ --ds-body-lh: 1.7; /* @kind font */
+  --ds-label: 13px; /* @kind font */ --ds-label-lh: 1.45; /* @kind font */ --ds-label-wt: 600; /* @kind font */
+  --ds-caption: 12px; /* @kind font */ --ds-caption-lh: 1.5; /* @kind font */
+  --ds-code: 13px; /* @kind font */ --ds-code-lh: 1.6; /* @kind font */
+}
+
+.ds-display-1 { font-family: var(--ds-font-hero); font-size: var(--ds-display-1); line-height: 1.16; letter-spacing: -0.03em; font-weight: 700; }
+.ds-display-2 { font-family: var(--ds-font-serif); font-size: 44px; line-height: 1.24; letter-spacing: -0.03em; font-weight: 700; }
+.ds-heading-1 { font-family: var(--ds-font-serif); font-size: var(--ds-heading-1); line-height: 1.35; letter-spacing: -0.03em; font-weight: 700; }
+@media (max-width: 599px) { .ds-heading-1 { font-family: var(--ds-font-sans); } }
+.ds-heading-2 { font-family: var(--ds-font-sans); font-size: 20px; line-height: 1.4; letter-spacing: -0.015em; font-weight: 600; }
+.ds-body-lg { font-size: 17px; line-height: 1.75; }
+.ds-body { font-size: 15px; line-height: 1.7; }
+.ds-label { font-size: 13px; line-height: 1.45; font-weight: 600; }
+.ds-caption { font-size: 12px; line-height: 1.5; color: var(--ds-text-muted); }
+.ds-code { font-family: var(--ds-font-mono); font-size: 13px; line-height: 1.6; }

@@ -1,0 +1,64 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "ui",
+  "root": "packages/ui",
+  "sourceRoot": "packages/ui/src",
+  "projectType": "library",
+  "tags": ["scope:ui", "type:ui"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/ui/**/*.ts",
+          "packages/ui/**/*.tsx",
+          "packages/ui/**/*.js",
+          "packages/ui/**/*.jsx",
+          "packages/ui/**/*.mjs",
+          "packages/ui/**/*.cjs"
+        ]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "^production"],
+      "options": {
+        "cwd": "packages/ui",
+        "command": "tsc --noEmit -p tsconfig.json"
+      }
+    },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "config": "packages/ui/vite.config.ts"
+      }
+    },
+    "storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/ui",
+        "command": "storybook dev -p 6006 --no-open"
+      }
+    },
+    "build-storybook": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "^production"],
+      "outputs": ["{workspaceRoot}/dist/storybook/ui"],
+      "options": {
+        "cwd": "packages/ui",
+        "command": "storybook build -o ../../dist/storybook/ui"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build-storybook"],
+      "options": {
+        "command": "echo 'ui: 소스 소비 라이브러리(빌드 산출물 없음). build-storybook 으로 대체.'"
+      }
+    }
+  }
+}

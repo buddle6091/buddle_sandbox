@@ -1,0 +1,82 @@
+/**
+ * Primitives — design.md §1.1 (v0.2)
+ *
+ * 원시 팔레트. 단일 모드(라이트/다크 구분 없음)이며 실제 색 값을 갖는
+ * 유일한 레이어다. 컴포넌트는 이 레이어를 직접 참조하지 않는다 —
+ * 항상 semantic.css 를 거친다.
+ *
+ * 콘셉트: 백자(porcelain) 뉴트럴 + 벽청(blue, primary) / 청자(celadon, tertiary) /
+ * 자운(violet, secondary). gray 는 벽청 색조가 섞인 냉회색.
+ */
+
+:root {
+  /* gray — 냉회색. gray-0 은 순백이 아니다(#FFFFFF 금지, 유리 알파의 베이스) */
+  --bs-color-gray-0: #FDFDFE;
+  --bs-color-gray-50: #F7F8FB;
+  --bs-color-gray-100: #EEF0F6;
+  --bs-color-gray-200: #DFE3ED;
+  --bs-color-gray-300: #C5CBD9;
+  --bs-color-gray-400: #98A1B5;
+  --bs-color-gray-500: #6B7488;
+  --bs-color-gray-600: #4A5263;
+  --bs-color-gray-700: #343A47;
+  --bs-color-gray-800: #22262F;
+  --bs-color-gray-900: #14171D;
+  --bs-color-gray-950: #0B0D11;
+
+  /* 특수 primitive — semantic 레이어가 raw hex 를 쓰지 않도록 이름을 둔 값.
+     gray-550: fg/muted 라이트 전용(gray-500 보다 어두운 텍스트 회색).
+     white/black: ⚠ 알파 베이스 전용. 표면색·텍스트색으로 쓰지 않는다(design.md §7-1). */
+  --bs-color-gray-550: #5D6679;
+  --bs-color-white: #FFFFFF;
+  --bs-color-black: #000000;
+
+  /* porcelain — 라이트 표면 */
+  --bs-color-porcelain-snow: #FDFDFE;
+  --bs-color-porcelain-milk: #F7F9FD;
+  --bs-color-porcelain-ash: #EEF2F9;
+  --bs-color-porcelain-blue: #E6EDF6;
+  --bs-color-porcelain-page: #F4F6FB;
+
+  /* obsidian — 다크 표면 */
+  --bs-color-obsidian-ink: #0B0E16;
+  --bs-color-obsidian-glaze: #131826;
+  --bs-color-obsidian-ash: #1B2233;
+  --bs-color-obsidian-foot: #252E42;
+  --bs-color-obsidian-panel: #161A22;
+
+  /* blue — 벽청, primary */
+  --bs-color-blue-50: #EEF3FF;
+  --bs-color-blue-100: #DDE7FF;
+  --bs-color-blue-200: #C2D2FF;
+  --bs-color-blue-300: #9BB4FF;
+  --bs-color-blue-400: #6E93FF;
+  --bs-color-blue-500: #4275FF;
+  --bs-color-blue-600: #2F5CE6;
+  --bs-color-blue-700: #2447B4;
+  --bs-color-blue-800: #1E3A8C;
+  --bs-color-blue-900: #1B3169;
+  --bs-color-blue-950: #121F42;
+
+  /* celadon — 청자, tertiary */
+  --bs-color-celadon-100: #E6F8FC;
+  --bs-color-celadon-300: #9ADFF0;
+  --bs-color-celadon-500: #35C6E8;
+  --bs-color-celadon-700: #1B93B4;
+  --bs-color-celadon-900: #124C63;
+
+  /* violet — 자운, secondary */
+  --bs-color-violet-100: #F1EDFF;
+  --bs-color-violet-300: #CFC2FF;
+  --bs-color-violet-500: #7B5CFF;
+  --bs-color-violet-700: #5A3CE0;
+  --bs-color-violet-900: #33207F;
+
+  /* status */
+  --bs-color-red-500: #E5484D;
+  --bs-color-green-500: #22B07D;
+  --bs-color-amber-500: #E8A33D;
+
+  /* navy — 라이트 모드 그림자 전용. 라이트 그림자는 이 색의 알파만 쓴다(중성 검정 금지). */
+  --bs-color-navy-shadow: rgb(23 42 94);
+}

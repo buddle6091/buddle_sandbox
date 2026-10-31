@@ -1,0 +1,193 @@
+/**
+ * apps/web 전역 스타일 — 한 줄이 토큰 + Tailwind + 유리 유틸리티 + 폰트(Pretendard Variable) 전부를 켠다.
+ * 색/간격/타이포는 전부 토큰 유틸리티. 여기에 hex 를 쓰지 않는다.
+ */
+@import "@sandbox/ui/styles.css";
+
+/* Tailwind 가 ui 패키지 소스의 클래스도 스캔하게 한다 */
+@source "../../../packages/ui/src";
+
+/* 섹션 전환 — 부드러운 스크롤 + 섹션 시작점에 느슨하게 스냅(proximity: 긴 섹션 안에서는 자유 스크롤) */
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+}
+[data-section] {
+  scroll-snap-align: start;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+  }
+}
+
+/* 가로 덱 — 스크롤바 숨김(스크롤·스냅·키보드는 그대로) */
+.landing-deck {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.landing-deck::-webkit-scrollbar {
+  display: none;
+}
+
+/* ───────── 랜딩 v2 — 리빌 (시안: rotateX 16° · translateY 40 → 0, 700/1000ms, 스태거 60ms) ───────── */
+[data-reveal] {
+  opacity: 0;
+  transform: perspective(1000px) translate3d(0, 40px, 0) rotateX(16deg);
+  transform-origin: 50% 100%;
+  transition:
+    opacity 700ms var(--ease-bs),
+    transform 1000ms var(--ease-bs);
+  transition-delay: calc(var(--i, 0) * 60ms);
+}
+[data-reveal="flip"] {
+  transform: perspective(900px) translate3d(28px, 0, 0) rotateY(-32deg);
+  transform-origin: 0 50%;
+}
+[data-reveal="depth"] {
+  transform: perspective(900px) translate3d(0, 0, -160px);
+}
+[data-inview="true"] [data-reveal],
+[data-reveal][data-inview="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* 산업군 막대 — 리빌 시 scaleX 0→1 (1300ms, 50ms 스태거) */
+.landing-bar-fill {
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  transition: transform 1300ms var(--ease-bs);
+  transition-delay: calc(var(--i, 0) * 50ms);
+}
+[data-inview="true"] .landing-bar-fill {
+  transform: scaleX(1);
+}
+
+/* 철학 문장 — 단어별 밝기 */
+.landing-word {
+  opacity: 0.22;
+  transition: opacity 260ms var(--ease-bs);
+}
+.landing-word[data-lit="true"] {
+  opacity: 1;
+}
+
+/* 카드 기울임 — transform 은 JS 가 쓴다, 전환만 여기서 */
+.landing-tilt {
+  transition:
+    transform 320ms var(--ease-bs),
+    box-shadow 320ms var(--ease-bs);
+  transform-style: preserve-3d;
+}
+.landing-pop {
+  transform: translateZ(28px);
+}
+
+/* 강의 덱 — 카드 transform/opacity 는 JS, 전환만 */
+.landing-deck-card {
+  transition:
+    transform 240ms var(--ease-bs),
+    opacity 240ms var(--ease-bs);
+}
+
+/* 히어로 배경 영상(시안 D) — 아래 40% 마스크, 좌측 흰 막, reduced-motion 은 포스터만 */
+.landing-hero-mask {
+  -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
+}
+.landing-hero-scrim {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--bs-color-bg-page) 78%, transparent) 0%,
+    color-mix(in srgb, var(--bs-color-bg-page) 45%, transparent) 45%,
+    transparent 75%
+  );
+}
+:where(.dark, [data-theme="dark"]) .landing-hero-scrim {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--bs-color-bg-page) 92%, transparent) 0%,
+    color-mix(in srgb, var(--bs-color-bg-page) 80%, transparent) 50%,
+    color-mix(in srgb, var(--bs-color-bg-page) 68%, transparent) 100%
+  );
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .landing-hero-scrim {
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--bs-color-bg-page) 92%, transparent) 0%,
+      color-mix(in srgb, var(--bs-color-bg-page) 80%, transparent) 50%,
+      color-mix(in srgb, var(--bs-color-bg-page) 68%, transparent) 100%
+    );
+  }
+}
+
+/* 다크 히어로 — 별 반짝임(청자·벽청·자운 저알파 점), 상단 30%~90% 마스크 */
+.landing-stars {
+  --star-a: color-mix(in srgb, var(--bs-color-accent-tertiary) 80%, transparent);
+  --star-b: color-mix(in srgb, var(--bs-color-accent-default) 60%, transparent);
+  --star-c: color-mix(in srgb, var(--bs-color-accent-secondary) 55%, transparent);
+  background-image:
+    radial-gradient(1.2px 1.2px at 8% 22%, var(--star-a), transparent),
+    radial-gradient(1px 1px at 18% 64%, var(--star-b), transparent),
+    radial-gradient(1.4px 1.4px at 27% 12%, var(--star-a), transparent),
+    radial-gradient(1px 1px at 36% 44%, var(--star-b), transparent),
+    radial-gradient(1.2px 1.2px at 45% 8%, var(--star-a), transparent),
+    radial-gradient(1px 1px at 52% 30%, var(--star-c), transparent),
+    radial-gradient(1.3px 1.3px at 61% 18%, var(--star-a), transparent),
+    radial-gradient(1px 1px at 70% 52%, var(--star-b), transparent),
+    radial-gradient(1.2px 1.2px at 79% 10%, var(--star-a), transparent),
+    radial-gradient(1px 1px at 88% 38%, var(--star-b), transparent),
+    radial-gradient(1.4px 1.4px at 94% 70%, var(--star-a), transparent),
+    radial-gradient(1px 1px at 12% 86%, var(--star-b), transparent);
+  -webkit-mask-image: linear-gradient(180deg, #000 30%, transparent 90%);
+  mask-image: linear-gradient(180deg, #000 30%, transparent 90%);
+  animation: landing-twinkle 7s var(--ease-bs) infinite alternate;
+}
+@keyframes landing-twinkle {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+
+/* 오브 빛 — 40s 느린 드리프트 1개만(design.md: 배경 애니메이션은 40s 이상 드리프트만 허용) */
+@keyframes landing-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(40px, 24px, 0); }
+}
+.landing-drift {
+  animation: landing-drift 40s var(--ease-bs) infinite alternate;
+}
+
+/* 스크롤 큐 */
+@keyframes landing-cue {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(8px); opacity: 1; }
+}
+.landing-cue svg {
+  animation: landing-cue 2.4s var(--ease-bs) infinite;
+}
+
+/* 문의 CTA — 유약 고임(아래쪽 청자 radial) */
+.landing-contact-pool {
+  background: radial-gradient(
+    120% 90% at 50% 125%,
+    color-mix(in srgb, var(--bs-color-accent-tertiary) 34%, transparent) 0%,
+    color-mix(in srgb, var(--bs-color-accent-default) 12%, transparent) 45%,
+    transparent 75%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal],
+  .landing-bar-fill {
+    opacity: 1;
+    transform: none;
+    transition: opacity var(--bs-motion-control) linear;
+  }
+  .landing-word { opacity: 1; }
+  .landing-tilt, .landing-deck-card { transform: none !important; opacity: 1 !important; }
+  .landing-stars, .landing-drift, .landing-cue svg { animation: none; }
+  .landing-hero-video { display: none; }
+}

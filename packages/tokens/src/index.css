@@ -1,0 +1,60 @@
+/**
+ * @sandbox/tokens — design.md 토큰 SSOT 진입점 (v0.2)
+ *
+ * 소비 방법 (앱/라이브러리의 최상위 CSS에서):
+ *   @import "@sandbox/tokens/index.css";
+ *
+ * 레이어 순서가 중요하다: primitives → semantic → theme.
+ * theme 이 semantic 을, semantic 이 primitives 를 참조한다.
+ */
+
+/* 폰트 — design.md §2. Pretendard Variable(모든 위계) + JetBrains Mono(코드). 세리프 없음. */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+@import "tailwindcss";
+
+/**
+ * dark: 유틸리티를 토큰 레이어와 일치시킨다.
+ * @custom-variant 는 Tailwind 의 기본 prefers-color-scheme 동작을 "대체"하므로
+ * 클래스와 data 속성을 모두 걸어야 한다. 시스템 설정 기본값은
+ * semantic.css 의 @media 블록이 담당한다.
+ */
+@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+
+/**
+ * hover-fine: design.md §4 — hover 는 `@media (hover: hover) and (pointer: fine)` 안에서만.
+ * 터치 기기에서 hover 스타일이 붙어 남는 문제를 변형 수준에서 차단한다.
+ * 컴포넌트는 `hover:` 대신 `hover-fine:` 을 쓴다.
+ */
+@custom-variant hover-fine {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
+@import "./primitives.css";
+@import "./semantic.css";
+@import "./theme.css";
+
+/**
+ * 셸 레이아웃 치수 — design.md §3.1. 모바일 퍼스트: compact 기본 → medium(600) → expanded(1024).
+ * Tailwind 네임스페이스가 없는 값이라 plain 변수로 두고 `h-[var(--bs-layout-topbar-h)]` 로 소비한다.
+ * safe-area 는 여기 넣지 않는다 — `env(safe-area-inset-*)` 는 소비 지점에서 더한다.
+ */
+:root {
+  --bs-layout-topbar-h: 52px;
+  --bs-layout-tabbar-h: 56px;
+  --bs-layout-rail-w: 72px;
+  --bs-layout-sidebar-w: 248px;
+  --bs-layout-touch: 44px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --bs-layout-topbar-h: 60px;
+    --bs-layout-touch: 36px;
+  }
+}

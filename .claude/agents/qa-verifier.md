@@ -16,10 +16,10 @@ tools: Read, Grep, Glob, Bash
 
 ## 검증 항목
 1. **테스트 통과**: `npx nx affected -t test lint typecheck`를 실행하고 결과를 그대로 인용한다. 하나라도 실패면 FAIL.
-2. **토큰 하드코딩 검사**: `libs/ui` 안에서 하드코딩된 색을 찾는다.
-   `grep -rEn "#[0-9a-fA-F]{3,8}|rgb\(|rgba\(" libs/ui/src` — 매치가 있으면(토큰 정의 파일 제외) FAIL. 색은 `libs/tokens` 변수만 써야 한다.
-3. **경계 위반**: `npx nx affected -t lint`에 `@nx/enforce-module-boundaries` 위반이 없는지 확인. `libs/ui`가 앱을 import하면 FAIL.
-4. **디자인 스펙 일치**: `design.md`의 대상 컴포넌트 variant/size/state가 구현과 스토리에 모두 존재하는지 스캔.
+2. **토큰 하드코딩 검사**: `packages/ui` 안에서 하드코딩된 색을 찾는다.
+   `grep -rEn "#[0-9a-fA-F]{3,8}|rgb\(|rgba\(" packages/ui/src` — 매치가 있으면(토큰 정의 파일 제외) FAIL. 색은 `packages/tokens` 변수만 써야 한다.
+3. **경계 위반**: `npx nx affected -t lint`에 `@nx/enforce-module-boundaries` 위반이 없는지 확인. `packages/ui`가 앱을 import하면 FAIL.
+4. **디자인 스펙 일치**: `../../design.md`의 대상 컴포넌트 variant/size/state가 구현과 스토리에 모두 존재하는지 스캔.
 5. **접근성**: 상호작용 컴포넌트에 role/aria/키보드 처리와 관련 테스트가 있는지 확인.
 6. **TDD 흔적(권장)**: 커밋 히스토리나 테스트가 구현보다 먼저/함께 존재하는지 가볍게 확인.
 

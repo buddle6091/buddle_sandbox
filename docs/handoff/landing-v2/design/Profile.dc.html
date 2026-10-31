@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>이상원 — AI · 프론트엔드 교육 강사</title>
+<script src="./support.js"></script>
+<script src="/_blob/d1a9bc07f6d9da8f01b402a132a27009"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@font-face{font-family:'Pretendard Variable';src:url(/_blob/9d726952aed8e36f784aabd6cdda60f6) format('woff2');font-weight:45 920;font-style:normal;font-display:swap}
+body{margin:0}
+a{color:#2f5ce6}a:hover{color:#2449c7}
+.lp{--bg:#fdfdfe;--bg2:#f7f9ff;--bg3:#f4f6fb;--surface:rgba(253,253,254,.82);--solid:#ffffff;--line:#e3e8f2;--foot:rgba(66,117,255,.20);--strong:#22262f;--body:#343a47;--muted:#5d6679;--link:#2f5ce6;--chip-bg:#eef3ff;--chip-ink:#2449c7;--chip-line:#dbe5ff;--bar:#4275ff;--bar2:#35c6e8;--track:#e9eef8;--glow-a:rgba(66,117,255,.16);--glow-b:rgba(53,198,232,.14);--glow-c:rgba(123,92,255,.07);--shadow:0 10px 30px rgb(23 42 94 / .08);--header:rgba(253,253,254,.74);--word-dim:.2;color-scheme:light}
+.lp[data-theme="dark"]{--bg:#0b0e16;--bg2:#0e121d;--bg3:#131826;--surface:rgba(27,34,51,.72);--solid:#131826;--line:rgba(255,255,255,.08);--foot:rgba(53,198,232,.30);--strong:#eef1f8;--body:#c9cfdc;--muted:#9aa3b8;--link:#8fb0ff;--chip-bg:rgba(66,117,255,.14);--chip-ink:#c3d4ff;--chip-line:rgba(66,117,255,.30);--bar:#5b88ff;--bar2:#35c6e8;--track:rgba(255,255,255,.07);--glow-a:rgba(66,117,255,.24);--glow-b:rgba(53,198,232,.18);--glow-c:rgba(123,92,255,.12);--shadow:0 10px 30px rgb(0 0 0 / .35);--header:rgba(11,14,22,.68);--word-dim:.24;color-scheme:dark}
+.lp{transition:background-color 420ms cubic-bezier(.22,1,.36,1),color 420ms cubic-bezier(.22,1,.36,1)}
+.lp *{box-sizing:border-box}
+.lp section[id]{scroll-margin-top:72px}
+.lp a{color:var(--link)}
+.lp .t{word-break:keep-all;text-wrap:balance}
+.lp [data-reveal]{transition:opacity 700ms cubic-bezier(.22,1,.36,1),transform 1000ms cubic-bezier(.22,1,.36,1);transition-delay:calc(var(--i,0) * 60ms);transform-origin:50% 100%}
+.lp[data-js] [data-reveal]:not([data-in]){opacity:0;transform:perspective(1000px) translate3d(0,40px,0) rotateX(16deg)}
+.lp[data-js] [data-reveal="flip"]:not([data-in]){transform:perspective(900px) translate3d(28px,0,0) rotateY(-32deg);transform-origin:0 50%}
+.lp[data-js] [data-reveal="depth"]:not([data-in]){transform:perspective(900px) translate3d(0,0,-160px)}
+.lp .bar-fill{transform-origin:0 50%;transition:transform 1300ms cubic-bezier(.22,1,.36,1);transition-delay:calc(var(--i,0) * 50ms)}
+.lp[data-js] [data-reveal]:not([data-in]) .bar-fill{transform:scaleX(0)}
+.lp .tilt{transition:transform 320ms cubic-bezier(.22,1,.36,1),box-shadow 320ms cubic-bezier(.22,1,.36,1);transform-style:preserve-3d}
+.lp .pop{transform:translateZ(28px)}
+.lp .deck{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;perspective:1400px;padding:32px max(16px, calc((100% - 1200px) / 2)) 48px;scrollbar-width:thin}
+.lp .deck-card{flex:0 0 min(340px, 82vw);scroll-snap-align:center;transform-style:preserve-3d;transition:transform 240ms cubic-bezier(.22,1,.36,1),opacity 240ms cubic-bezier(.22,1,.36,1)}
+.lp .w{transition:opacity 260ms cubic-bezier(.22,1,.36,1)}
+.lp .nav-a{position:relative;color:var(--muted);text-decoration:none;font-size:14px;font-weight:600;padding:8px 2px;transition:color 170ms cubic-bezier(.22,1,.36,1)}
+.lp .nav-a[data-active="true"]{color:var(--strong)}
+.lp .nav-a::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:2px;border-radius:2px;background:linear-gradient(90deg,#4275ff,#35c6e8);transform:scaleX(0);transition:transform 300ms cubic-bezier(.22,1,.36,1)}
+.lp .nav-a[data-active="true"]::after{transform:scaleX(1)}
+.lp .btn{transition:background-color 170ms cubic-bezier(.22,1,.36,1),box-shadow 170ms cubic-bezier(.22,1,.36,1),transform 170ms cubic-bezier(.22,1,.36,1)}
+.lp .btn:focus-visible,.lp .nav-a:focus-visible,.lp .icon-btn:focus-visible,.lp .deck:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(66,117,255,.45)}
+@media (hover:hover){.lp .btn-p:hover{background:#2449c7}.lp .btn-g:hover{box-shadow:inset 0 -2px 0 var(--foot),var(--shadow)}.lp .nav-a:hover{color:var(--strong)}.lp .icon-btn:hover{background:var(--chip-bg)}}
+@media (hover:none){.lp .btn:active{transform:scale(.985)}}
+@keyframes lpFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(40px,24px,0)}}
+.lp .glow{animation:lpFloat 40s cubic-bezier(.22,1,.36,1) infinite alternate}
+.lp .only-light,.lp .only-dark{transition:opacity 900ms cubic-bezier(.22,1,.36,1)}
+.lp .only-dark{opacity:0}
+.lp[data-theme="dark"] .only-dark{opacity:1}
+.lp[data-theme="dark"] .only-light{opacity:0}
+.lp .stars{background-image:radial-gradient(1.2px 1.2px at 8% 22%,rgba(143,225,244,.8),transparent),radial-gradient(1px 1px at 18% 64%,rgba(181,203,255,.7),transparent),radial-gradient(1.4px 1.4px at 27% 12%,rgba(143,225,244,.9),transparent),radial-gradient(1px 1px at 36% 44%,rgba(181,203,255,.6),transparent),radial-gradient(1.2px 1.2px at 45% 8%,rgba(143,225,244,.7),transparent),radial-gradient(1px 1px at 52% 30%,rgba(196,180,255,.6),transparent),radial-gradient(1.3px 1.3px at 61% 18%,rgba(143,225,244,.8),transparent),radial-gradient(1px 1px at 70% 52%,rgba(181,203,255,.6),transparent),radial-gradient(1.2px 1.2px at 79% 10%,rgba(143,225,244,.9),transparent),radial-gradient(1px 1px at 88% 38%,rgba(181,203,255,.7),transparent),radial-gradient(1.4px 1.4px at 94% 70%,rgba(143,225,244,.7),transparent),radial-gradient(1px 1px at 12% 86%,rgba(181,203,255,.5),transparent);animation:lpTwinkle 7s cubic-bezier(.22,1,.36,1) infinite alternate}
+@keyframes lpTwinkle{from{opacity:.55}to{opacity:1}}
+@keyframes lpCue{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(8px);opacity:1}}
+.lp .cue{animation:lpCue 2.4s cubic-bezier(.22,1,.36,1) infinite}
+@media (prefers-reduced-motion: reduce){
+.lp [data-reveal],.lp[data-js] [data-reveal]:not([data-in]){opacity:1 !important;transform:none !important;transition:none !important}
+.lp .bar-fill,.lp[data-js] [data-reveal]:not([data-in]) .bar-fill{transform:none !important;transition:none !important}
+.lp .tilt,.lp .deck-card{transform:none !important}
+.lp .glow,.lp .cue,.lp .stars{animation:none}
+.lp .w{opacity:1 !important}
+}
+</style>
+</helmet>
+<div class="lp" ref="{{setRoot}}" data-theme="{{theme}}" style="width: 100%; min-height: 100vh; background: var(--bg); color: var(--body); font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; font-size: 15px; line-height: 1.7">
+
+<header style="position: sticky; top: 0; z-index: 20; background: var(--header); -webkit-backdrop-filter: blur(16px) saturate(150%); backdrop-filter: blur(16px) saturate(150%); border-bottom: 1px solid var(--line)">
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 32px); min-height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+<a href="#top" style="font-weight: 800; font-size: 20px; letter-spacing: -0.03em; color: var(--strong); text-decoration: none">buddle</a>
+<nav aria-label="페이지 섹션" style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap">
+<sc-for list="{{nav}}" as="item" hint-placeholder-count="6">
+<a class="nav-a" href="#{{item.id}}" data-active="{{item.active}}">{{item.label}}</a>
+</sc-for>
+<button type="button" class="icon-btn" onClick="{{toggleTheme}}" aria-label="{{themeLabel}}" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--strong); cursor: pointer; transition: background-color 170ms cubic-bezier(.22,1,.36,1)">
+<sc-if value="{{isDark}}" hint-placeholder-val="{{ false }}">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+</sc-if>
+<sc-if value="{{isLight}}" hint-placeholder-val="{{ true }}">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+</sc-if>
+</button>
+</nav>
+</div>
+<div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; overflow: hidden">
+<div ref="{{setProgress}}" style="height: 100%; background: linear-gradient(90deg, #4275ff, #35c6e8); transform-origin: 0 50%; transform: scaleX(0)"></div>
+</div>
+</header>
+
+<section id="top" style="position: relative; overflow: hidden; padding: 0 clamp(16px, 4vw, 32px)">
+<div class="only-light" aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%); mask-image: linear-gradient(180deg, #000 55%, transparent 100%)">
+<div class="glow" style="position: absolute; width: 960px; height: 960px; left: -380px; top: -460px; border-radius: 50%; background: radial-gradient(closest-side, rgba(66,117,255,0.16), transparent)"></div>
+<div class="glow" style="position: absolute; width: 820px; height: 820px; right: -300px; top: -120px; border-radius: 50%; background: radial-gradient(closest-side, rgba(53,198,232,0.14), transparent); animation-direction: alternate-reverse"></div>
+<div style="position: absolute; width: 700px; height: 500px; left: 40%; top: -300px; border-radius: 50%; background: radial-gradient(closest-side, rgba(123,92,255,0.07), transparent)"></div>
+</div>
+<div class="only-dark" aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none">
+<div class="stars" style="position: absolute; inset: 0; -webkit-mask-image: linear-gradient(180deg, #000 30%, transparent 90%); mask-image: linear-gradient(180deg, #000 30%, transparent 90%)"></div>
+<div class="glow" style="position: absolute; width: 1100px; height: 700px; left: -460px; bottom: -420px; border-radius: 50%; background: radial-gradient(closest-side, rgba(66,117,255,0.22), transparent)"></div>
+<div class="glow" style="position: absolute; width: 1100px; height: 700px; right: -420px; bottom: -400px; border-radius: 50%; background: radial-gradient(closest-side, rgba(53,198,232,0.18), transparent); animation-direction: alternate-reverse"></div>
+<div style="position: absolute; width: 900px; height: 420px; left: 50%; margin-left: -450px; top: -280px; border-radius: 50%; background: radial-gradient(closest-side, rgba(123,92,255,0.10), transparent)"></div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: linear-gradient(90deg, rgba(66,117,255,0), rgba(53,198,232,0.4), rgba(66,117,255,0))"></div>
+</div>
+<div style="position: relative; max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 32px; padding: 72px 0 56px">
+<div style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 24px">
+<span data-reveal="" style="--i: 0; display: inline-flex; align-items: center; height: 28px; padding: 0 12px; border-radius: 999px; background: var(--chip-bg); border: 1px solid var(--chip-line); color: var(--chip-ink); font-size: 13px; font-weight: 600">AI · 프론트엔드 교육 강사</span>
+<h1 class="t" data-reveal="" style="--i: 1; margin: 0; font-weight: 800; font-size: clamp(40px, 6vw, 72px); line-height: 1.1; letter-spacing: -0.04em; color: var(--strong)">이상원<span style="display: block; margin-top: 12px; font-size: clamp(18px, 2vw, 22px); font-weight: 600; letter-spacing: -0.01em; color: var(--muted)">Frontend Developer · AX Instructor</span></h1>
+<p data-reveal="" style="--i: 2; margin: 0; max-width: 600px; font-size: 17px; line-height: 1.75; color: var(--body); text-wrap: pretty">주니어 시절부터 시니어처럼 모든 프로젝트에 책임을 가지고, 처음부터 끝까지 개발을 이끌어 간 경험을 바탕으로 수강생이 AX 분야에서 비즈니스 문제를 스스로 해결할 수 있도록 눈높이를 맞춘 컨설팅형 강의를 진행합니다.</p>
+<div data-reveal="" style="--i: 3; display: flex; gap: 12px; flex-wrap: wrap">
+<a href="#contact" class="btn btn-p" style="display: inline-flex; align-items: center; height: 48px; padding: 0 22px; border-radius: 10px; background: #2f5ce6; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none">강의 문의하기</a>
+<a href="#teaching" class="btn btn-g" style="display: inline-flex; align-items: center; height: 48px; padding: 0 22px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); box-shadow: inset 0 -1px 0 var(--foot); color: var(--strong); font-size: 15px; font-weight: 600; text-decoration: none">강의 이력 보기</a>
+</div>
+</div>
+<div data-reveal="depth" style="--i: 2; position: relative; flex: 1 1 400px; min-width: 0; height: clamp(340px, 42vw, 540px)">
+<canvas ref="{{setCanvas}}" role="img" aria-label="{{heroLabel}}" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block"></canvas>
+</div>
+</div>
+<div aria-hidden="true" class="cue" style="position: relative; display: flex; justify-content: center; padding-bottom: 24px; color: var(--muted)">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+</div>
+</section>
+
+<section id="about" style="padding: 48px clamp(16px, 4vw, 32px) 96px">
+<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px">
+<div data-stats="" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px">
+<sc-for list="{{stats}}" as="item" hint-placeholder-count="5">
+<div data-reveal="" style="--i: {{item.i}}">
+<div class="tilt" onPointerMove="{{tiltMove}}" onPointerLeave="{{tiltLeave}}" style="display: flex; flex-direction: column; gap: 4px; padding: 24px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); border-bottom: 1px solid var(--foot); box-shadow: var(--shadow)">
+<span class="pop" style="font-weight: 800; font-size: clamp(30px, 3.2vw, 40px); line-height: 1.15; letter-spacing: -0.03em; color: var(--strong); font-variant-numeric: tabular-nums">{{item.value}}</span>
+<span class="pop" style="font-size: 13px; font-weight: 600; color: var(--muted)">{{item.label}}</span>
+</div>
+</div>
+</sc-for>
+</div>
+<p data-reveal="" style="margin: 0; font-size: 15px; color: var(--muted)"><span style="font-weight: 600; color: var(--strong)">Clients</span>  노원 미래산업고 · S 반도체 기업 외 기업 · 기관 출강 36곳</p>
+</div>
+</section>
+
+<section id="expertise" style="padding: 96px clamp(16px, 4vw, 32px); background: var(--bg2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line)">
+<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px">
+<div data-reveal="" style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: var(--link)">EXPERTISE &amp; SKILLS</span>
+<h2 class="t" style="margin: 0; font-weight: 800; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.25; letter-spacing: -0.03em; color: var(--strong)">현업 개발 역량을 그대로 교육으로</h2>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px">
+<sc-for list="{{skills}}" as="group" hint-placeholder-count="3">
+<div data-reveal="flip" style="--i: {{group.i}}">
+<div class="tilt" onPointerMove="{{tiltMove}}" onPointerLeave="{{tiltLeave}}" style="height: 100%; display: flex; flex-direction: column; gap: 16px; padding: 28px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); border-bottom: 1px solid var(--foot); box-shadow: var(--shadow)">
+<h3 class="pop" style="margin: 0; font-size: 20px; font-weight: 700; color: var(--strong)">{{group.title}}</h3>
+<div class="pop" style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{group.chips}}" as="chip" hint-placeholder-count="5">
+<span style="display: inline-flex; align-items: center; min-height: 32px; padding: 4px 12px; border-radius: 999px; background: var(--chip-bg); border: 1px solid var(--chip-line); color: var(--chip-ink); font-size: 13px; font-weight: 600; line-height: 1.4">{{chip}}</span>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section id="philosophy" ref="{{setWords}}" style="padding: 128px clamp(16px, 4vw, 32px)">
+<div style="max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px">
+<span data-reveal="" style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: var(--link)">TEACHING PHILOSOPHY</span>
+<p class="t" style="margin: 0; font-weight: 700; font-size: clamp(24px, 3.2vw, 40px); line-height: 1.45; letter-spacing: -0.03em; color: var(--strong)">
+<sc-for list="{{words}}" as="item" hint-placeholder-count="20"><span class="w" data-w="{{item.i}}" style="opacity: var(--word-dim)">{{item.w}} </span></sc-for>
+</p>
+<p data-reveal="" style="margin: 0; max-width: 720px; font-size: 17px; line-height: 1.75; color: var(--body)">개발자로서 비즈니스 문제를 해결했던 경험을 바탕으로, 이제는 교육생이 수업을 통해 자신의 비즈니스 문제를 스스로 해결할 수 있는 능력을 갖추도록 방향을 제시하는 사람이 되려고 합니다.</p>
+</div>
+</section>
+
+<section id="audience" style="padding: 96px clamp(16px, 4vw, 32px); background: var(--bg2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line)">
+<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 48px">
+<div data-reveal="" style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: var(--link)">AUDIENCE</span>
+<h2 class="t" style="margin: 0; font-weight: 800; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.25; letter-spacing: -0.03em; color: var(--strong)">교육 대상 산업군</h2>
+<p style="margin: 0; font-size: 15px; color: var(--muted)">산업군별 누적 강의 시간입니다.</p>
+</div>
+<div data-reveal="" style="flex: 2 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{audience}}" as="item" hint-placeholder-count="14">
+<div style="display: grid; grid-template-columns: minmax(96px, 150px) minmax(0, 1fr) 56px; align-items: center; gap: 12px">
+<span style="font-size: 14px; font-weight: 600; color: var(--strong)">{{item.name}}</span>
+<div style="height: 10px; border-radius: 999px; background: var(--track); overflow: hidden">
+<div class="bar-fill" style="--i: {{item.i}}; width: {{item.pct}}; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--bar), var(--bar2))"></div>
+</div>
+<span style="font-size: 13px; font-weight: 600; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums">{{item.h}}h</span>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section id="teaching" style="padding: 96px 0 64px">
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 32px); display: flex; flex-direction: column; gap: 12px">
+<div data-reveal="" style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: var(--link)">TEACHING EXPERIENCE</span>
+<h2 class="t" style="margin: 0; font-weight: 800; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.25; letter-spacing: -0.03em; color: var(--strong)">주요 강의 이력</h2>
+<p style="margin: 0; max-width: 720px; font-size: 15px; color: var(--muted)">기업 고객사는 비밀유지 의무에 따라 업종 · 대상 계층 · 일반화된 교육 주제로만 표기하고, 지자체 · 학교 · 공공기관은 실명으로 표기합니다. 옆으로 넘겨 보세요.</p>
+</div>
+</div>
+<div data-reveal="depth">
+<div class="deck" ref="{{setDeck}}" tabindex="0" role="region" aria-label="주요 강의 이력 카드 목록">
+<sc-for list="{{courses}}" as="item" hint-placeholder-count="4">
+<article class="deck-card" style="display: flex; flex-direction: column; gap: 14px; padding: 28px; min-height: 280px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); border-bottom: 1px solid var(--foot); box-shadow: var(--shadow)">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+<span style="font-size: 13px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums">{{item.date}}</span>
+<span style="display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px; background: linear-gradient(90deg, #4275ff, #35c6e8); color: #ffffff; font-size: 12px; font-weight: 700">{{item.hours}}</span>
+</div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<span style="display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px; background: var(--chip-bg); color: var(--chip-ink); font-size: 12px; font-weight: 600">{{item.industry}}</span>
+<span style="display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--body); font-size: 12px; font-weight: 600">{{item.target}}</span>
+</div>
+<h3 class="t" style="margin: 0; font-size: 19px; font-weight: 700; line-height: 1.45; color: var(--strong)">{{item.title}}</h3>
+<span style="margin-top: auto; font-size: 13px; color: var(--muted)">{{item.tool}}</span>
+</article>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section id="mentoring" style="padding: 64px clamp(16px, 4vw, 32px) 96px">
+<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px">
+<div data-reveal="" style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: var(--link)">MENTORING</span>
+<h2 class="t" style="margin: 0; font-weight: 800; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.25; letter-spacing: -0.03em; color: var(--strong)">멘토링 · 실습 지도 · 트러블슈팅</h2>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px">
+<sc-for list="{{mentoring}}" as="item" hint-placeholder-count="5">
+<div data-reveal="" style="--i: {{item.i}}">
+<div class="tilt" onPointerMove="{{tiltMove}}" onPointerLeave="{{tiltLeave}}" style="height: 100%; display: flex; flex-direction: column; gap: 12px; padding: 24px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); border-bottom: 1px solid var(--foot); box-shadow: var(--shadow)">
+<span class="pop" style="font-size: 13px; font-weight: 800; color: var(--link); font-variant-numeric: tabular-nums">{{item.no}}</span>
+<h3 class="pop" style="margin: 0; font-size: 20px; font-weight: 700; color: var(--strong)">{{item.title}}</h3>
+<p class="pop" style="margin: 0; font-size: 15px; line-height: 1.7; color: var(--muted)">{{item.body}}</p>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section id="career" style="padding: 96px clamp(16px, 4vw, 32px); background: var(--bg2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line)">
+<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px">
+<div data-reveal="" style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: var(--link)">DEVELOPER CAREER</span>
+<h2 class="t" style="margin: 0; font-weight: 800; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.25; letter-spacing: -0.03em; color: var(--strong)">가르치는 내용은 직접 만들어 본 것들입니다</h2>
+</div>
+<ol style="list-style: none; margin: 0; padding: 0 0 0 28px; border-left: 2px solid var(--line); display: flex; flex-direction: column; gap: 32px">
+<sc-for list="{{career}}" as="item" hint-placeholder-count="4">
+<li data-reveal="flip" style="--i: {{item.i}}; position: relative">
+<span aria-hidden="true" style="position: absolute; left: -38px; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: linear-gradient(135deg, #4275ff, #35c6e8); box-shadow: 0 0 0 4px var(--bg2)"></span>
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 24px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); border-bottom: 1px solid var(--foot); box-shadow: var(--shadow)">
+<span style="font-size: 13px; font-weight: 700; color: var(--link); font-variant-numeric: tabular-nums">{{item.period}}</span>
+<h3 class="t" style="margin: 0; font-size: 20px; font-weight: 700; color: var(--strong)">{{item.title}}</h3>
+<sc-if value="{{item.hasStack}}" hint-placeholder-val="{{ true }}">
+<p style="margin: 0; font-size: 13px; color: var(--muted)">{{item.stack}}</p>
+</sc-if>
+<sc-if value="{{item.hasSummary}}" hint-placeholder-val="{{ true }}">
+<p style="margin: 0; font-size: 14px; font-weight: 600; color: var(--body)">{{item.summary}}</p>
+</sc-if>
+<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.7; color: var(--body)">
+<sc-for list="{{item.bullets}}" as="b" hint-placeholder-count="2"><li>{{b}}</li></sc-for>
+</ul>
+</div>
+</li>
+</sc-for>
+</ol>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px">
+<div data-reveal="" style="--i: 0; display: flex; flex-direction: column; gap: 10px; padding: 24px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line)">
+<h3 style="margin: 0; font-size: 17px; font-weight: 700; color: var(--strong)">교육</h3>
+<p style="margin: 0; font-size: 15px; color: var(--body)">한국 IT 직업 전문학교 (학점은행제) 졸업<br><span style="font-size: 13px; color: var(--muted)">2017.03 ~ 2022.02 · 정보보호학 학사 취득</span></p>
+</div>
+<div data-reveal="" style="--i: 1; display: flex; flex-direction: column; gap: 10px; padding: 24px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line)">
+<h3 style="margin: 0; font-size: 17px; font-weight: 700; color: var(--strong)">자격증</h3>
+<p style="margin: 0; font-size: 15px; color: var(--body)">NCS 확인강사 — 정보기술개발 <span style="font-size: 13px; color: var(--muted)">2026.10</span><br>정보처리 산업기사 <span style="font-size: 13px; color: var(--muted)">2018.12</span><br>네트워크 관리사 2급 <span style="font-size: 13px; color: var(--muted)">2018.12</span><br>GTQ 1급 <span style="font-size: 13px; color: var(--muted)">2012.12</span></p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="contact" style="padding: 96px clamp(16px, 4vw, 32px) 120px">
+<div data-reveal="depth" style="position: relative; overflow: hidden; max-width: 1200px; margin: 0 auto; border-radius: 24px; background: var(--solid); border: 1px solid var(--line); border-bottom: 1px solid var(--foot); box-shadow: var(--shadow)">
+<div aria-hidden="true" style="position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 125%, rgba(53,198,232,0.34) 0%, rgba(66,117,255,0.12) 45%, rgba(53,198,232,0) 75%)"></div>
+<div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 72px 24px 96px; text-align: center">
+<h2 class="t" style="margin: 0; font-weight: 800; font-size: clamp(28px, 3.6vw, 44px); line-height: 1.25; letter-spacing: -0.03em; color: var(--strong)">팀에 맞는 AX 교육을 함께 설계합니다</h2>
+<p style="margin: 0; max-width: 560px; font-size: 16px; color: var(--body)">임원부터 실무자, 개발자, 고교생까지 대상의 업무 맥락에 맞춰 과정을 구성합니다.</p>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center">
+<a href="mailto:sangwon.lee@buddle.it.kr" class="btn btn-p" style="display: inline-flex; align-items: center; height: 48px; padding: 0 24px; border-radius: 10px; background: #2f5ce6; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none">sangwon.lee@buddle.it.kr</a>
+<a href="https://github.com/buddle6091" class="btn btn-g" style="display: inline-flex; align-items: center; height: 48px; padding: 0 20px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); color: var(--strong); font-size: 15px; font-weight: 600; text-decoration: none">GitHub</a>
+<a href="https://velog.io/@buddle6091" class="btn btn-g" style="display: inline-flex; align-items: center; height: 48px; padding: 0 20px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); color: var(--strong); font-size: 15px; font-weight: 600; text-decoration: none">Tech Blog</a>
+</div>
+</div>
+</div>
+</section>
+
+<footer style="padding: 24px clamp(16px, 4vw, 32px) 48px; border-top: 1px solid var(--line)">
+<p style="max-width: 1200px; margin: 0 auto; font-size: 12px; color: var(--muted)">buddle · 공개용 프로필 — 고객사 실명과 증빙 자료는 제출용 이력서에 별도로 기재합니다.</p>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["system","light","dark"],"default":"system","section":"Theme"},"$preview":{"width":1440,"height":6800}}'>
+class Component extends DCLogic {
+  _data() {
+    if (this._d) return this._d;
+    var phil = '직접 실습해 보고, 그 실습 안에서 얻는 CS 지식과 내 업무의 Pain Point를 스스로 해결할 수 있겠다는 자신감을 갖게 하는 교육을 지향합니다.';
+    var skills = [
+      { title: '개발 스택', chips: ['프론트엔드 파트 리드 개발', 'React · Vue3 · NextJS', 'Python', 'Monorepo (Nx, Turborepo)', 'Module Federation', '디자인시스템 구축 (Storybook)', '외부 기기 (프린터, 태블릿) 기능 연동'] },
+      { title: 'AI · AX', chips: ['AI Literacy', '바이브코딩', 'Agent Orchestration 구축', 'Agent · RAG (Python 코드 개발)', 'Claude Code', 'ChatGPT', 'Gemini'] },
+      { title: '과정 운영', chips: ['해커톤 · PBL 과정 운영 및 TA', '개발 현업 경험이 필요한 AI 개발 교육', 'AI 프로젝트 개발 멘토링 (온 · 오프라인)'] }
+    ];
+    var aud = [['전자/반도체', 329], ['IT/제조', 256], ['종합상사', 35], ['제조 지주', 35], ['노원 미래산업고', 35], ['에듀테크', 25], ['그룹 연수원', 24], ['바이오', 24], ['제조/배터리', 21], ['의료', 19], ['레저/서비스', 16], ['식품', 16], ['광고/마케팅', 15], ['그 외 19곳', 119]];
+    var courses = [
+      ['2026.09.28 ~ 10.08', '64h', '전자/반도체', '개발자', 'AI Agent 아키텍트 과정 — Agent 설계 · RAG · MCP · Multi-Agent (8일)', 'Claude Code · OpenAI API'],
+      ['2026.04.06 ~ 06.22', '256h', '철강', '개발자', '전문개발 과정 — Agent · RAG 코드 개발 (8회, 회차별 2~5일 블록)', 'Claude Code'],
+      ['2026.06.11 ~ 07.30', '152h', '전자/반도체', '임원', '임원 AI 교육 (8차수, 2일씩 총 16일분)', 'Claude Code'],
+      ['2026.08.24 ~ 09.18', '72h', '전자/반도체', '보직장', '코딩 에이전트 설계 교육', 'Gemini · Claude Code'],
+      ['2026.10.12 ~ 10.23', '45h', '전자/반도체', '보직장', '보직장 바이브코딩 교육 (5일)', 'Claude Code'],
+      ['2026.10.13 ~ 10.22', '28.5h', '생명보험', '핵심인재', 'AI-EXPERT PBL 멘토링 (3일)', 'Claude'],
+      ['2026.09.09 ~ 09.30', '21h', '제조/배터리', '핵심인재', '하반기 핵심인재 PBL (3일 강의 + 2주간 집중 개발 멘토링)', 'Claude Code'],
+      ['2026.09.28 ~ 10.15', '6h+', '양주시', '공모전 참가자', 'AI 공모전 개발 멘토링', 'Claude Code'],
+      ['2026.01.13 ~ 03.16', '20h', '그룹 연수원', '임직원', '연수원 순회 AI 교육 (3개 연수소, 5회)', 'Claude Code'],
+      ['2024', '40h', '노원 미래산업고', '고교생', '파이썬 기초 과정 및 데이터 시각화 교육', 'Python']
+    ];
+    var mentoring = [
+      ['1:1 실습 밀착 지도', '강의 중 실습 구간에서 개별 진도를 확인하며 막힌 지점을 직접 잡아 드립니다. 컴퓨터 사용이 익숙하지 않은 리더급 수강생도 결과물을 완성하고 돌아가는 것을 기준으로 삼습니다.'],
+      ['수준별 눈높이 조정', '사장단 · 임원부터 실무자, 대졸 신입, 고교생, 비개발 직군까지 담당했습니다. 같은 주제라도 대상의 업무 맥락에 맞춰 실습 과제와 예시를 다시 설계합니다.'],
+      ['강의실 환경 대응', '네트워크에 대한 이해를 바탕으로 강의실의 망 · 접속 문제를 빠르게 파악하고, 수강생이 납득할 수 있게 원인을 안내하며 해결합니다.'],
+      ['실습 에러 핸들링', '웹 서비스를 처음부터 끝까지 개발 · 운영한 경험으로 실습과 AI 툴에서 발생하는 대부분의 에러를 직접 처리해, 수업 중 병목에 빠르고 유연하게 대처합니다.'],
+      ['PBL · 해커톤 코칭', '해커톤 · 미니 프로젝트 과정에서 TA로 팀별 기술 지원을 맡아, 문제 정의부터 데모까지 각 팀의 막힌 구간을 함께 풀어냅니다.']
+    ];
+    var career = [
+      { period: '2024.08 ~ 2025.12', title: '(주) 화이트블록 — 프론트엔드 개발자 (1인 담당)', stack: 'React 19 · TypeScript · Next.js · Nx · Module Federation · Rspack · Vite · Jotai · TanStack Query · Radix UI · Tailwind · AG Grid Enterprise · GitHub Actions', summary: '대학 캠퍼스 플랫폼 ‘잇츠미 엔터프라이즈’ 프론트엔드 전담 · 3개 모노레포 / 약 205K LOC / 1,323 commits', bullets: [
+        '잇츠미 엔터프라이즈를 지속 고도화하며 도입 대학을 8개교에서 20개교 이상으로 확장 (경희대, 한국외대, 시립대, 제주대 등), 학교별 요구사항을 공통 기능으로 흡수해 신규 도입 비용 절감',
+        'Next.js 단일 앱을 SPA + Module Federation 아키텍처(3 host / 11 remote)로 단독 마이그레이션, 컨벤션 · 폴더 구조 · 패키지 전략 재수립',
+        'OpenAPI 스키마 기반 코드 생성 파이프라인 구축 — 55개 도메인의 타입 815개 · React Query 훅 308개 자동 생성으로 API 연동 수작업 제거',
+        'React 18 → 19, Next 14 → 15 메이저 업그레이드 단독 수행, 적용 중 발견한 React 코어 버그를 오픈소스 이슈로 등록 · 원인 규명',
+        'GitHub Copilot Bot 기반 PR QA 체계 구축 — 코드 컨벤션 · 보안 · 수정사항을 1인 개발 환경에서도 PR 단계에서 자체 관리',
+        'PAGER · KDS 외부 기기 연동 프로그램, 현대자동차 블루핸즈 결제 시스템 외주 개발 병행'] },
+      { period: '2023.11 ~ 2024.01', title: '(주) 스왈라비 — 일경험 프로그램 체험형 인턴', stack: 'React · TypeScript · Recoil · React Query · Emotion · CSS · Axios · Figma', summary: '', bullets: ['소상공인 대상 서비스 프론트엔드 전담 — 전 페이지 · 기능 구현, Figma 공통 컴포넌트를 props 기반으로 설계해 중복 코드 최소화'] },
+      { period: '2023.09', title: '2023 항해커톤 우승 (팀스파르타 주최)', stack: '', summary: '', bullets: ['한글 코딩 서비스 ‘호랑에듀’ LMS 기업 과제 수행, 전체 참가 팀 중 최우수 작품으로 우승 (상금 500만 원)'] },
+      { period: '2023.07 ~ 2023.09', title: '(주) 클라 코퍼레이션', stack: 'NextJS · TypeScript · Recoil · React Query · Styled-Components · CSS · Axios · AWS Amplify · Figma', summary: '', bullets: ['크리에이터 · 광고주 매칭 플랫폼 ‘크리플래닛’ 초기 빌딩, 디자인 시스템 없이 공통 컴포넌트 체계 구축'] }
+    ];
+    var gi = 0;
+    this._d = {
+      words: phil.split(' ').map(function (w, i) { return { w: w, i: i }; }),
+      skills: skills.map(function (g, i) { return { title: g.title, chips: g.chips, i: i }; }),
+      audience: aud.map(function (a, i) { return { name: a[0], h: a[1], pct: (a[1] / 329 * 100).toFixed(1) + '%', i: i }; }),
+      courses: courses.map(function (c) { return { date: c[0], hours: c[1], industry: c[2], target: c[3], title: c[4], tool: c[5] }; }),
+      mentoring: mentoring.map(function (m, i) { return { no: '0' + (i + 1), title: m[0], body: m[1], i: i }; }),
+      career: career.map(function (c, i) { c.i = i; c.hasStack = !!c.stack; c.hasSummary = !!c.summary; return c; })
+    };
+    return this._d;
+  }
+
+  _theme() {
+    var st = this.state || {};
+    if (st.theme) return st.theme;
+    var p = this.props.theme ?? 'system';
+    if (p === 'light' || p === 'dark') return p;
+    return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  }
+
+  renderVals() {
+    var self = this, d = this._data(), st = this.state || {};
+    var theme = this._theme();
+    this._themeNow = theme;
+    if (!this._h) {
+      this._h = {
+        setRoot: function (el) { if (el) { self._root = el; el.setAttribute('data-js', '1'); setTimeout(function () { self._wire(); }, 0); } else { self._unwire(); self._root = null; } },
+        setCanvas: function (el) { if (el) { self._cv = el; self._startThree(0); } else { self._stopThree(); self._cv = null; } },
+        setProgress: function (el) { self._prog = el; },
+        setDeck: function (el) { self._deck = el; },
+        setWords: function (el) { self._wordsEl = el; },
+        toggleTheme: function () { self.setState({ theme: self._theme() === 'dark' ? 'light' : 'dark' }); },
+        tiltMove: function (e) {
+          if (e.pointerType && e.pointerType !== 'mouse') return;
+          if (self._reduce) return;
+          var el = e.currentTarget, r = el.getBoundingClientRect();
+          var x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+          el.style.transform = 'perspective(900px) rotateX(' + (-y * 10).toFixed(2) + 'deg) rotateY(' + (x * 12).toFixed(2) + 'deg) translateZ(0)';
+        },
+        tiltLeave: function (e) { e.currentTarget.style.transform = ''; }
+      };
+    }
+    var p = st.count == null ? 0 : st.count;
+    function fmt(n) { return Math.round(n).toLocaleString('ko-KR'); }
+    var stats = [
+      { value: fmt(38 * p) + '곳', label: '담당 기업 · 기관' },
+      { value: fmt(1000 * p) + 'h+', label: '누적 강의 시간' },
+      { value: fmt(1200 * p) + '명+', label: '누적 수강 인원' },
+      { value: fmt(51 * p) + '과정', label: '담당 과정 수' },
+      { value: fmt(3 * p) + '년 차', label: '프론트엔드 실무 경력' }
+    ].map(function (s, i) { s.i = i; return s; });
+    var navDefs = [['about', '소개'], ['expertise', '전문 분야'], ['teaching', '강의 이력'], ['mentoring', '멘토링'], ['career', '개발 경력'], ['contact', '문의']];
+    var active = st.active || '';
+    return Object.assign({}, this._h, {
+      theme: theme,
+      isDark: theme === 'dark',
+      isLight: theme !== 'dark',
+      themeLabel: theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환',
+      heroLabel: theme === 'dark' ? '흑요석 구체 둘레로 청자빛 성운 원반이 천천히 도는 3D 장식' : '청자 유약 방울이 궤도 고리 안에서 천천히 일렁이는 3D 장식',
+      nav: navDefs.map(function (n) { return { id: n[0], label: n[1], active: String(active === n[0]) }; }),
+      stats: stats,
+      words: d.words, skills: d.skills, audience: d.audience, courses: d.courses, mentoring: d.mentoring, career: d.career
+    });
+  }
+
+  componentWillUnmount() { this._unwire(); this._stopThree(); }
+
+  _wire() {
+    var self = this, root = this._root;
+    if (!root || this._wired) return;
+    this._wired = true;
+    this._reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var hasIO = 'IntersectionObserver' in window;
+
+    var reveals = root.querySelectorAll('[data-reveal]');
+    if (hasIO) {
+      this._io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { en.target.setAttribute('data-in', '1'); self._io.unobserve(en.target); }
+        });
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+      reveals.forEach(function (el) { self._io.observe(el); });
+
+      var statsEl = root.querySelector('[data-stats]');
+      if (statsEl) {
+        this._ioStats = new IntersectionObserver(function (entries) {
+          if (entries.some(function (en) { return en.isIntersecting; })) { self._ioStats.disconnect(); self._countUp(); }
+        }, { threshold: 0.3 });
+        this._ioStats.observe(statsEl);
+      }
+
+      this._ioNav = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) self.setState({ active: en.target.id }); });
+      }, { rootMargin: '-45% 0px -50% 0px' });
+      ['about', 'expertise', 'teaching', 'mentoring', 'career', 'contact'].forEach(function (id) {
+        var s = root.querySelector('#' + id); if (s) self._ioNav.observe(s);
+      });
+    } else {
+      reveals.forEach(function (el) { el.setAttribute('data-in', '1'); });
+      this._countUp();
+    }
+
+    this._onScroll = function () {
+      if (self._ticking) return;
+      self._ticking = true;
+      requestAnimationFrame(function () { self._ticking = false; self._scrollFx(); });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    window.addEventListener('resize', this._onScroll);
+    this._onDeck = function () { self._deckFx(); };
+    if (this._deck) this._deck.addEventListener('scroll', this._onDeck, { passive: true });
+    this._onPointer = function (e) {
+      self._px = (e.clientX / window.innerWidth) * 2 - 1;
+      self._py = (e.clientY / window.innerHeight) * 2 - 1;
+    };
+    window.addEventListener('pointermove', this._onPointer, { passive: true });
+    this._scrollFx();
+    this._deckFx();
+  }
+
+  _unwire() {
+    [this._io, this._ioStats, this._ioNav].forEach(function (o) { if (o) o.disconnect(); });
+    if (this._onScroll) { window.removeEventListener('scroll', this._onScroll); window.removeEventListener('resize', this._onScroll); }
+    if (this._deck && this._onDeck) this._deck.removeEventListener('scroll', this._onDeck);
+    if (this._onPointer) window.removeEventListener('pointermove', this._onPointer);
+    if (this._countRaf) cancelAnimationFrame(this._countRaf);
+    this._wired = false;
+  }
+
+  _countUp() {
+    var self = this;
+    if (this._reduce) { this.setState({ count: 1 }); return; }
+    var t0 = performance.now(), dur = 1600;
+    function step(now) {
+      var k = Math.min(1, (now - t0) / dur);
+      var e = 1 - Math.pow(1 - k, 4);
+      self.setState({ count: e });
+      if (k < 1) self._countRaf = requestAnimationFrame(step);
+    }
+    this._countRaf = requestAnimationFrame(step);
+  }
+
+  _scrollFx() {
+    var doc = document.documentElement;
+    var y = window.scrollY || doc.scrollTop || 0;
+    this._scrollY = y;
+    var max = Math.max(1, (doc.scrollHeight || 1) - window.innerHeight);
+    if (this._prog) this._prog.style.transform = 'scaleX(' + Math.min(1, y / max).toFixed(4) + ')';
+    var wEl = this._wordsEl;
+    if (wEl) {
+      var spans = wEl.querySelectorAll('[data-w]');
+      if (this._reduce) { spans.forEach(function (s) { s.style.opacity = '1'; }); return; }
+      var r = wEl.getBoundingClientRect(), vh = window.innerHeight;
+      var prog = (vh * 0.8 - r.top) / (r.height * 0.6 + vh * 0.2);
+      prog = Math.max(0, Math.min(1, prog));
+      var n = spans.length;
+      spans.forEach(function (s, i) { s.style.opacity = (i / n) < prog ? '1' : 'var(--word-dim)'; });
+    }
+  }
+
+  _deckFx() {
+    var deck = this._deck;
+    if (!deck || this._reduce) return;
+    var w = deck.clientWidth, center = deck.scrollLeft + w / 2;
+    var cards = deck.children;
+    for (var i = 0; i < cards.length; i++) {
+      var c = cards[i];
+      var mid = c.offsetLeft + c.offsetWidth / 2;
+      var d = (mid - center) / w;
+      var rot = Math.max(-38, Math.min(38, -d * 46));
+      var z = -Math.min(1, Math.abs(d)) * 140;
+      c.style.transform = 'rotateY(' + rot.toFixed(2) + 'deg) translateZ(' + z.toFixed(1) + 'px)';
+      c.style.opacity = String(Math.max(0.45, 1 - Math.abs(d) * 0.7).toFixed(3));
+    }
+  }
+
+  _stopThree() {
+    if (this._raf3) cancelAnimationFrame(this._raf3);
+    this._raf3 = 0;
+    if (this._ro3) { this._ro3.disconnect(); this._ro3 = null; }
+    if (this._io3) { this._io3.disconnect(); this._io3 = null; }
+    if (this._three) { try { this._three.renderer.dispose(); } catch (e) {} this._three = null; }
+  }
+
+  _startThree(tries) {
+    var self = this, cv = this._cv;
+    if (!cv || this._three) return;
+    var T = window.THREE;
+    if (!T) { if (tries < 40) setTimeout(function () { self._startThree(tries + 1); }, 150); return; }
+    var renderer;
+    try { renderer = new T.WebGLRenderer({ canvas: cv, alpha: true, antialias: true }); } catch (e) { return; }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setClearColor(0x000000, 0);
+    var scene = new T.Scene();
+    var camera = new T.PerspectiveCamera(35, 1, 0.1, 100);
+    camera.position.set(0, 0, 7);
+    var group = new T.Group();
+    scene.add(group);
+
+    /* ── 백자(light): 청자 유약 방울 + 궤도 고리 + 위성 + 먼지 ── */
+    var light = new T.Group();
+    group.add(light);
+    var uniforms = {
+      uTime: { value: 0 },
+      uFade: { value: 1 },
+      uInner: { value: new T.Color('#d9f4fb') },
+      uRim: { value: new T.Color('#4275ff') },
+      uHi: { value: new T.Color('#ffffff') }
+    };
+    var mat = new T.ShaderMaterial({
+      uniforms: uniforms,
+      transparent: true,
+      depthWrite: false,
+      vertexShader: [
+        'uniform float uTime;varying float vDisp;varying vec3 vN;varying vec3 vView;varying float vY;',
+        'void main(){',
+        ' vec3 p=position;',
+        ' float d=0.11*sin(2.6*p.x+uTime*0.9)*sin(2.3*p.y+uTime*0.7)*sin(2.1*p.z+uTime*0.8)+0.05*sin(4.2*(p.x+p.z)+uTime*1.2);',
+        ' vDisp=d;vY=p.y;',
+        ' vec4 mv=modelViewMatrix*vec4(p+normal*d,1.0);',
+        ' vN=normalize(normalMatrix*normal);vView=normalize(-mv.xyz);',
+        ' gl_Position=projectionMatrix*mv;}'
+      ].join('\n'),
+      fragmentShader: [
+        'uniform vec3 uInner;uniform vec3 uRim;uniform vec3 uHi;uniform float uFade;varying float vDisp;varying vec3 vN;varying vec3 vView;varying float vY;',
+        'void main(){',
+        ' float fr=pow(1.0-max(dot(normalize(vN),normalize(vView)),0.0),2.0);',
+        ' vec3 pool=mix(uInner,mix(uInner,vec3(0.208,0.776,0.910),0.45),smoothstep(0.6,-1.2,vY));',
+        ' vec3 c=mix(pool,uRim,fr*0.85);',
+        ' c+=uHi*smoothstep(0.03,0.14,vDisp)*0.4;',
+        ' c=mix(c,uRim,(0.5+0.5*sin(vDisp*70.0))*0.06);',
+        ' gl_FragColor=vec4(c,mix(0.92,1.0,fr)*uFade);}'
+      ].join('\n')
+    });
+    var blob = new T.Mesh(new T.IcosahedronGeometry(1.35, 48), mat);
+    light.add(blob);
+
+    var ringMats = [];
+    function ring(r, rx, ry) {
+      var pts = [];
+      for (var i = 0; i < 160; i++) { var a = i / 160 * Math.PI * 2; pts.push(new T.Vector3(Math.cos(a) * r, Math.sin(a) * r, 0)); }
+      var m = new T.LineBasicMaterial({ color: 0x4275ff, transparent: true, opacity: 0.3 });
+      ringMats.push(m);
+      var l = new T.LineLoop(new T.BufferGeometry().setFromPoints(pts), m);
+      l.rotation.set(rx, ry, 0);
+      light.add(l);
+      return l;
+    }
+    var r1 = ring(2.05, 1.15, 0.25), r2 = ring(2.45, 1.45, -0.6);
+    var moonMat = new T.MeshBasicMaterial({ color: 0x35c6e8, transparent: true });
+    var moon1 = new T.Mesh(new T.SphereGeometry(0.07, 16, 16), moonMat);
+    var moon2 = new T.Mesh(new T.SphereGeometry(0.05, 16, 16), moonMat);
+    r1.add(moon1); r2.add(moon2);
+    var N = 520, pos = new Float32Array(N * 3);
+    for (var i = 0; i < N; i++) {
+      var u = Math.random() * 2 - 1, th = Math.random() * Math.PI * 2, rad = 2.4 + Math.random() * 1.2, s = Math.sqrt(1 - u * u);
+      pos[i * 3] = s * Math.cos(th) * rad; pos[i * 3 + 1] = u * rad; pos[i * 3 + 2] = s * Math.sin(th) * rad;
+    }
+    var pg = new T.BufferGeometry(); pg.setAttribute('position', new T.BufferAttribute(pos, 3));
+    var pMat = new T.PointsMaterial({ color: 0x4275ff, size: 0.028, transparent: true, opacity: 0.45, sizeAttenuation: true, depthWrite: false });
+    var points = new T.Points(pg, pMat);
+    light.add(points);
+
+    /* ── 흑유(dark): 흑요석 핵 + 빛나는 청자 성운 원반 + 별먼지 ── */
+    var dark = new T.Group();
+    group.add(dark);
+    var coreU = { uTime: { value: 0 }, uFade: { value: 0 } };
+    var coreMat = new T.ShaderMaterial({
+      uniforms: coreU,
+      transparent: true,
+      vertexShader: [
+        'varying vec3 vN;varying vec3 vView;varying vec3 vP;',
+        'void main(){vP=position;vec4 mv=modelViewMatrix*vec4(position,1.0);',
+        ' vN=normalize(normalMatrix*normal);vView=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}'
+      ].join('\n'),
+      fragmentShader: [
+        'uniform float uTime;uniform float uFade;varying vec3 vN;varying vec3 vView;varying vec3 vP;',
+        'void main(){',
+        ' float ndv=max(dot(normalize(vN),normalize(vView)),0.0);',
+        ' float fr=pow(1.0-ndv,2.6);',
+        ' vec3 base=mix(vec3(0.043,0.055,0.086),vec3(0.075,0.094,0.149),smoothstep(-1.0,1.0,vP.y));',
+        ' float band=smoothstep(0.92,1.0,0.5+0.5*sin(vP.y*7.0-uTime*0.6+sin(vP.x*3.0+uTime*0.3)));',
+        ' vec3 glaze=mix(vec3(0.208,0.776,0.910),vec3(0.259,0.459,1.0),0.5+0.5*vP.x);',
+        ' vec3 c=base+glaze*fr*0.95+glaze*band*0.18;',
+        ' float spec=pow(max(dot(normalize(vN),normalize(vec3(-0.4,0.6,0.7))),0.0),40.0);',
+        ' c+=vec3(0.75,0.92,1.0)*spec*0.35;',
+        ' gl_FragColor=vec4(c,uFade);}'
+      ].join('\n')
+    });
+    var core = new T.Mesh(new T.SphereGeometry(1.0, 64, 64), coreMat);
+    dark.add(core);
+
+    var DN = 4200;
+    var dA = new Float32Array(DN * 4), dPos = new Float32Array(DN * 3);
+    for (var k = 0; k < DN; k++) {
+      var rr = 1.45 + Math.pow(Math.random(), 1.6) * 2.1;
+      dA[k * 4] = rr;
+      dA[k * 4 + 1] = Math.random() * Math.PI * 2;
+      dA[k * 4 + 2] = (Math.random() + Math.random() + Math.random() - 1.5) * 0.12 * (rr - 1.0);
+      dA[k * 4 + 3] = Math.random();
+    }
+    var dg = new T.BufferGeometry();
+    dg.setAttribute('position', new T.BufferAttribute(dPos, 3));
+    dg.setAttribute('aData', new T.BufferAttribute(dA, 4));
+    var diskU = { uTime: { value: 0 }, uFade: { value: 0 }, uPR: { value: renderer.getPixelRatio() } };
+    var diskMat = new T.ShaderMaterial({
+      uniforms: diskU,
+      transparent: true,
+      depthWrite: false,
+      blending: T.AdditiveBlending,
+      vertexShader: [
+        'attribute vec4 aData;uniform float uTime;uniform float uPR;varying vec3 vC;varying float vA;',
+        'void main(){',
+        ' float r=aData.x;float a=aData.y+uTime*(0.55/pow(r,1.5));',
+        ' float y=aData.z+0.06*sin(a*3.0+uTime*0.8+r*2.0);',
+        ' vec3 p=vec3(cos(a)*r,y,sin(a)*r);',
+        ' vec4 mv=modelViewMatrix*vec4(p,1.0);',
+        ' float h=aData.w;',
+        ' vC=mix(vec3(0.208,0.776,0.910),vec3(0.259,0.459,1.0),smoothstep(1.6,3.4,r));',
+        ' vC=mix(vC,vec3(0.482,0.361,1.0),step(0.92,h)*0.6);',
+        ' vC=mix(vC,vec3(0.85,0.97,1.0),step(0.985,h));',
+        ' vA=(0.35+0.65*smoothstep(3.6,1.5,r))*(0.6+0.4*sin(uTime*1.5+h*40.0));',
+        ' gl_PointSize=(1.4+h*2.6)*uPR*(7.0/-mv.z);',
+        ' gl_Position=projectionMatrix*mv;}'
+      ].join('\n'),
+      fragmentShader: [
+        'uniform float uFade;varying vec3 vC;varying float vA;',
+        'void main(){vec2 q=gl_PointCoord-0.5;float d=length(q);float g=smoothstep(0.5,0.0,d);',
+        ' gl_FragColor=vec4(vC*g*vA*uFade,1.0);}'
+      ].join('\n')
+    });
+    var disk = new T.Points(dg, diskMat);
+    disk.frustumCulled = false;
+    disk.rotation.set(0.42, 0, -0.32);
+    dark.add(disk);
+
+    var SN = 900, sp = new Float32Array(SN * 3);
+    for (var j = 0; j < SN; j++) {
+      var su = Math.random() * 2 - 1, st2 = Math.random() * Math.PI * 2, sr = 4.2 + Math.random() * 3.5, ss = Math.sqrt(1 - su * su);
+      sp[j * 3] = ss * Math.cos(st2) * sr; sp[j * 3 + 1] = su * sr; sp[j * 3 + 2] = ss * Math.sin(st2) * sr;
+    }
+    var sg = new T.BufferGeometry(); sg.setAttribute('position', new T.BufferAttribute(sp, 3));
+    var starMat = new T.PointsMaterial({ color: 0x8fe1f4, size: 0.022, transparent: true, opacity: 0, sizeAttenuation: true, depthWrite: false, blending: T.AdditiveBlending });
+    var stars = new T.Points(sg, starMat);
+    dark.add(stars);
+
+    var haloMat = new T.ShaderMaterial({
+      uniforms: { uFade: { value: 0 } },
+      transparent: true, depthWrite: false, blending: T.AdditiveBlending,
+      vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+      fragmentShader: 'uniform float uFade;varying vec2 vUv;void main(){float d=length(vUv-0.5)*2.0;float g=smoothstep(1.0,0.35,d)*smoothstep(0.25,0.55,d);gl_FragColor=vec4(vec3(0.208,0.776,0.910)*g*0.22*uFade,1.0);}'
+    });
+    var halo = new T.Mesh(new T.PlaneGeometry(4.6, 4.6), haloMat);
+    halo.position.z = -0.2;
+    scene.add(halo);
+
+    this._three = { renderer: renderer };
+
+    function resize() {
+      var w = cv.clientWidth || 1, h = cv.clientHeight || 1;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.position.z = w < 520 ? 8.2 : 7;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    if (window.ResizeObserver) { this._ro3 = new ResizeObserver(resize); this._ro3.observe(cv); }
+    var visible = true;
+    if ('IntersectionObserver' in window) {
+      this._io3 = new IntersectionObserver(function (en) { visible = en[0] ? en[0].isIntersecting : true; });
+      this._io3.observe(cv);
+    }
+
+    var t = 0, last = performance.now(), rx = 0, ry = 0;
+    var mix = self._themeNow === 'dark' ? 1 : 0, lastMix = -1;
+    var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    function applyMix(m) {
+      var e = m * m * (3 - 2 * m);
+      var lf = 1 - e, df = e;
+      uniforms.uFade.value = lf;
+      ringMats.forEach(function (rm) { rm.opacity = 0.3 * lf; });
+      pMat.opacity = 0.45 * lf;
+      moonMat.opacity = lf;
+      var ls = 0.85 + 0.15 * lf;
+      light.scale.set(ls, ls, ls);
+      light.visible = lf > 0.001;
+      coreU.uFade.value = df;
+      diskU.uFade.value = df;
+      starMat.opacity = 0.55 * df;
+      haloMat.uniforms.uFade.value = df;
+      var ds = 0.8 + 0.2 * df;
+      dark.scale.set(ds, ds, ds);
+      dark.visible = df > 0.001;
+      halo.visible = dark.visible;
+    }
+    applyMix(mix);
+
+    function frame(now) {
+      self._raf3 = requestAnimationFrame(frame);
+      var dt = Math.min(0.1, (now - last) / 1000); last = now;
+      var target = self._themeNow === 'dark' ? 1 : 0;
+      if (reduce) mix = target;
+      else mix += (target - mix) * Math.min(1, dt * 2.2);
+      if (Math.abs(target - mix) < 0.001) mix = target;
+      if (mix !== lastMix) { applyMix(mix); lastMix = mix; if (reduce) renderer.render(scene, camera); }
+      if (!visible || reduce) return;
+      t += dt;
+      uniforms.uTime.value = t;
+      coreU.uTime.value = t;
+      diskU.uTime.value = t;
+      stars.rotation.y = t * 0.01;
+      var sy = self._scrollY || 0;
+      var tx = (self._py || 0) * 0.35, ty = (self._px || 0) * 0.5;
+      rx += (tx - rx) * Math.min(1, dt * 3);
+      ry += (ty - ry) * Math.min(1, dt * 3);
+      group.rotation.x = rx + sy * 0.0008;
+      group.rotation.y = ry + t * 0.12;
+      group.position.y = sy * 0.0012;
+      var sc = Math.max(0.75, 1 - sy * 0.0002);
+      group.scale.set(sc, sc, sc);
+      r1.rotation.z = t * 0.25; r2.rotation.z = -t * 0.18;
+      moon1.position.set(Math.cos(t * 0.6) * 2.05, Math.sin(t * 0.6) * 2.05, 0);
+      moon2.position.set(Math.cos(-t * 0.45 + 2) * 2.45, Math.sin(-t * 0.45 + 2) * 2.45, 0);
+      points.rotation.y = t * 0.03;
+      halo.position.y = group.position.y;
+      halo.scale.set(sc, sc, sc);
+      renderer.render(scene, camera);
+    }
+    renderer.render(scene, camera);
+    this._raf3 = requestAnimationFrame(frame);
+  }
+}
+</script>
+</body>
+</html>

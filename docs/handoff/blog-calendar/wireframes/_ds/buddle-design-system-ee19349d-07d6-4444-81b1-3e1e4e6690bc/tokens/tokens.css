@@ -1,0 +1,196 @@
+/* @buddle/tokens — 단일 출처. 값 변경은 이 파일에서만. */
+:root {
+  /* primary · 벽청 (500 = base) */
+  --ds-color-primary-50:  #eef3ff; /* @kind color */
+  --ds-color-primary-100: #dde7ff; /* @kind color */
+  --ds-color-primary-200: #c2d2ff; /* @kind color */
+  --ds-color-primary-300: #9bb4ff; /* @kind color */
+  --ds-color-primary-400: #6e93ff; /* @kind color */
+  --ds-color-primary-500: #4275ff; /* @kind color */
+  --ds-color-primary-600: #2f5ce6; /* @kind color */
+  --ds-color-primary-700: #2447b4; /* @kind color */
+  --ds-color-primary-800: #1e3a8c; /* @kind color */
+  --ds-color-primary-900: #1b3169; /* @kind color */
+  --ds-color-primary-950: #121f42; /* @kind color */
+
+  /* secondary · 자운 */
+  --ds-color-secondary-100: #f1edff; /* @kind color */
+  --ds-color-secondary-300: #cfc2ff; /* @kind color */
+  --ds-color-secondary-500: #7b5cff; /* @kind color */
+  --ds-color-secondary-700: #5a3ce0; /* @kind color */
+  --ds-color-secondary-900: #33207f; /* @kind color */
+
+  /* tertiary · 청자 */
+  --ds-color-tertiary-100: #e6f8fc; /* @kind color */
+  --ds-color-tertiary-300: #9adff0; /* @kind color */
+  --ds-color-tertiary-500: #35c6e8; /* @kind color */
+  --ds-color-tertiary-700: #1b93b4; /* @kind color */
+  --ds-color-tertiary-900: #124c63; /* @kind color */
+
+  /* semantic */
+  --ds-color-success: #22b07d; /* @kind color */
+  --ds-color-warning: #e8a33d; /* @kind color */
+  --ds-color-danger:  #e5484d; /* @kind color */
+  --ds-color-info:    var(--ds-color-primary-500); /* @kind color */
+  /* semantic soft(배경) / ink(글자, 4.5:1 이상) — Badge·Alert·FieldError */
+  --ds-color-success-soft: #e3f6ee; /* @kind color */ --ds-color-success-ink: #126b4b; /* @kind color */
+  --ds-color-warning-soft: #fdf1de; /* @kind color */ --ds-color-warning-ink: #8a5a12; /* @kind color */
+  --ds-color-danger-soft:  #fde8e8; /* @kind color */ --ds-color-danger-ink:  #a8262b; /* @kind color */
+
+  /* neutral · primary 색조가 섞인 냉회색 */
+  --ds-color-neutral-50:  #f7f8fb; /* @kind color */
+  --ds-color-neutral-100: #eef0f6; /* @kind color */
+  --ds-color-neutral-200: #dfe3ed; /* @kind color */
+  --ds-color-neutral-300: #c5cbd9; /* @kind color */
+  --ds-color-neutral-400: #98a1b5; /* @kind color */
+  --ds-color-neutral-500: #6b7488; /* @kind color */
+  --ds-color-neutral-600: #4a5263; /* @kind color */
+  --ds-color-neutral-700: #343a47; /* @kind color */
+  --ds-color-neutral-800: #22262f; /* @kind color */
+  --ds-color-neutral-900: #14171d; /* @kind color */
+  --ds-color-neutral-950: #0b0d11; /* @kind color */
+
+  /* text — white / #f7f9ff / #f4f6fb 위에서 4.5:1 이상 */
+  --ds-text-strong: #22262f; /* @kind color */
+  --ds-text-body:   #343a47; /* @kind font */
+  --ds-text-muted:  #5d6679; /* @kind color */
+  --ds-text-link:   #2f5ce6; /* @kind color */
+  --ds-text-link-hover: #4275ff; /* @kind color */
+
+  /* 백자 — 유리 알파의 베이스 (#FFF 금지) */
+  --ds-porcelain-snow: #fdfdfe; /* @kind color */
+  --ds-porcelain-milk: #f7f9fd; /* @kind color */
+  --ds-porcelain-ash:  #eef2f9; /* @kind color */
+  --ds-porcelain-blue: #e6edf6; /* @kind color */
+
+  /* 청자 유약 — 밑변 방사형 고임 */
+  --ds-glaze-tint:    rgb(66 117 255 / 0.10); /* @kind color */
+  --ds-glaze-celadon: rgb(53 198 232 / 0.16); /* @kind color */
+  --ds-pool: radial-gradient(150% 86% at 50% 116%,
+      var(--ds-glaze-celadon) 0%, var(--ds-glaze-tint) 38%, rgb(66 117 255 / 0) 66%); /* @kind color */
+
+  /* glass 3단계 */
+  --ds-glass-subtle-bg:     rgb(253 253 254 / 0.45); /* @kind color */
+  --ds-glass-subtle-border: rgb(253 253 254 / 0.60); /* @kind color */
+  --ds-glass-bg: linear-gradient(180deg, rgb(253 253 254 / 0.62), rgb(253 253 254 / 0.62)), var(--ds-pool); /* @kind color */
+  --ds-glass-border: rgb(253 253 254 / 0.80); /* @kind color */
+  --ds-glass-foot:   rgb(155 180 255 / 0.42); /* @kind color */   /* 굽선: light = border-bottom */
+  --ds-glass-foot-hover: rgb(66 117 255 / 0.55); /* @kind color */
+  --ds-glass-solid-bg:     rgb(253 253 254 / 0.80); /* @kind color */
+  --ds-glass-solid-border: rgb(253 253 254 / 0.90); /* @kind color */
+  --ds-glass-blur-sm: 8px; /* @kind spacing */
+  --ds-glass-blur-md: 16px; /* @kind spacing */
+  --ds-glass-blur-lg: 28px; /* @kind spacing */
+  --ds-glass-saturate: 150%; /* @kind color */
+
+  /* on-celadon: solid primary 위 글자색 */
+  --ds-on-celadon: #ffffff; /* @kind color */
+
+  /* elevation — 남색 rgb(23 42 94) 계열만 */
+  --ds-shadow-flat:    0 1px 2px rgb(23 42 94 / 0.10); /* @kind shadow */
+  --ds-shadow-raised:  0 6px 16px -6px rgb(23 42 94 / 0.18); /* @kind shadow */
+  --ds-shadow-glass:   inset 0 1px 0 rgb(255 255 255 / 0.95), 0 10px 30px -14px rgb(23 42 94 / 0.18); /* @kind shadow */
+  --ds-shadow-glass-hover: inset 0 1px 0 #ffffff, 0 16px 40px -16px rgb(23 42 94 / 0.24); /* @kind shadow */
+  --ds-shadow-overlay: 0 28px 64px -20px rgb(23 42 94 / 0.34); /* @kind shadow */
+  --ds-intaglio: inset 0 1px 2px rgb(23 42 94 / 0.08); /* @kind shadow */   /* 입력면 음각 */
+  --ds-ring: 0 0 0 3px rgb(66 117 255 / 0.35); /* @kind shadow */
+
+  /* overlay (Dialog·Sheet 뒤) */
+  --ds-scrim: rgb(11 13 17 / 0.42); /* @kind color */
+
+  /* tooltip — 유리 금지, 불투명 */
+  --ds-tooltip-bg: var(--ds-color-neutral-900); /* @kind color */
+  --ds-tooltip-fg: var(--ds-color-neutral-50); /* @kind color */
+
+  /* radius · space */
+  --ds-radius-sm: 6px; /* @kind radius */
+  --ds-radius-md: 10px; /* @kind radius */
+  --ds-radius-lg: 16px; /* @kind radius */
+  --ds-radius-xl: 24px; /* @kind radius */
+  --ds-space-unit: 4px; /* @kind spacing */ /* 스케일: 4 8 12 16 24 32 48 64 96 */
+
+  /* motion — 이징은 하나만 */
+  --ds-ease: cubic-bezier(0.22, 1, 0.36, 1); /* @kind other */
+  --ds-dur-control: 170ms; /* @kind other */
+  --ds-dur-surface: 300ms; /* @kind other */
+  --ds-dur-pool:    420ms; /* @kind color */
+
+  /* shadcn bridge (HSL 채널) */
+  --background: 222 40% 97%; /* @kind color */
+  --foreground: 222 17% 16%; /* @kind color */
+  --card: 240 33% 99%; /* @kind color */
+  --card-foreground: 222 17% 16%; /* @kind color */
+  --popover: 240 33% 99%; /* @kind color */
+  --popover-foreground: 222 17% 16%; /* @kind color */
+  --primary: 222 100% 63%; /* @kind color */
+  --primary-foreground: 0 0% 100%; /* @kind color */
+  --secondary: 252 100% 68%; /* @kind color */
+  --secondary-foreground: 0 0% 100%; /* @kind color */
+  --muted: 222 20% 94%; /* @kind color */
+  --muted-foreground: 222 12% 42%; /* @kind color */
+  --accent: 222 100% 97%; /* @kind color */
+  --accent-foreground: 222 66% 42%; /* @kind color */
+  --destructive: 358 75% 59%; /* @kind color */
+  --destructive-foreground: 0 0% 100%; /* @kind color */
+  --border: 222 20% 88%; /* @kind color */
+  --input: 222 20% 88%; /* @kind color */
+  --ring: 222 100% 63%; /* @kind color */
+  --radius: 0.625rem; /* @kind radius */
+}
+
+.dark {
+  /* 흑유 — 다크 표면 (#000 금지) */
+  --ds-obsidian-ink:   #0b0e16; /* @kind color */
+  --ds-obsidian-glaze: #131826; /* @kind color */
+  --ds-obsidian-ash:   #1b2233; /* @kind color */
+  --ds-obsidian-foot:  #252e42; /* @kind color */
+
+  --ds-celadon-base: var(--ds-color-primary-400); /* @kind color */  /* 비색 500 → 400 */
+  --ds-on-celadon:   var(--ds-obsidian-ink); /* @kind color */       /* 6.69:1 — 흰 글자는 2.88:1 실패 */
+
+  --ds-glaze-tint-2:  rgb(110 147 255 / 0.14); /* @kind color */
+  --ds-glaze-celadon: rgb(53 198 232 / 0.14); /* @kind color */
+  --ds-glass-subtle-bg:     rgb(255 255 255 / 0.05); /* @kind color */
+  --ds-glass-subtle-border: rgb(255 255 255 / 0.09); /* @kind color */
+  --ds-glass-bg: linear-gradient(180deg, rgb(27 34 51 / 0.72), rgb(27 34 51 / 0.72)),
+                 linear-gradient(200deg, transparent 46%, var(--ds-glaze-tint-2) 78%, var(--ds-glaze-celadon)); /* @kind color */
+  --ds-glass-border: rgb(255 255 255 / 0.14); /* @kind color */
+  --ds-glass-foot:   rgb(155 180 255 / 0.40); /* @kind color */       /* 굽선: dark = border-top */
+  --ds-glass-foot-hover: rgb(155 180 255 / 0.62); /* @kind color */
+  --ds-glass-solid-bg:     rgb(22 26 34 / 0.78); /* @kind color */
+  --ds-glass-solid-border: rgb(255 255 255 / 0.18); /* @kind color */
+  --ds-shadow-glass: inset 0 1px 0 rgb(255 255 255 / 0.12), 0 18px 44px -14px rgb(0 0 0 / 0.65); /* @kind shadow */
+  --ds-shadow-glass-hover: inset 0 1px 0 rgb(255 255 255 / 0.16), 0 22px 52px -14px rgb(0 0 0 / 0.72); /* @kind shadow */
+  --ds-intaglio: inset 0 2px 5px rgb(0 0 0 / 0.40); /* @kind shadow */
+
+  --ds-color-success-soft: var(--ds-obsidian-ash); /* @kind color */ --ds-color-success-ink: #4fd1a1; /* @kind color */
+  --ds-color-warning-soft: var(--ds-obsidian-ash); /* @kind color */ --ds-color-warning-ink: #f0bd6e; /* @kind color */
+  --ds-color-danger-soft:  var(--ds-obsidian-ash); /* @kind color */ --ds-color-danger-ink:  #f27d80; /* @kind color */
+
+  --ds-text-strong: #f7f8fb; /* @kind color */
+  --ds-text-body:   #c5cbd9; /* @kind font */
+  --ds-text-muted:  #98a1b5; /* @kind color */
+  --ds-text-link:   #9bb4ff; /* @kind color */
+  --ds-text-link-hover: #c2d2ff; /* @kind color */
+
+  --background: 222 30% 7%; /* @kind color */
+  --foreground: 222 25% 97%; /* @kind color */
+  --card: 223 29% 13%; /* @kind color */
+  --card-foreground: 222 25% 97%; /* @kind color */
+  --popover: 223 29% 13%; /* @kind color */
+  --popover-foreground: 222 25% 97%; /* @kind color */
+  --primary: 222 100% 71%; /* @kind color */
+  --primary-foreground: 222 40% 6%; /* @kind color */
+  --muted: 222 16% 18%; /* @kind color */
+  --muted-foreground: 222 12% 72%; /* @kind color */
+  --accent: 223 30% 16%; /* @kind color */
+  --accent-foreground: 222 100% 80%; /* @kind color */
+  --border: 222 22% 20%; /* @kind color */
+  --input: 222 22% 20%; /* @kind color */
+  --ring: 222 100% 71%; /* @kind color */
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root { --ds-glass-bg: rgb(253 253 254 / 0.92); /* @kind color */ --ds-glass-solid-bg: rgb(253 253 254 / 0.96); /* @kind color */ }
+  .dark { --ds-glass-bg: rgb(22 26 34 / 0.94); /* @kind color */    --ds-glass-solid-bg: rgb(22 26 34 / 0.97); /* @kind color */ }
+}
