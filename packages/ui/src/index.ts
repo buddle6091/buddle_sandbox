@@ -25,7 +25,10 @@ export * from './components/ambient-background';
 export * from './components/empty-state';
 export * from './components/error-state';
 export * from './components/sync-banner';
+export * from './components/theme-toggle';
 
 export { useMediaQuery, BREAKPOINTS } from './hooks/use-media-query';
 export { useDelayedVisible } from './hooks/use-delayed-visible';
 export { useScrolled } from './hooks/use-scrolled';
+export { useThemeMode, setThemePreference, applyThemeAttribute, THEME_STORAGE_KEY } from './hooks/use-theme-mode';
+export type { ThemePreference, ResolvedTheme } from './hooks/use-theme-mode';
