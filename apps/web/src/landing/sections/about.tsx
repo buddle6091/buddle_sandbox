@@ -13,9 +13,9 @@ function StatCard({ stat, index, active }: { stat: Stat; index: number; active: 
   const n = useCountUp(stat.value, active, 1600, easeOutQuart);
   const tilt = useTilt<HTMLDivElement>();
   return (
-    <Reveal index={index} as="li" className="list-none">
+    <Reveal index={index} as="li" className="list-none last:col-span-2 medium:last:col-span-1">
       <Card variant="glass" className="landing-tilt h-full gap-1 p-6" {...tilt}>
-        <p className="landing-pop text-h2 font-extrabold tabular-nums text-fg-default medium:text-[40px] medium:leading-[1.15]">
+        <p className="landing-pop text-h2 font-extrabold tabular-nums whitespace-nowrap text-fg-default expanded:text-[40px] expanded:leading-[1.15]">
           {formatNumber(n)}
           <span className="text-h3 font-bold text-accent-default">{stat.unit}</span>
           {stat.plus && (

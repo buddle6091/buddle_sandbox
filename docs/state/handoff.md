@@ -54,6 +54,10 @@
 - **강의 덱 스크롤바 숨김**: `.landing-deck { scrollbar-width: none }` + `::-webkit-scrollbar { display: none }`. 가로 스크롤·키보드 포커스는 그대로.
 - **칩·툴팁 정렬**: `Badge` 를 `inline-flex items-center justify-center leading-none` 으로, 문자열 children 은 안쪽 `span.truncate` 로 감싸 높이·세로 중앙을 고정(이전엔 `truncate` 가 블록이라 글자가 위로 치우침). 섹션 인디케이터 툴팁도 `inline-flex h-7 px-2.5 leading-none`. `badge.test.tsx`/`states.test.tsx` 는 `closest('[data-slot="badge"]')` 로 루트를 집는다.
 
+### 반응형 수리 (2026-11-01, 사용자 신고)
+- 3D 캔버스는 **expanded(≥1024) 에서만 마운트**(`observe/use-media.ts`). 그 아래는 영상 배경만 — 사용자 지침 "작아지면 줄이거나 없애도 됨" 에 따라 없애는 쪽 선택(성능·레이아웃 둘 다 이득).
+- 전문성 칩 줄바꿈 허용 + 열 수 `medium:2 expanded:3`, 통계 숫자 nowrap. 상세 증상·원인은 `qa-log.md`.
+
 ### 의도적으로 미룬 것
 - 미디엄 이상 backdrop-filter 21개(유리 카드) — 성능 측정 후 `glass-base-flat` 로 낮출지.
 - LazySection 으로 가려진 본문의 검색 노출(현재 제목만 SSR). Lighthouse · 실기기 60fps · Playwright E2E.

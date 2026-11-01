@@ -21,6 +21,13 @@
 - [fixed] Badge 변경 후 ui 테스트 2건 실패(`getByText` 가 안쪽 span 반환) → `.closest('[data-slot="badge"]')` 로 루트를 집도록 수정 (`2fd28d2`).
 - [flaky] 캡처 중 dev 서버 404 1건(HMR 청크로 추정). 2026-11-01 재실행 시 실패 요청 0 — 재현 안 됨. 다시 보이면 `tools/capture-landing.mjs` 의 응답 로깅으로 URL 확보.
 
+### 반응형 버그 (사용자 신고 "반응형 다 깨짐", 2026-11-01 후속)
+- [fixed] 1024 미만에서 히어로 3D 캔버스가 글 아래로 밀려 거대하게 그려지고 하단 탭바에 잘림 → `useMedia(MQ_EXPANDED)` 로 expanded 미만은 캔버스를 **마운트하지 않음**(영상 배경만, three 번들도 안 받음). expanded 는 2열 grid(`1.25fr 1fr`)로 고정, 1024~1180 은 카메라를 조금 뒤로.
+- [fixed] 600~1023 에서 전문성 칩(`whitespace-nowrap max-w-none`)이 카드 밖으로 넘쳐 **가로 스크롤 발생**(640: scrollWidth 688, 768: 774) → 칩 줄바꿈 허용(`h-auto whitespace-normal max-w-full`) + 카드 열 `medium:2 expanded:3`.
+- [fixed] 600~1023 통계 카드에서 `1,200명 +` 의 `+` 가 다음 줄로 떨어짐(3열 × 40px 숫자) → 숫자 `whitespace-nowrap`, 40px 는 expanded 부터. compact 에선 5번째 카드가 혼자 남지 않게 `last:col-span-2`.
+- [note] 검증: 360·390·480·640·768·900·1024·1180·1440 전부 `scrollWidth === clientWidth`, 캔버스는 1024 이상에서만 존재. 장식 오브/곡선 SVG 가 섹션 밖으로 나가는 것은 `overflow-hidden` 으로 잘려 스크롤을 만들지 않음.
+- [flaky] 390 첫 로드에서 404 1건(콜드 컴파일 직후 HMR 청크 추정) — 재발 시 URL 로깅.
+
 ### 컨벤션 · 도구 이슈
 - [fixed] React Compiler lint: effect 안 setState, useFrame 안 prop/useMemo 값 mutate 오류 → `useState(() => detect())`, 모듈 변수(`hero-state.ts`, uniforms), `gl.localClippingEnabled` 는 `onCreated` 로.
 - [note] Playwright headless shell 은 소프트웨어 WebGL(프레임 수백 ms) → 캡처는 시스템 Chrome(`channel: 'chrome'`, GPU) 사용. Claude 앱 브라우저 패인은 rAF ~2fps 스로틀 → 애니메이션 성능 판단 금지.

@@ -17,8 +17,9 @@ function GroupCard({ title, chips, index }: { title: string; chips: readonly str
         <ul className="landing-pop flex flex-wrap gap-2">
           {chips.map((c) => (
             <li key={c}>
-              <Badge variant="accent" className="h-8 max-w-none px-3 text-label">
-                {c}
+              {/* 칩은 카드 폭에 맞춰 줄바꿈(600~1023 에서 nowrap 칩이 카드 밖으로 넘쳐 가로 스크롤을 만들었다) */}
+              <Badge variant="accent" className="h-auto min-h-8 max-w-full px-3 py-1.5 text-left text-label whitespace-normal">
+                <span>{c}</span>
               </Badge>
             </li>
           ))}
@@ -33,7 +34,7 @@ export function Expertise() {
   return (
     <Section id="expertise" eyebrow={e.eyebrow} title={e.title} variant="tinted">
       <LazySection minHeight={360}>
-        <div className="grid gap-6 medium:grid-cols-3">
+        <div className="grid gap-6 medium:grid-cols-2 expanded:grid-cols-3">
           {e.groups.map((g, i) => (
             <GroupCard key={g.title} title={g.title} chips={g.chips} index={i} />
           ))}

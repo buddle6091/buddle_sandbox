@@ -9,6 +9,7 @@ import { Button } from '@sandbox/ui/components/button';
 
 import { HERO_VIDEO, LANDING } from '../content/landing';
 import { useInView } from '../observe/use-in-view';
+import { MQ_EXPANDED, useMedia } from '../observe/use-media';
 import { Reveal, Section } from './section';
 
 /** three 는 클라이언트 전용 — SSR 번들에서 제외 */
@@ -58,6 +59,8 @@ export function Hero() {
   const h = LANDING.hero;
   // 3D 는 히어로가 보일 때만 돈다(frameloop always ↔ demand)
   const [canvasRef, canvasInView] = useInView<HTMLDivElement>({ threshold: 0.05, once: false });
+  // 1024 미만에서는 캔버스가 글 아래로 밀려 탭바에 잘리고 three 번들만 무겁다 → 아예 마운트하지 않는다(영상 배경만). 2026-11-01 결정
+  const expanded = useMedia(MQ_EXPANDED);
   return (
     <Section id="top" title={h.name} header="none" className="overflow-hidden px-0 pt-0 pb-0" innerClassName="max-w-none gap-0">
       {/* 배경 레이어: 영상 → 좌측 흰 막 → 하단 페이지색 페이드. 다크는 어두운 막 */}
@@ -76,8 +79,8 @@ export function Hero() {
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent-tertiary/40 to-transparent" />
       </div>
 
-      <div className="relative mx-auto flex w-full max-w-[1120px] flex-wrap items-center gap-8 px-4 pt-[calc(var(--bs-layout-topbar-h)+var(--spacing)*12)] pb-14 medium:px-8">
-        <div className="flex min-w-0 flex-[1_1_520px] flex-col items-start gap-6">
+      <div className="relative mx-auto grid w-full max-w-[1120px] min-h-[min(640px,calc(100svh-var(--bs-layout-topbar-h)))] items-center gap-8 px-4 pt-[calc(var(--bs-layout-topbar-h)+var(--spacing)*12)] pb-14 medium:px-8 expanded:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] expanded:min-h-0">
+        <div className="flex min-w-0 flex-col items-start gap-6">
           <Reveal index={0}>
             <Badge variant="accent" className="h-7 max-w-none px-3">
               {h.badge}
@@ -99,15 +102,13 @@ export function Hero() {
             </Button>
           </Reveal>
         </div>
-        <Reveal
-          index={2}
-          variant="depth"
-          className="relative min-w-0 flex-[1_1_400px] h-[clamp(340px,42vw,540px)]"
-        >
-          <div ref={canvasRef} data-canvas-inview={canvasInView} className="absolute inset-0">
-            <HeroCanvas inView={canvasInView} />
-          </div>
-        </Reveal>
+        {expanded && (
+          <Reveal index={2} variant="depth" className="relative hidden min-w-0 h-[clamp(340px,36vw,540px)] expanded:block">
+            <div ref={canvasRef} data-canvas-inview={canvasInView} className="absolute inset-0">
+              <HeroCanvas inView={canvasInView} />
+            </div>
+          </Reveal>
+        )}
       </div>
       <div aria-hidden="true" className="landing-cue relative flex justify-center pb-6 text-fg-muted">
         <ChevronDown className="size-5" />

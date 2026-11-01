@@ -94,10 +94,30 @@ describe('Landing v2 — 시안 10섹션', () => {
     expect(text).not.toContain('naver.com');
   });
 
-  it('캔버스 자리는 히어로 안(전면 고정 아님), 리빌 요소 다수', async () => {
+  it('expanded(≥1024) — 캔버스 자리는 히어로 안(전면 고정 아님), 리빌 요소 다수', async () => {
+    const spy = vi.spyOn(window, 'matchMedia').mockImplementation(
+      (q: string) =>
+        ({
+          matches: q === '(min-width: 1024px)',
+          media: q,
+          onchange: null,
+          addListener: () => undefined,
+          removeListener: () => undefined,
+          addEventListener: () => undefined,
+          removeEventListener: () => undefined,
+          dispatchEvent: () => false,
+        }) as MediaQueryList,
+    );
     render(<Landing />);
     const canvas = await screen.findByTestId('hero-canvas');
     expect(canvas.closest('#top')).not.toBeNull();
     expect(document.querySelectorAll('[data-reveal]').length).toBeGreaterThan(10);
+    spy.mockRestore();
+  });
+
+  it('compact·medium(<1024) — 3D 캔버스를 아예 마운트하지 않는다(영상 배경만)', () => {
+    render(<Landing />);
+    expect(screen.queryByTestId('hero-canvas')).toBeNull();
+    expect(document.querySelector('[data-slot="hero-video"]')).not.toBeNull();
   });
 });
