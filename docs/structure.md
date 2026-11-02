@@ -41,6 +41,7 @@ buddle_sandbox/
 │  ├─ state/handoff.md           상태 원장 (Phase 결과·결정·미룬 것)
 │  └─ handoff/
 │     ├─ blog-calendar/          Claude Design 핸드오프 번들 (/blog · /calendar)
+│  ├─ architecture.md            배포 호스트 · 서버 계층(Supabase vs 백엔드) · 캘린더 동기화/업종 라벨 마스킹 아키텍처 메모 (2026-11-02)
 │     │  ├─ README.md → SCREENS.md → STATES.md → DATA.md → PROMPT.md
 │     │  └─ wireframes/          Wireframes.dc.html (참고용, 코드 복사 금지)
 │     └─ landing-v2/             랜딩 v2 교체 번들 (/ 도메인 루트)

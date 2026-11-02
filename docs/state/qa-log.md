@@ -40,3 +40,9 @@
 - [deferred] Lighthouse · 실기기 60fps 측정 · Playwright E2E 미작성.
 - [deferred] 덱 키보드 ←/→ 카드 이동은 네이티브 스크롤에 위임(포커스는 가능).
 - [open] dev 전용 진단(`window.__heroState`, `data-canvas-inview`) 잔존 — 프로덕션 번들 제외 확인됨, 정리 시점 미정.
+
+## 2026-11-02 — 아키텍처 메모 (`docs/architecture.md`, 문서만)
+- [note] 코드 변경 없음. 배포 호스트·서버 계층·캘린더 동기화/마스킹 설계만 기록. qa-verifier 미호출(검증 대상 코드 없음).
+- [open] 결정 대기 3개(배포 목적 · Google 서비스 계정 여부 · 업종 enum 목록) — 결정 전까지 `CLAUDE.md` 스택 표 "배포" 행은 "재검토 중".
+- [note] 스펙 불일치 예고: `docs/handoff/blog-calendar/DATA.md` 의 `org_mask`·`sync_state.refresh_token` 은 아키텍처 메모(`org_label` · 서비스 계정)와 다르다. 결정 후 DATA.md 를 갱신하기 전까지는 **architecture.md 가 우선**.
+- [note] `package.json`/`package-lock.json` 의 nx 22.6.5→23.2.1 변경은 이 세션 밖에서 생긴 미커밋 변경이라 이번 묶음에서 제외.

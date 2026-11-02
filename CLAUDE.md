@@ -13,7 +13,7 @@
 - UI: **shadcn/ui 기반** → `packages/ui` 공용 컴포넌트. **Tailwind v4 + CSS 변수** 토큰.
 - 토큰: `design.md`(Primitive→Semantic Light/Dark) → `packages/tokens`(`--bs-color-*` CSS 변수 + Tailwind `@theme`)
 - 테스트: **Vitest + Testing Library**, **Playwright**(E2E 최소), **Storybook**
-- 배포: **Vercel + 커스텀 도메인**. 2번째 모듈은 **Next.js Multi-Zones**로 같은 도메인 분리 배포.
+- 배포: **Vercel + 커스텀 도메인** (→ **재검토 중**: AWS SST+OpenNext 또는 Cloudflare Workers. 제안·비교는 `docs/architecture.md`, 사용자 결정 대기). 2번째 모듈은 **Next.js Multi-Zones**로 같은 도메인 분리 배포.
 - 최소 버전: **Node 20.19+** (`.nvmrc`=24 — vitest 4/vite 8 요구. 20.16 에서는 설치·테스트가 깨진다), **TypeScript 5.1+**
 
 ## 라우트 (apps/web, 메인 zone)

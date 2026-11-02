@@ -14,6 +14,7 @@
 - **QA 원장** `docs/state/qa-log.md` — 버그·컨벤션·미룬 결함 히스토리(2026-11-01 신설). PR/푸시마다 갱신.
 - **lefthook 켜짐** — 커밋 시 affected lint/test/typecheck 가 실제로 돈다.
 - 핸드오프 번들 `docs/handoff/blog-calendar/` (README → SCREENS → STATES → DATA → PROMPT). 블로그·캘린더 작업의 스펙.
+- 아키텍처 메모 `docs/architecture.md` (2026-11-02) — 배포 호스트(S3 단독 불가 · SST+OpenNext vs Cloudflare Workers) · 캘린더는 서버 cron 동기화 + DB 뷰 마스킹(default-deny) · 기업명→업종 라벨은 순수 TS 매핑(`org_label`, LLM 은 선택 확장) · 서버 계층은 Supabase + 얇은 Route Handler(별도 백엔드는 신호 켜질 때). 결정 대기 3개(배포 목적·캘린더 인증·라벨 enum).
 - **Phase 2b 예정 — 랜딩 v2 교체** (2026-11-01 결정). `/` 는 그대로 랜딩, 내부를 `docs/handoff/landing-v2/` 시안으로 교체. 아래 "Phase 2b — 랜딩 v2 (예정)".
 
 ### 완료된 Phase
