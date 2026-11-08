@@ -130,8 +130,7 @@ export const LANDING = {
     eyebrow: 'TEACHING EXPERIENCE',
     title: '주요 강의 이력',
     policy:
-      '기업 고객사는 비밀유지 의무에 따라 업종 · 대상 계층 · 일반화된 교육 주제로만 표기하고, 지자체 · 학교 · 공공기관은 실명으로 표기합니다. 옆으로 넘겨 보세요.',
-    deckLabel: '주요 강의 이력 카드 목록',
+      '기업 고객사는 비밀유지 의무에 따라 업종 · 대상 계층 · 일반화된 교육 주제로만 표기하고, 지자체 · 학교 · 공공기관은 실명으로 표기합니다.',
     courses: [
       { date: '2026.09.28 ~ 10.08', hours: '64h', industry: '전자/반도체', target: '개발자', title: 'AI Agent 아키텍트 과정 — Agent 설계 · RAG · MCP · Multi-Agent (8일)', tool: 'Claude Code · OpenAI API' },
       { date: '2026.04.06 ~ 06.22', hours: '256h', industry: '철강', target: '개발자', title: '전문개발 과정 — Agent · RAG 코드 개발 (8회, 회차별 2~5일 블록)', tool: 'Claude Code' },

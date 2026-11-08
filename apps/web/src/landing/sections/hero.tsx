@@ -8,6 +8,7 @@ import { Badge } from '@sandbox/ui/components/badge';
 import { Button } from '@sandbox/ui/components/button';
 
 import { HERO_VIDEO, LANDING } from '../content/landing';
+import { SHARDS } from '../fx/shards';
 import { useInView } from '../observe/use-in-view';
 import { MQ_EXPANDED, useMedia } from '../observe/use-media';
 import { Reveal, Section } from './section';
@@ -55,6 +56,45 @@ function HeroVideo() {
   );
 }
 
+/** slash.page 식 사선 광선 4개 — 1px · rotate 25° · 정적(규칙 4). 색은 CSS 가 accent 토큰에서 읽는다. */
+function HeroShards() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+      {SHARDS.map((s, i) => (
+        <span
+          key={i}
+          data-slot="shard"
+          className="landing-shard absolute w-px origin-top rotate-[25deg]"
+          style={{ top: s.top, right: `${s.right}%`, height: s.height, opacity: s.opacity }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/** "Clients  A / B / C" — slash 의 Used by 줄. 데이터는 about.clientsLine 재사용(실명 규칙 그대로). */
+function HeroClients() {
+  const a = LANDING.about;
+  const parts = a.clientsLine.split(' · ');
+  return (
+    <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-body-sm">
+      <span className="text-fg-muted">{a.clientsLabel}</span>
+      <span className="text-fg-body">
+        {parts.map((part, i) => (
+          <span key={part}>
+            {part}
+            {i < parts.length - 1 && (
+              <span aria-hidden="true" className="mx-2 text-border-strong">
+                /
+              </span>
+            )}
+          </span>
+        ))}
+      </span>
+    </p>
+  );
+}
+
 export function Hero() {
   const h = LANDING.hero;
   // 3D 는 히어로가 보일 때만 돈다(frameloop always ↔ demand)
@@ -65,6 +105,7 @@ export function Hero() {
     <Section id="top" title={h.name} header="none" className="overflow-hidden px-0 pt-0 pb-0" innerClassName="max-w-none gap-0">
       {/* 배경 레이어: 영상 → 좌측 흰 막 → 하단 페이지색 페이드. 다크는 어두운 막 */}
       <HeroVideo />
+      <HeroShards />
       <div aria-hidden="true" className="landing-hero-scrim absolute inset-0" />
       <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-60 bg-gradient-to-b from-transparent to-bg-page" />
       {/* 라이트: 상단 오브 빛 2개(40s 드리프트 1개) · 다크: 별 + 하단 오브 + 청자 라인 */}
@@ -86,9 +127,14 @@ export function Hero() {
               {h.badge}
             </Badge>
           </Reveal>
-          <Reveal index={1} as="h1" id="top-title" className="text-h1 text-fg-default medium:text-display">
+          <Reveal index={1} as="h1" id="top-title" className="text-h1 text-fg-default medium:text-display expanded:text-display-xl">
             {h.name}
-            <span className="mt-3 block text-h3 font-semibold tracking-normal text-fg-muted">{h.role}</span>
+            <span className="mt-3 block text-h3 font-semibold tracking-normal text-fg-muted">
+              {h.role}
+              <span aria-hidden="true" className="landing-caret">
+                |
+              </span>
+            </span>
           </Reveal>
           <Reveal index={2} as="p" className="max-w-[600px] text-body-lg text-fg-body">
             {h.tagline}
@@ -100,6 +146,9 @@ export function Hero() {
             <Button asChild size="lg" variant="glass">
               <a href={h.ctas[1].href}>{h.ctas[1].label}</a>
             </Button>
+          </Reveal>
+          <Reveal index={4}>
+            <HeroClients />
           </Reveal>
         </div>
         {expanded && (

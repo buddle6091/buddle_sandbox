@@ -21,14 +21,10 @@ html {
     scroll-snap-type: none;
   }
 }
-
-/* 가로 덱 — 스크롤바 숨김(스크롤·스냅·키보드는 그대로) */
-.landing-deck {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.landing-deck::-webkit-scrollbar {
-  display: none;
+/* 리빌 전 요소의 3D 변형(rotateY 플립)이 투영 폭으로 가로 스크롤을 만든다(실측 scrollWidth 2768@1280, v2 부터).
+   섹션 단위 overflow-x: clip — 스크롤 컨테이너를 만들지 않아 sticky(멘토링 스테이지) · scroll-snap 에 영향이 없다. */
+[data-section] {
+  overflow-x: clip;
 }
 
 /* ───────── 랜딩 v2 — 리빌 (시안: rotateX 16° · translateY 40 → 0, 700/1000ms, 스태거 60ms) ───────── */
@@ -85,11 +81,81 @@ html {
   transform: translateZ(28px);
 }
 
-/* 강의 덱 — 카드 transform/opacity 는 JS, 전환만 */
-.landing-deck-card {
+/* ───────── 랜딩 v2.1 — slash.page 모션(2026-11-08 실측 이식) ───────── */
+/* 타이핑 캐럿 — 0.8s step-end 깜빡임. 강의 행에서는 호버(fine pointer) 때만 보인다 */
+@keyframes landing-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.landing-caret {
+  font-weight: 300;
+  animation: landing-blink 0.8s step-end infinite;
+}
+.landing-row .landing-caret {
+  opacity: 0;
+  animation: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .landing-row:hover .landing-caret {
+    opacity: 1;
+    animation: landing-blink 0.8s step-end infinite;
+  }
+}
+
+/* 히어로 사선 광선 — 1px 세로 그라디언트(accent), 정적. 다크는 청자(tertiary) */
+.landing-shard {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--bs-color-accent-default) 40%, transparent) 50%,
+    transparent 100%
+  );
+}
+:where(.dark, [data-theme="dark"]) .landing-shard {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--bs-color-accent-tertiary) 45%, transparent) 50%,
+    transparent 100%
+  );
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .landing-shard {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      color-mix(in srgb, var(--bs-color-accent-tertiary) 45%, transparent) 50%,
+      transparent 100%
+    );
+  }
+}
+
+/* 스파크라인 — 리빌 시 왼쪽부터 그려진다(pathLength=1) */
+.landing-spark {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1300ms var(--ease-bs) 200ms;
+}
+[data-inview="true"] .landing-spark {
+  stroke-dashoffset: 0;
+}
+
+/* 멘토링 스택 카드 — transform/opacity 는 JS(fx/stack), 전환만.
+   겹쳐 쌓이므로 유리(반투명)면 아래 카드 글자가 비친다(1280 실측) → slash 처럼 불투명 페이지색 + blur 없음 */
+.landing-stack-card {
   transition:
-    transform 240ms var(--ease-bs),
-    opacity 240ms var(--ease-bs);
+    transform 320ms var(--ease-bs),
+    opacity 320ms var(--ease-bs);
+}
+.landing-stack-card [data-slot="card"] {
+  background-color: var(--bs-color-bg-page);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .landing-stack-card [data-slot="card"]:hover {
+    background-color: var(--bs-color-bg-inverse);
+  }
 }
 
 /* 히어로 배경 영상(시안 D) — 아래 40% 마스크, 좌측 흰 막, reduced-motion 은 포스터만 */
@@ -187,7 +253,9 @@ html {
     transition: opacity var(--bs-motion-control) linear;
   }
   .landing-word { opacity: 1; }
-  .landing-tilt, .landing-deck-card { transform: none !important; opacity: 1 !important; }
-  .landing-stars, .landing-drift, .landing-cue svg { animation: none; }
+  .landing-tilt, .landing-stack-card { transform: none !important; opacity: 1 !important; }
+  .landing-stars, .landing-drift, .landing-cue svg, .landing-caret { animation: none; }
+  .landing-caret { opacity: 1; }
+  .landing-spark { stroke-dashoffset: 0; transition: none; }
   .landing-hero-video { display: none; }
 }

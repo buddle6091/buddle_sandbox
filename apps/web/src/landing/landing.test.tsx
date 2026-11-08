@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { LANDING, SECTION_IDS } from './content/landing';
 import { Landing } from './landing';
+import { scrollStore } from './scroll/store';
 
 // WebGL 은 jsdom 에 없다 — 캔버스는 자리만 확인한다.
 vi.mock('./three/hero-canvas', () => ({
@@ -43,27 +44,50 @@ describe('Landing v2 — 시안 10섹션', () => {
     expect(video.closest('[aria-hidden="true"]')).not.toBeNull();
   });
 
+  it('히어로 v2.1 — slash 광선 4개(장식) · 역할 줄 캐럿 · Clients 한 줄', () => {
+    render(<Landing />);
+    const shards = document.querySelectorAll('#top [data-slot="shard"]');
+    expect(shards).toHaveLength(4);
+    for (const s of shards) expect(s.closest('[aria-hidden="true"]')).not.toBeNull();
+    expect(document.querySelector('#top .landing-caret')).not.toBeNull();
+    expect(document.getElementById('top')).toHaveTextContent('노원 미래산업고');
+  });
+
+  it('숫자 v2.1 — 대표 숫자 1 + 스파크라인(주요 10개 과정 누적, 축 숫자 없음)', () => {
+    render(<Landing />);
+    const about = document.getElementById('about')!;
+    const path = about.querySelector('svg[data-slot="sparkline"] path[data-slot="spark-path"]');
+    expect(path?.getAttribute('d')).toMatch(/^M/);
+    expect(about.querySelector('svg text')).toBeNull();
+    expect(within(about).getByText(/주요 10개 과정 누적 강의 시간/)).toBeInTheDocument();
+    expect(about.querySelector('[data-slot="stat-lead"]')).toHaveTextContent('1,000');
+  });
+
   it('숫자는 공개용 이력서 값 — 38 · 1,000+ · 1,200+ · 51 · 3', () => {
     render(<Landing />);
     const about = document.getElementById('about')!;
     const items = within(about).getAllByRole('listitem');
     expect(items).toHaveLength(5);
-    expect(items[0]).toHaveTextContent('38');
-    expect(items[1]).toHaveTextContent('1,000');
-    expect(items[1]).toHaveTextContent('+');
+    // v2.1: 대표 숫자(1,000h+)가 맨 앞, 나머지는 원래 순서
+    expect(items[0]).toHaveTextContent('1,000');
+    expect(items[0]).toHaveTextContent('+');
+    expect(items[1]).toHaveTextContent('38');
     expect(items[2]).toHaveTextContent('1,200');
     expect(items[3]).toHaveTextContent('51');
+    expect(items[4]).toHaveTextContent('3');
     expect(within(about).getByText(/기업 · 기관 출강 36곳/)).toBeInTheDocument();
   });
 
-  it('확정한 제목 3개와 섹션 구성(칩 · 막대 14 · 덱 10 · 멘토링 5 · 경력 4 · 후기 2)', () => {
+  it('확정한 제목 3개와 섹션 구성(칩 · 막대 14 · 강의 행 10 · 멘토링 5 · 경력 4 · 후기 2)', () => {
     render(<Landing />);
     expect(screen.getByRole('heading', { name: '현업 개발 역량을 그대로 교육으로' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: '가르치는 내용은 직접 만들어 본 것들입니다' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: '팀에 맞는 AX 교육을 함께 설계합니다' })).toBeInTheDocument();
     expect(screen.getByText('Module Federation')).toBeInTheDocument();
     expect(document.querySelectorAll('#audience [data-slot="bar"]')).toHaveLength(14);
-    expect(within(screen.getByRole('region', { name: LANDING.teaching.deckLabel })).getAllByRole('article')).toHaveLength(10);
+    expect(document.querySelectorAll('#teaching [data-course-row]')).toHaveLength(10);
+    expect(document.querySelectorAll('#teaching [data-course-row] .landing-caret')).toHaveLength(10);
+    expect(document.getElementById('teaching')).not.toHaveTextContent('옆으로 넘겨');
     for (const m of LANDING.mentoring.items) expect(screen.getByText(m.title)).toBeInTheDocument();
     expect(document.querySelectorAll('#career ol > li')).toHaveLength(4);
     for (const q of LANDING.feedback.quotes) expect(screen.getByText(q.quote)).toBeInTheDocument();
@@ -112,7 +136,21 @@ describe('Landing v2 — 시안 10섹션', () => {
     const canvas = await screen.findByTestId('hero-canvas');
     expect(canvas.closest('#top')).not.toBeNull();
     expect(document.querySelectorAll('[data-reveal]').length).toBeGreaterThan(10);
+    // 멘토링 v2.1 — expanded 에서만 sticky 스택 스테이지 + 카드 5
+    const stage = document.querySelector('#mentoring [data-stack]');
+    expect(stage).not.toBeNull();
+    const cards = document.querySelectorAll<HTMLElement>('#mentoring [data-stack-card]');
+    expect(cards).toHaveLength(5);
+    scrollStore.set(0.5, 1234);
+    await new Promise((r) => setTimeout(r, 50));
+    expect(cards[0].style.opacity).toBe('1');
     spy.mockRestore();
+  });
+
+  it('compact·medium(<1024) — 멘토링은 스택 없이 그리드(카드 5)', () => {
+    render(<Landing />);
+    expect(document.querySelector('#mentoring [data-stack]')).toBeNull();
+    for (const m of LANDING.mentoring.items) expect(screen.getByText(m.title)).toBeInTheDocument();
   });
 
   it('compact·medium(<1024) — 3D 캔버스를 아예 마운트하지 않는다(영상 배경만)', () => {
