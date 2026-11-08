@@ -11,6 +11,7 @@
 - **Phase 1 완료** — `packages/ui` (아래 "Phase 1 결과").
 - **Phase 2a 완료** — `apps/web` 신설 + 메인 도메인 `/` 랜딩(스크롤 3D). 아래 "Phase 2a 결과".
 - **Phase 2b 완료** — 랜딩 v2 교체(영상 히어로 · 백자/흑유 3D · 10섹션 · ThemeToggle). 블로그·캘린더(PROMPT.md Step 2~5)는 라우트 자리만. 아래 "Phase 2b 결과".
+- **Phase 2c 완료** — 랜딩 v2.1 slash 모션(2026-11-08): display-xl 토큰 · 히어로 광선/캐럿/Clients · 숫자 스파크라인 · 강의 행 · 멘토링 sticky 스택. 아래 "Phase 2c 결과".
 - **QA 원장** `docs/state/qa-log.md` — 버그·컨벤션·미룬 결함 히스토리(2026-11-01 신설). PR/푸시마다 갱신.
 - **lefthook 켜짐** — 커밋 시 affected lint/test/typecheck 가 실제로 돈다.
 - 핸드오프 번들 `docs/handoff/blog-calendar/` (README → SCREENS → STATES → DATA → PROMPT). 블로그·캘린더 작업의 스펙.
@@ -25,6 +26,19 @@
 | 1 디자인시스템 | **완료** | `packages/ui` 컴포넌트 22개 + 훅 3개 + Storybook 10, ESLint 경계 규칙, lefthook 게이트 |
 | 2a 랜딩 | **완료** | `apps/web` Next 16 + 이력서 기반 랜딩 9섹션 + Three.js 달항아리 리그 + `/blog` `/calendar` 자리 |
 | 2b 랜딩 v2 | **완료** | 영상 히어로 + 백자/흑유 테마별 3D + 10섹션 + LazySection + ThemeToggle(packages/ui) |
+| 2c 랜딩 v2.1 | **완료** | slash.page 역설계 4기법 이식 — `fx/{shards,sparkline,stack}` 순수 함수 + 테스트 18, `display-xl` 토큰 |
+
+## Phase 2c 결과 — 랜딩 v2.1 slash 모션 (2026-11-08)
+요청: Toss slash.page 같은 역동성. 참고 저장소 swarm-cursors 는 크롬 확장 + 라이선스 없음(원작자 허락 전 재사용 금지) → 미사용. slash.page 를 내장 브라우저로 역설계(영상 .4 + 1px 사선 광선 4개 / 행 리스트 호버 캐럿 / 160px 숫자 + 1000×200 큐빅 라인 / 600vh fixed 스택)해 히어로 + about + teaching + mentoring 에 이식. 스펙·매핑 표·결정 3개·실측 보정은 `docs/handoff/landing-v2/README.md` "v2.1" 절.
+qa-verifier 판정: **PASS** (2026-11-08) — affected lint/test/typecheck(web·tokens·ui) + build Green · web 59 테스트 · 신규 CSS 는 토큰 변수만(hex 예외는 v2 마스크·palette 폴백) · 경계 0 · 실명/전화/1998 0 · 신규 keyframes 는 캐럿 1개, 광선 정적 · reduced-motion 3클래스 처리 · 스파크라인 상수는 viewBox 기하뿐.
+실측: 1280×800 light/dark · 1024×768 · 768×1024 · 375×812 에서 `scrollWidth === innerWidth`, 콘솔 에러 0, 스택 5장 스테이지 안 수납, 호버 캐럿 동작.
+
+### 결정
+1. 매핑 제안대로(히어로·about·teaching·mentoring). 2. 스파크라인은 content hours 누적 합산 + 범위 캡션, 축 숫자 없음. 3. `display-xl`(96/96/800/−0.04em) 토큰 추가, 히어로 이름 전용.
+
+### 남긴 것
+- 가로 덱(`fx/deck.ts`) 제거 — 되돌리려면 `f78c164` 의 `teaching.tsx` 참고.
+- 스택 카드 치수 `w-[480px] h-[340px]` 등 레이아웃 px 임의값은 v2 패턴 유지(토큰 스케일 없음). 규칙 1 을 엄격히 적용하려면 레이아웃 토큰 논의 필요.
 
 ## Phase 2b 결과 — 랜딩 v2 (2026-11-01)
 스펙 `docs/handoff/landing-v2/README.md` + 시안 `design/Profile.dc.html` + Claude Design 캔버스 "청자 유약 흐름 배경"의 아트보드 **D(히어로 배경 영상)**. 플랜 `~/.claude/plans/distributed-dreaming-scone.md`(11-01 판). qa-verifier 판정: **PASS** (2026-11-01, 전체 + 셰이더 재질 수정분 범위 재검증) — lint/test/typecheck/build(ui·web) · 테스트 ui 119 / web 41 · hex 0(팔레트 폴백·마스크 예외) · 경계 0 · 이력서 수치·10섹션·영상·LazySection·3D 두 장면·테마 토글·a11y 확인.

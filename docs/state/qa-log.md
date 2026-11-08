@@ -41,6 +41,26 @@
 - [deferred] 덱 키보드 ←/→ 카드 이동은 네이티브 스크롤에 위임(포커스는 가능).
 - [open] dev 전용 진단(`window.__heroState`, `data-canvas-inview`) 잔존 — 프로덕션 번들 제외 확인됨, 정리 시점 미정.
 
+## 2026-11-08 — 랜딩 v2.1 slash 모션 (Phase 2c)
+범위: `packages/tokens` display-xl · `apps/web/src/landing/{fx,sections}` · `globals.css`. qa-verifier **PASS**(세부는 handoff "Phase 2c").
+
+### 개발 중 발견한 버그 (증상 → 원인 → 조치)
+- [fixed] 숫자 섹션 `1,200명+` 의 `+` 가 1024~1439 에서 다음 줄로 떨어짐 → block `p` + inline span 조합이 `whitespace-nowrap` 인데도 줄바꿈(원인 미확정, `text-wrap: pretty` 와의 상호작용 의심) → `flex items-baseline` 로 inline 배치 고정.
+- [fixed] 멘토링 스택 카드가 1280×800 에서 아래로 잘림 → slash 수식 y −45%+15%·i 를 그대로 쓰면 5장째가 스테이지 밖 → y −75% 기준으로 이동(1280×800 · 1024×768 실측).
+- [fixed] 스택 카드가 유리(반투명)라 아래 카드 글자가 비쳐 보임 → `.landing-stack-card [data-slot=card]` 를 `bg/page` 불투명 + blur 없음(호버 `bg/inverse` 유지).
+- [fixed] 스택 스테이지가 sticky 로 안 붙음 → sticky 는 containing block(Section inner div) 높이 안에서만 머무는데 inner 가 100vh 뿐이었다 → inner 에 `min-h-[320vh]`.
+- [fixed · v2 부터 있던 결함] `document.documentElement.scrollWidth` 가 1280 에서 2768 → 아직 리빌 전인 경력 카드(`data-reveal="flip"`, rotateY −32°)의 투영 폭이 스크롤 영역을 늘림. 이전 capture 는 스크롤 끝에서만 쟀기 때문에 못 잡았다 → `[data-section] { overflow-x: clip }`(스크롤 컨테이너 아님 → sticky·snap 무영향).
+
+### 재현 안 되는 간헐 이슈
+- `tools/capture-landing.mjs` desktop-1280 light 1회 실행에서 콘솔 `404 (Not Found)` 1건. dev 서버 로그에 404 없음, 같은 실행의 dark·mobile 과 재실행에서 미재현. 브라우저 측 부수 요청(favicon 류)으로 추정, 미추적.
+
+### 컨벤션 메모
+- 규칙 4 예외: `.landing-caret` 0.8s 깜빡임은 텍스트 커서 관례로 허용(CLAUDE.md 갱신). 광선은 정적.
+- 레이아웃 px 임의값(스택 카드 480×340, 오브 위치)은 v2 패턴 유지 — 레이아웃 토큰이 없어 규칙 1 적용 보류(qa-verifier 메모).
+
+### 커밋에서 제외
+- `package.json`/`package-lock.json` nx 22.6.5→23.2.1 (세션 밖 변경, 의도 미확인), `apps/web/tsconfig.tsbuildinfo`(typecheck 부산물), `docs/개발 블로그 및 캘린더 시스템.zip`.
+
 ## 2026-11-02 — 아키텍처 메모 (`docs/architecture.md`, 문서만)
 - [note] 코드 변경 없음. 배포 호스트·서버 계층·캘린더 동기화/마스킹 설계만 기록. qa-verifier 미호출(검증 대상 코드 없음).
 - [open] 결정 대기 3개(배포 목적 · Google 서비스 계정 여부 · 업종 enum 목록) — 결정 전까지 `CLAUDE.md` 스택 표 "배포" 행은 "재검토 중".

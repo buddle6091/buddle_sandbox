@@ -89,3 +89,28 @@
 2. **문의 이메일** — 기존 `buddle6091@naver.com` vs 이력서 `sangwon.lee@buddle.it.kr`. 시안은 후자.
 3. **도메인** — `metadataBase` 가 `https://buddle.dev` 가정. 실제 도메인(예: buddle.it.kr) 확정 필요.
 4. 새로 쓴 섹션 제목 3개 확정.
+
+---
+
+## v2.1 — slash 모션 (2026-11-08 적용)
+
+사용자 요청: Toss `slash.page` 수준의 역동성. 참고로 준 `swarm-cursors`(DhvanilPatel) 는 커서 무리가 페이지를 다시 그리는 **크롬 확장**이고, LICENSE 가 없으며 README 가 원작자(Joel Califa, Swarm) 허락 전 재사용을 금한다 → **코드·컨셉 모두 쓰지 않았다.** 대신 slash.page 를 브라우저로 직접 역설계해 4개 기법을 토큰·`fx/` 순수 함수로 이식했다. 새 의존성 없음.
+
+### slash.page 역설계 → 매핑
+| slash 실측 | 우리 구현 |
+|---|---|
+| 히어로: 영상 .4 + 1px `rotate(25deg)` 사선 광선 4개 + 블러 글로우, 로고 160px/500 | `fx/shards.ts` 4개(정적, `.landing-shard` accent 그라디언트) · 이름 `expanded:text-display-xl`(96px, 새 토큰) · 역할 줄 캐럿 · "Clients A / B / C" 줄 |
+| Projects 행: 48px 제목 + 호버 시 `\|` 0.8s step-end 깜빡임, 1px 구분선, 호버 bg 3% | `teaching`: 가로 덱 → `<ol>` 행 10개(`data-course-row`), 제목 h2→h1, `.landing-caret` 은 `hover-fine` 에서만, 우측 모노 번호 |
+| Downloads: 160px 숫자 1 + 72px 숫자 2, `viewBox 0 0 1000 200` 큐빅 라인 | `about`: 대표 숫자 1,000h+ 를 맨 앞 display-xl, 나머지 4개 display, 카드·틸트 제거. `fx/sparkline.ts` 가 `teaching.courses` hours 를 시작일 순 누적 → 선만(축 숫자 없음, 캡션에 "주요 10개 과정 · 전체 1,000h+ 중 일부" 명시) |
+| Principles: 600vh 섹션, 카드 5장 `position: fixed` + 진행도별 좌표·투명도 | `mentoring`: expanded 에서 inner 320vh + **sticky** 스테이지, `fx/stack.ts`(`stackProgress` · `stackCard`: x 4%·i, y −75%+15%·i, opacity 구간 [i/n,(i+.6)/n], scale −2%/단계) 를 rAF 로 DOM 에 직접. compact/medium · reduced-motion 은 기존 그리드 |
+
+### 결정 (2026-11-08)
+1. 매핑은 제안대로(히어로 + about + teaching + mentoring).
+2. 스파크라인 데이터는 content 의 hours 합산 사용, 라벨에 범위 명시. 축 숫자는 그리지 않는다(규칙 5).
+3. `display-xl` 타이포 토큰 추가(96/96/800/−0.04em, expanded 전용, 히어로 이름만).
+
+### 실측에서 바로잡은 것
+- 스택 카드 y 오프셋은 slash(−45%) 대신 −75% 기준 — 1280×800 · 1024×768 에서 5장이 스테이지(100svh−topbar) 안에 다 들어온다.
+- 스택 카드는 유리(반투명)면 아래 카드 글자가 비쳐 **불투명 `bg/page`** 로(호버 시 `bg/inverse` 반전 유지).
+- 숫자 `p` 가 `whitespace-nowrap` 인데도 단위 뒤 `+` 가 다음 줄로 떨어짐(1024~1439) → `flex items-baseline` 로 고정.
+- 리빌 전 경력 카드의 `rotateY` 플립이 투영 폭으로 `scrollWidth` 2768@1280 을 만들고 있었다(v2 부터) → `[data-section] { overflow-x: clip }`(스크롤 컨테이너를 만들지 않아 sticky·snap 무영향).

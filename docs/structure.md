@@ -82,7 +82,7 @@ buddle_sandbox/
 │     │  ├─ content/landing.ts   내용 SSOT (2026-10 공개용 이력서)
 │     │  ├─ scroll/              progress.ts · store.ts · scroll-driver.tsx(Lenis) · scroll-progress-bar.tsx
 │     │  ├─ observe/             use-in-view.ts · lazy-section.tsx(뷰포인트 마운트) · section-indicator.tsx
-│     │  ├─ fx/                  deck · words · bars · tilt · theme-mix (순수 함수 + 테스트)
+│     │  ├─ fx/                  words · bars · tilt · theme-mix · shards · sparkline · stack (순수 함수 + 테스트; deck 은 v2.1 에서 제거)
 │     │  ├─ sections/            section.tsx(래퍼) + 10개 섹션 + use-count-up · use-tilt
 │     │  ├─ three/               hero-canvas(dynamic) · hero-rig · scene-light(백자) · scene-dark(흑유) · hero-state · palette
 │     │  └─ landing.tsx          컴포지션
