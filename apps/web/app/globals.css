@@ -7,22 +7,19 @@
 /* Tailwind 가 ui 패키지 소스의 클래스도 스캔하게 한다 */
 @source "../../../packages/ui/src";
 
-/* 섹션 전환 — 부드러운 스크롤 + 섹션 시작점에 느슨하게 스냅(proximity: 긴 섹션 안에서는 자유 스크롤) */
+/* 앵커 이동만 부드럽게. 섹션 scroll-snap 은 쓰지 않는다 —
+   `scroll-snap-type: y proximity` + 모든 섹션 `scroll-snap-align: start` 는 휠 1틱(100px)을 120~470px 로 늘리고,
+   지나친 시작점이 더 가까우면 위로 끌어올렸다(실측 2039→1940→2040, 2026-11-08). 섹션 높이가 556~2624px 로 제각각이라 재발 구조. */
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y proximity;
-}
-[data-section] {
-  scroll-snap-align: start;
 }
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-    scroll-snap-type: none;
   }
 }
 /* 리빌 전 요소의 3D 변형(rotateY 플립)이 투영 폭으로 가로 스크롤을 만든다(실측 scrollWidth 2768@1280, v2 부터).
-   섹션 단위 overflow-x: clip — 스크롤 컨테이너를 만들지 않아 sticky(멘토링 스테이지) · scroll-snap 에 영향이 없다. */
+   섹션 단위 overflow-x: clip — 스크롤 컨테이너를 만들지 않아 sticky(멘토링 스테이지)에 영향이 없다. */
 [data-section] {
   overflow-x: clip;
 }

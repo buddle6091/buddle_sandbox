@@ -126,7 +126,7 @@ export function Mentoring() {
       {stack ? (
         <MentoringStack items={m.items} />
       ) : (
-        <LazySection minHeight={600}>
+        <LazySection minHeight={1000}>
           <div className="grid gap-5 medium:grid-cols-2 expanded:grid-cols-3">
             {m.items.map((it, i) => (
               <MentoringGridCard key={it.title} no={`0${i + 1}`} title={it.title} body={it.body} index={i} />

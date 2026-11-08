@@ -10,7 +10,7 @@ export function Career() {
   const c = LANDING.career;
   return (
     <Section id="career" eyebrow={c.eyebrow} title={c.title} variant="tinted">
-      <LazySection minHeight={900} className="flex flex-col gap-10">
+      <LazySection minHeight={1200} className="flex flex-col gap-10">
         <ol className="flex flex-col gap-8 border-l-2 border-border-default pl-7">
           {c.items.map((it, i) => (
             <Reveal key={it.period} index={i} variant="flip" as="li" className="relative">

@@ -10,7 +10,7 @@ UI 는 `@sandbox/ui` 만 소비한다(여기서 공용 컴포넌트를 새로 �
 ## 절대 규칙
 1. 색/간격/타이포/radius/shadow 하드코딩 금지. 토큰 유틸리티만. Three.js 머티리얼 색도 `src/landing/three/palette.ts` 가 CSS 변수에서 읽는다.
 2. `three`/`@react-three/*` 는 **클라이언트 전용**. `next/dynamic(..., { ssr: false })` 로만 로드. 서버 컴포넌트에서 import 금지.
-3. 스크롤 상태의 SSOT 는 브라우저(네이티브 스크롤). 부드러운 이동·섹션 스냅은 CSS(`scroll-behavior: smooth` + `scroll-snap-type: y proximity`). Lenis 는 scroll-snap 과 충돌해 쓰지 않는다. 값은 `src/landing/scroll/store.ts` ref 하나.
+3. 스크롤 상태의 SSOT 는 브라우저(네이티브 스크롤). 앵커 이동만 CSS `scroll-behavior: smooth`. **섹션 scroll-snap 금지**(2026-11-08) — `y proximity` + 모든 섹션 `snap-align: start` 가 휠 1틱을 120~470px 로 늘리고 지나친 시작점으로 **위로** 끌어올렸다(실측 2039→1940→2040). Lenis 등 스크립트 스크롤도 금지. 값은 `src/landing/scroll/store.ts` ref 하나. `LazySection` `minHeight` 는 1280 실측 본문 높이에 맞춘다(마운트 시 문서 높이 변동 최소화).
 4. 3D 는 **히어로 우측 캔버스에만**, 그리고 **expanded(≥1024px) 에서만** 그린다(그 아래는 `useMedia(MQ_EXPANDED)` 로 아예 마운트하지 않고 영상 배경만 — 글 아래로 밀려 탭바에 잘리고 three 번들만 무거웠다, 2026-11-01). 전면 고정 캔버스 폐기. 라이트 「백자」·다크 「흑유」는 **서로 다른 장면**이고 테마 전환 시 약 1초 크로스페이드. 히어로 안의 느린 자체 움직임(유약 일렁임 · 고리 · 성운 공전)은 허용, 그 외 페이지 배경 애니메이션은 금지(DOM 오브는 정적 또는 40s 이상 느린 드리프트만, 히어로 사선 광선 `.landing-shard` 도 정적). 유일한 예외는 타이핑 캐럿 `.landing-caret` 의 0.8s 깜빡임(텍스트 커서 관례). `prefers-reduced-motion` 은 시간 정지 + 리빌 투명도만(캐럿 고정 · 스파크라인 즉시 · 스택 변형 없음).
 5. 랜딩 내용은 `src/landing/content/landing.ts` 한 파일. 기준은 **2026-10 공개용 이력서**(38곳 · 1,000h+ · 1,200명+ · 51과정 · 3년 차). 이력서에 없는 수치·채움 섹션 금지. 전화번호·생년월일 금지. 기업 고객사는 업종·대상·일반화된 주제로만 표기.
 6. Canvas frameloop: 히어로 in-view && reduced-motion 아님 → `"always"`, 그 외 `"demand"`(스크롤·리사이즈·테마 변화에만 `invalidate()`). 히어로가 화면 밖이면 렌더하지 않는다.

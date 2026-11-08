@@ -9,7 +9,7 @@ export function Audience() {
   const a = LANDING.audience;
   return (
     <Section id="audience" eyebrow={a.eyebrow} title={a.title} lead={a.note} variant="tinted">
-      <LazySection minHeight={520}>
+      <LazySection minHeight={410}>
         <Reveal index={1} as="ol" className="flex flex-col gap-2.5">
           {a.bars.map((b, i) => (
             <li key={b.name} className="grid grid-cols-[minmax(96px,150px)_minmax(0,1fr)_56px] items-center gap-3">

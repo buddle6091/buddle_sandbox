@@ -65,7 +65,7 @@ qa-verifier 판정: **PASS** (2026-11-08) — affected lint/test/typecheck(web·
 - React Compiler lint: useFrame 에서 useMemo/prop 값을 mutate 하면 오류 → 모듈 변수(`hero-state.ts`, uniforms) 사용.
 
 ### 후속 다듬기 (2026-11-01, 사용자 피드백 3건)
-- **섹션 전환 부드럽게**: `html { scroll-behavior: smooth; scroll-snap-type: y proximity }` + `[data-section] { scroll-snap-align: start }`. **Lenis 제거** — 스크립트 스크롤이 CSS scroll-snap 과 충돌(스냅이 튀거나 먹지 않음). 네이티브 스크롤이 SSOT 라는 규칙 3 과도 맞다. reduced-motion 은 둘 다 끈다.
+- **섹션 전환 부드럽게**: `html { scroll-behavior: smooth; scroll-snap-type: y proximity }` + `[data-section] { scroll-snap-align: start }`. **Lenis 제거** — 스크립트 스크롤이 CSS scroll-snap 과 충돌(스냅이 튀거나 먹지 않음). 네이티브 스크롤이 SSOT 라는 규칙 3 과도 맞다. reduced-motion 은 둘 다 끈다. → **2026-11-08 scroll-snap 철회**: 느린 휠에서 위로 튕기는 원인으로 확정(qa-log 참고). `scroll-behavior: smooth` 만 남김.
 - **강의 덱 스크롤바 숨김**: `.landing-deck { scrollbar-width: none }` + `::-webkit-scrollbar { display: none }`. 가로 스크롤·키보드 포커스는 그대로.
 - **칩·툴팁 정렬**: `Badge` 를 `inline-flex items-center justify-center leading-none` 으로, 문자열 children 은 안쪽 `span.truncate` 로 감싸 높이·세로 중앙을 고정(이전엔 `truncate` 가 블록이라 글자가 위로 치우침). 섹션 인디케이터 툴팁도 `inline-flex h-7 px-2.5 leading-none`. `badge.test.tsx`/`states.test.tsx` 는 `closest('[data-slot="badge"]')` 로 루트를 집는다.
 

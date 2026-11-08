@@ -58,7 +58,7 @@ export function Teaching() {
   const t = LANDING.teaching;
   return (
     <Section id="teaching" eyebrow={t.eyebrow} title={t.title} lead={t.policy}>
-      <LazySection minHeight={1200}>
+      <LazySection minHeight={1800}>
         <CourseList />
       </LazySection>
     </Section>

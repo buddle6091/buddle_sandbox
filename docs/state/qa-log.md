@@ -61,6 +61,19 @@
 ### 커밋에서 제외
 - `package.json`/`package-lock.json` nx 22.6.5→23.2.1 (세션 밖 변경, 의도 미확인), `apps/web/tsconfig.tsbuildinfo`(typecheck 부산물), `docs/개발 블로그 및 캘린더 시스템.zip`.
 
+## 2026-11-08 — 스크롤 튕김 (사용자 신고 "천천히 스크롤하면 위로 튕김", Phase 2c 후속)
+범위: `apps/web/app/globals.css` · `src/landing/sections/*` LazySection 높이 · `observe/lazy-section.tsx` 주석 · CLAUDE.md 규칙 3.
+
+### 버그 (증상 → 원인 → 조치)
+- [fixed · v2 2026-11-01 "smooth section snap" 부터] 느린 휠에서 아래로 굴렸는데 위로 되감기거나 한 틱에 수백 px 점프 → `html { scroll-snap-type: y proximity }` + 모든 `[data-section] { scroll-snap-align: start }` + `scroll-behavior: smooth`. 섹션 높이가 516~2097px 로 제각각이라 "시작점 근처"가 페이지 곳곳에 있고, 틱이 시작점 근처에 멈추면 브라우저가 가까운 시작점으로(이미 지나친 쪽이 가까우면 **위로**) 당긴다. 1280×800 실측: 철학 시작점 +40px 에서 아래 1틱 → `2039 → 1940 → 2040`; 숫자 섹션 1틱씩 → +120 · +319 · +469px; `scrollTo(시작점+40)` 즉시 시작점으로 복귀. 스냅만 끄면 4틱 = 정확히 +100px ×4, 역행 0 → **scroll-snap 두 줄 제거**, `scroll-behavior: smooth` 는 앵커용으로 유지. 네이티브 스크롤 SSOT(규칙 3)는 그대로.
+- [fixed · 부차] LazySection 자리표시와 실제 본문 높이 불일치(1280: 강의 1200→1811, 경력 900→1206, 숙련도 360→334, 산업군 520→410) → 섹션이 마운트될 때마다 문서 높이가 변해(10,145→10,926) 스냅 지점·진행 막대가 스크롤 중 움직였다 → 1280 실측값으로 보정(about 500 · expertise 340 · audience 410 · teaching 1800 · mentoring grid 1000 · career 1200). 폭에 따라 본문 높이가 달라(390 에서 expertise 850 · career 2168) 완전 일치는 불가 — 마운트는 뷰포트 아래 40% 지점에서 일어나 화면 안 점프는 없고 스크롤바 길이만 바뀐다.
+
+### 검증
+- 1280×800 휠 1틱(100px) ×N 로그에서 역행 0 · 틱당 이동 100px 고정 확인(아래 절 실측). `npx nx affected -t lint test typecheck --base=master` green.
+
+### 컨벤션 메모
+- 규칙 3 "섹션 스냅은 CSS" → "**섹션 scroll-snap 금지**" 로 개정. handoff.md Phase 2b 결정 항목에 철회 사유 링크.
+
 ## 2026-11-02 — 아키텍처 메모 (`docs/architecture.md`, 문서만)
 - [note] 코드 변경 없음. 배포 호스트·서버 계층·캘린더 동기화/마스킹 설계만 기록. qa-verifier 미호출(검증 대상 코드 없음).
 - [open] 결정 대기 3개(배포 목적 · Google 서비스 계정 여부 · 업종 enum 목록) — 결정 전까지 `CLAUDE.md` 스택 표 "배포" 행은 "재검토 중".

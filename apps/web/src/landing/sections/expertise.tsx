@@ -33,7 +33,7 @@ export function Expertise() {
   const e = LANDING.expertise;
   return (
     <Section id="expertise" eyebrow={e.eyebrow} title={e.title} variant="tinted">
-      <LazySection minHeight={360}>
+      <LazySection minHeight={340}>
         <div className="grid gap-6 medium:grid-cols-2 expanded:grid-cols-3">
           {e.groups.map((g, i) => (
             <GroupCard key={g.title} title={g.title} chips={g.chips} index={i} />

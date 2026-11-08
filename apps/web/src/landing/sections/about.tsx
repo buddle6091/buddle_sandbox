@@ -82,7 +82,7 @@ function StatsBody() {
 export function About() {
   return (
     <Section id="about" title="숫자로 보는 이력" eyebrow="AT A GLANCE" className="pt-12 pb-24">
-      <LazySection minHeight={520} className="flex flex-col gap-10">
+      <LazySection minHeight={500} className="flex flex-col gap-10">
         <StatsBody />
       </LazySection>
     </Section>
