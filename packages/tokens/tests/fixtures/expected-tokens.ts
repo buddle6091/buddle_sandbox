@@ -165,6 +165,8 @@ export const SHADOW_BASE = { light: 'navy-shadow', dark: 'black' } as const;
 
 /** design.md §2 Typography — [size, line-height, weight, letter-spacing] */
 export const TYPOGRAPHY: Record<string, [string, string, string, string]> = {
+  /** 랜딩 v2.1(2026-11-08) — 히어로 이름 전용, expanded 에서만. compact/medium 축소는 컴포넌트 책임 */
+  'display-xl': ['96px', '96px', '800', '-0.04em'],
   display: ['56px', '64px', '800', '-0.03em'],
   h1: ['32px', '40px', '700', '-0.02em'],
   h2: ['24px', '32px', '700', '-0.015em'],

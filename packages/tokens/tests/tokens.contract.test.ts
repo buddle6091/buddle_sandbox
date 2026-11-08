@@ -281,7 +281,7 @@ describe('6. 스케일 값이 design.md 와 일치', () => {
     expect(declared).toEqual(expected);
   });
 
-  it('타이포 10종이 size/line-height/weight/letter-spacing 을 모두 정의한다', () => {
+  it('타이포 11종이 size/line-height/weight/letter-spacing 을 모두 정의한다', () => {
     const declared = declarations(block(themeCss(), '@theme(?!\\s+inline)'));
     for (const [name, [size, leading, weight, tracking]] of Object.entries(TYPOGRAPHY)) {
       expect(declared.get(`--text-${name}`), `--text-${name}`).toBe(size);
