@@ -67,6 +67,35 @@ export const Blog: Story = {
 
 export const BlogDark: Story = { ...Blog, name: '블로그 — dark', globals: { theme: 'dark' } };
 
+/** 사이트용 TopBar — 본문 폭 · 텍스트 링크 · 밑줄 표시 · 스크롤 후 아래 실선만. context 슬롯에 현재 위치. */
+export const SiteLine: Story = {
+  name: '사이트 — topBar="line" (본문 폭 · 밑줄 표시 · context)',
+  args: { sideNav: false, topBar: 'line' },
+  render: (args) => (
+    <>
+      <AmbientBackground />
+      <AppShell
+        {...args}
+        context={
+          <span className="flex items-center gap-2">
+            <span className="text-border-strong">/</span>
+            <span className="text-fg-body">교육 이력</span>
+          </span>
+        }
+        actions={
+          <Button size="sm" variant="ghost">
+            찾기
+          </Button>
+        }
+      >
+        <Filler />
+      </AppShell>
+    </>
+  ),
+};
+
+export const SiteLineDark: Story = { ...SiteLine, name: '사이트 — line · dark', globals: { theme: 'dark' } };
+
 export const Calendar: Story = {
   name: '캘린더 — Rail(768) / Sidebar(1280)',
   args: { activeHref: '#calendar' },

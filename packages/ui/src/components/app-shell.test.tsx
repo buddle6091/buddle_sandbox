@@ -121,6 +121,64 @@ describe('AppShell — design.md §6.10: 같은 navItems 로 TopBar 탭 · TabBa
     l.mockRestore();
   });
 
+  describe('topBar="line" — 사이트용(본문 폭 · 텍스트 링크 · 밑줄 표시)', () => {
+    it('내용이 본문 컨테이너(container/landing 토큰) 안에 있고, 스크롤 후에는 아래 실선만(좌우 · 위 테두리 · 그림자 끔)', () => {
+      render(<Tree topBar="line" />);
+      const header = screen.getByRole('banner');
+      expect(header).toHaveAttribute('data-variant', 'line');
+      expect(header).toHaveClass('sticky', 'top-0', 'h-[var(--bs-layout-topbar-h)]', 'data-[scrolled=true]:glass-base');
+      expect(header).toHaveClass('data-[scrolled=true]:border-x-0!', 'data-[scrolled=true]:border-t-0!', 'data-[scrolled=true]:shadow-none!');
+      expectTokenOnly(header.className);
+      const inner = header.querySelector('[data-slot="topbar-inner"]')!;
+      expect(inner).toHaveClass('mx-auto', 'max-w-landing');
+      expectTokenOnly(inner.className);
+      expect(inner.className).not.toMatch(/max-w-\[/);
+      expect(within(inner as HTMLElement).getByRole('link', { name: 'buddle' })).toBeInTheDocument();
+    });
+
+    it('탭은 배경 없는 텍스트 링크, 활성은 aria-current + 굵게, 표시는 2px 밑줄', () => {
+      render(<Tree topBar="line" />);
+      const top = screen.getByRole('navigation', { name: '주 메뉴' });
+      const active = within(top).getByRole('link', { name: '캘린더' });
+      expect(active).toHaveAttribute('aria-current', 'page');
+      expect(active).toHaveClass('aria-[current=page]:font-semibold', 'aria-[current=page]:text-fg-default');
+      expect(active.className).not.toMatch(/bg-accent-subtle-bg/);
+      expectTokenOnly(active.className);
+      const dot = top.querySelector('[data-slot="nav-indicator"]')!;
+      expect(dot).toHaveClass('h-0.5', 'bottom-0', 'bg-fg-default');
+      expect(dot).toHaveAttribute('aria-hidden', 'true');
+    });
+
+    it('context 슬롯은 brand 옆에, actions 는 우측에', () => {
+      render(<Tree topBar="line" context={<span>/ 강의 이력</span>} actions={<button>찾기</button>} />);
+      const ctx = document.querySelector('[data-slot="topbar-context"]')!;
+      expect(ctx).toHaveTextContent('/ 강의 이력');
+      expect(ctx.previousElementSibling).toHaveTextContent('buddle');
+      expect(screen.getByRole('button', { name: '찾기' })).toBeInTheDocument();
+    });
+
+    it('pill(기본)에서는 context 를 그리지 않는다', () => {
+      render(<Tree context={<span>위치</span>} />);
+      expect(document.querySelector('[data-slot="topbar-context"]')).toBeNull();
+    });
+
+    it('밑줄 표시는 라벨(span) 폭 · 위치를 따른다', () => {
+      const w = vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockImplementation(function (this: HTMLElement) {
+        return this.tagName === 'A' ? 64 : this.tagName === 'SPAN' ? 40 : 0;
+      });
+      const r = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+        const left = this.tagName === 'NAV' ? 500 : this.tagName === 'SPAN' && this.textContent === '캘린더' ? 580 : 0;
+        return { left, top: 0, right: left, bottom: 0, width: 0, height: 0, x: left, y: 0, toJSON: () => ({}) } as DOMRect;
+      });
+      render(<Tree topBar="line" />);
+      const dot = document.querySelector('[data-slot="nav-indicator"]') as HTMLElement;
+      expect(dot.style.width).toBe('40px');
+      expect(dot.style.transform).toBe('translateX(80px)');
+      w.mockRestore();
+      r.mockRestore();
+    });
+  });
+
   it('본문은 main, compact 에서 TabBar 높이만큼 하단 여백', () => {
     render(<Tree />);
     const main = screen.getByRole('main');
