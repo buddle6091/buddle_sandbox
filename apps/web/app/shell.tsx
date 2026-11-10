@@ -9,6 +9,7 @@ import { AppShell, type NavItem } from '@sandbox/ui/components/app-shell';
 import { ThemeToggle } from '@sandbox/ui/components/theme-toggle';
 
 import { CommandPalette } from './command-palette';
+import { SectionCrumb } from './section-crumb';
 
 const NAV: NavItem[] = [
   { href: '/', label: '소개', icon: Home },
@@ -25,6 +26,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
       navItems={NAV}
       activeHref={active}
       sideNav={false}
+      topBar="line"
+      context={pathname === '/' ? <SectionCrumb /> : null}
       LinkComponent={Link}
       actions={
         <>

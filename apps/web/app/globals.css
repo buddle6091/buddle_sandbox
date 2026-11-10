@@ -295,6 +295,26 @@ html {
   );
 }
 
+/* 헤더 현재 위치(`buddle / 교육 이력`) — 히어로를 지나면 나타나고, 섹션이 바뀌면 라벨이 아래에서 올라온다 */
+.section-crumb {
+  opacity: 0;
+  transition: opacity var(--bs-motion-surface) var(--ease-bs);
+}
+.section-crumb[data-on="true"] {
+  opacity: 1;
+}
+@keyframes section-crumb-in {
+  from { opacity: 0; transform: translate3d(0, 6px, 0); }
+  to { opacity: 1; transform: none; }
+}
+.section-crumb-label {
+  animation: section-crumb-in 260ms var(--ease-bs) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .section-crumb-label { animation: none; }
+  .section-crumb { transition: none; }
+}
+
 /* ───────── 라우트 전환 (View Transitions) — 본문 교차 페이드 220ms. reduced-motion 은 즉시 ───────── */
 ::view-transition-old(root),
 ::view-transition-new(root) {

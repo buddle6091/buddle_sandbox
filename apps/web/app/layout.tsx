@@ -8,7 +8,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: { default: 'buddle — 이상원', template: '%s · buddle' },
-  description: 'Frontend Developer · AX Instructor. 기업·기관 AI 교육, 프론트엔드 실무 교육, 해커톤 TA.',
+  description: 'Frontend Developer · AX Instructor. 기업·기관 AI 교육 기술 강사(실습 지도 · 멘토링), 해커톤 TA.',
   metadataBase: new URL('https://buddle.it.kr'),
 };
 

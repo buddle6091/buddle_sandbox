@@ -60,7 +60,7 @@ export function Audience() {
                     href="#teaching"
                     data-bar-link
                     aria-current={on ? 'true' : undefined}
-                    aria-label={`${b.name} ${b.hours}시간 — 강의 이력 ${n}건 보기`}
+                    aria-label={`${b.name} ${b.hours}시간 — 교육 이력 ${n}건 보기`}
                     onClick={() => courseFilterStore.set({ industry: b.name, target: null })}
                     className={cn(ROW, 'focus-ring group -mx-2 rounded-sm px-2 transition-colors duration-[var(--bs-motion-control)] ease-bs hover-fine:bg-bg-subtle')}
                   >

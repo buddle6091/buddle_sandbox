@@ -115,7 +115,17 @@ function CourseList() {
 export function Teaching() {
   const t = LANDING.teaching;
   return (
-    <Section id="teaching" title={t.title} lead={t.policy} className="py-28">
+    <Section
+      id="teaching"
+      title={t.title}
+      lead={
+        <>
+          <span className="block font-semibold text-fg-body">{t.roleNote}</span>
+          <span className="mt-1 block">{t.policy}</span>
+        </>
+      }
+      className="py-28"
+    >
       <LazySection minHeight={1825} className="flex flex-col gap-8">
         <Reveal index={1} className="flex flex-col gap-8">
           <CourseList />

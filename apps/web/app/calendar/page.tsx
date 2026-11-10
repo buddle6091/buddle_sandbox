@@ -14,7 +14,7 @@ export default function CalendarPage() {
       <div className="flex flex-col gap-3 border-t border-border-default pt-8">
         <p className="text-h3 font-semibold text-fg-default">초대받은 분만 볼 수 있는 일정표예요.</p>
         <p className="max-w-content text-body-lg text-fg-body">
-          강의 · 멘토링 일정을 초대 링크로 로그인한 뒤 볼 수 있게 만드는 중입니다. 아직 열리지 않았어요.
+          교육 · 멘토링 일정을 초대 링크로 로그인한 뒤 볼 수 있게 만드는 중입니다. 아직 열리지 않았어요.
         </p>
       </div>
       <ul className="flex flex-col border-t border-border-default">

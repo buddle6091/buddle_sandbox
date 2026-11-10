@@ -18,7 +18,7 @@ export default function BlogPage() {
       <h1 className="text-h1 text-fg-default medium:text-display">블로그</h1>
       <div className="flex flex-col gap-3 border-t border-border-default pt-8">
         <p className="text-h3 font-semibold text-fg-default">아직 이곳에 올린 글은 없어요.</p>
-        <p className="max-w-content text-body-lg text-fg-body">개발 · 회고 · 강의 글을 여기에 올릴 예정입니다. 그 전까지 쓴 글은 velog 에 있어요.</p>
+        <p className="max-w-content text-body-lg text-fg-body">개발 · 회고 · 교육 글을 여기에 올릴 예정입니다. 그 전까지 쓴 글은 velog 에 있어요.</p>
       </div>
       <ul className="flex flex-col border-t border-border-default">
         {velog && (

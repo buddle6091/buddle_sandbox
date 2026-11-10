@@ -77,11 +77,10 @@ export function CommandPalette() {
         aria-keyshortcuts="Meta+K Control+K"
         onClick={() => setOpen(true)}
         data-slot="palette-trigger"
-        className="gap-2 text-fg-muted hover-fine:text-fg-default"
+        className="size-11 gap-1.5 px-0 text-fg-muted hover-fine:text-fg-default expanded:h-8 expanded:w-auto expanded:px-2"
       >
         <Search />
-        <span className="hidden medium:inline">찾기</span>
-        <kbd className="hidden rounded-sm border border-border-default px-1.5 font-mono text-caption expanded:inline-block">⌘K</kbd>
+        <kbd className="hidden font-mono text-caption font-normal expanded:inline-block">⌘K</kbd>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen} items={items} onSelect={onSelect} placeholder="페이지 · 섹션 · 테마 · 이메일 복사" />
     </>

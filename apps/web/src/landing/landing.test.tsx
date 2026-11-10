@@ -36,8 +36,8 @@ describe('Landing — 10섹션', () => {
     const recent = document.querySelector('#top [data-slot="hero-recent"]')!;
     expect(recent).toHaveAttribute('href', '#teaching');
     expect(recent).toHaveTextContent('AI-EXPERT PBL 멘토링 (3일)');
-    expect(screen.getByRole('link', { name: '강의 문의하기' })).toHaveAttribute('href', '#contact');
-    expect(screen.getByRole('link', { name: '강의 이력 보기' })).toHaveAttribute('href', '#teaching');
+    expect(screen.getByRole('link', { name: '교육 문의하기' })).toHaveAttribute('href', '#contact');
+    expect(screen.getByRole('link', { name: '교육 이력 보기' })).toHaveAttribute('href', '#teaching');
   });
 
   it('히어로 배경 영상(시안 D) — muted · loop · playsinline · poster, 장식(aria-hidden)', () => {
@@ -67,7 +67,7 @@ describe('Landing — 10섹션', () => {
     const path = about.querySelector('svg[data-slot="sparkline"] path[data-slot="spark-path"]');
     expect(path?.getAttribute('d')).toMatch(/^M/);
     expect(about.querySelector('svg text')).toBeNull();
-    expect(within(about).getByText(/주요 10개 과정 누적 강의 시간/)).toBeInTheDocument();
+    expect(within(about).getByText(/주요 10개 과정 누적 교육 참여 시간/)).toBeInTheDocument();
     expect(about.querySelector('[data-slot="stat-lead"]')).toHaveTextContent('1,000');
   });
 
@@ -83,7 +83,7 @@ describe('Landing — 10섹션', () => {
     expect(items[2]).toHaveTextContent('1,200');
     expect(items[3]).toHaveTextContent('51');
     expect(items[4]).toHaveTextContent('3');
-    expect(within(about).getByText(/기업 · 기관 출강 36곳/)).toBeInTheDocument();
+    expect(within(about).getByText(/기업 · 기관 교육 참여 36곳/)).toBeInTheDocument();
   });
 
   it('제목 3개와 섹션 구성(칩 · 막대 14 · 강의 행 10 · 멘토링 5 · 경력 4 · 후기 2)', () => {
@@ -195,7 +195,7 @@ describe('Landing — 10섹션', () => {
     // 전자/반도체 · 노원 미래산업고 · 그룹 연수원 · 제조/배터리 — 나머지 10개는 정적
     expect(links).toHaveLength(4);
     for (const a of links) expect(a).toHaveAttribute('href', '#teaching');
-    const semi = screen.getByRole('link', { name: /전자\/반도체 329시간 — 강의 이력 4건 보기/ });
+    const semi = screen.getByRole('link', { name: /전자\/반도체 329시간 — 교육 이력 4건 보기/ });
     fireEvent.click(semi);
     const teaching = document.getElementById('teaching')!;
     expect(teaching.querySelectorAll('[data-course-row]')).toHaveLength(4);
@@ -274,5 +274,14 @@ describe('Landing — 10섹션', () => {
     fireEvent.click(screen.getByRole('button', { name: /이메일 주소 복사/ }));
     await waitFor(() => expect(assign).toHaveBeenCalledWith('mailto:sangwon.lee@buddle.it.kr'));
     Object.defineProperty(window, 'location', { value: original, configurable: true });
+  });
+
+  it('역할 표기 — 메인 강사로 읽히는 표현이 없다(멘토링 외에는 기술 강사 · 실습 지도로 참여)', () => {
+    const { container } = render(<Landing />);
+    const text = container.textContent ?? '';
+    for (const phrase of ['가르칩니다', '강의했습니다', '강의를 합니다', '강의를 진행', '담당 기업', '담당 과정', '출강', '맡아 봤습니다', '과정을 짭니다']) {
+      expect(text, phrase).not.toContain(phrase);
+    }
+    expect(document.getElementById('teaching')).toHaveTextContent(LANDING.teaching.roleNote);
   });
 });

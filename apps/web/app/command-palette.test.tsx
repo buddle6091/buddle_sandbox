@@ -50,7 +50,7 @@ describe('CommandPalette — ⌘K 조립부', () => {
     document.body.appendChild(target);
     render(<CommandPalette />);
     open();
-    pick('강의 이력');
+    pick('교육 이력');
     await waitFor(() => expect(target.scrollIntoView).toHaveBeenCalled());
     expect(push).not.toHaveBeenCalled();
     target.remove();
@@ -60,7 +60,7 @@ describe('CommandPalette — ⌘K 조립부', () => {
     pathname = '/blog';
     render(<CommandPalette />);
     open();
-    pick('강의 이력');
+    pick('교육 이력');
     expect(push).toHaveBeenCalledWith('/#teaching');
   });
 

@@ -53,7 +53,7 @@ function Sparkline() {
   const xy = React.useMemo(() => sparklinePoints(totals), [totals]);
   const [index, setIndex] = React.useState(points.length - 1);
   const n = courses.length;
-  const caption = `주요 ${n}개 과정 누적 강의 시간 추이 (전체 1,000h+ 중 일부 · 축 생략)`;
+  const caption = `주요 ${n}개 과정 누적 교육 참여 시간 추이 (전체 1,000h+ 중 일부 · 축 생략)`;
   const current = points[index];
   const readout = current ? current.courses.map((c) => `${c.date} · ${c.title} · ${c.hours}`).join(' / ') : '';
 
