@@ -11,6 +11,7 @@ export * from './components/label';
 export * from './components/badge';
 export * from './components/card';
 export * from './components/dialog';
+export * from './components/command';
 export * from './components/sheet';
 export * from './components/responsive-dialog';
 export * from './components/popover';

@@ -12,6 +12,8 @@ import { useScrolled } from '../hooks/use-scrolled';
  * 같은 `navItems` 배열에서 네 내비를 렌더한다. 분기는 전부 CSS 미디어 쿼리(JS 분기 없음):
  *   TopBar   항상. h 52/60 + safe-top, sticky. 스크롤 0 투명 → 스크롤 후 glass base.
  *            좌 brand(lowercase 700) · medium+ 알약 탭(활성 accent/subtle-bg) · 우 actions
+ *            활성 알약은 하나의 표시(nav-indicator)가 탭 사이를 미끄러진다(2026-11-10). 위치를 재기 전 · 잴 수 없는
+ *            환경(SSR · 테스트)에서는 링크 자체 배경이 그대로 활성 표시다.
  *   TabBar   compact 전용. h 56 + safe-bottom, glass base, 최대 5항목
  *   Rail     medium 전용. 72, 아이콘 + 12px 라벨
  *   Sidebar  expanded+ 전용. 248, bg/subtle 불투명
@@ -64,8 +66,10 @@ function NavLinks({
   const cls: Record<typeof variant, string> = {
     topbar: cn(
       navLinkBase,
-      'inline-flex h-8 items-center rounded-full px-4 text-label text-fg-muted',
+      'relative inline-flex h-8 items-center rounded-full px-4 text-label text-fg-muted',
       'hover-fine:text-fg-default aria-[current=page]:bg-accent-subtle-bg aria-[current=page]:text-accent-fg-strong',
+      // 미끄러지는 표시가 자리를 잡으면 링크 자체 배경은 비운다(표시 하나만 보이게)
+      'group-data-[indicator=ready]/topnav:aria-[current=page]:bg-transparent',
     ),
     tabbar: cn(
       navLinkBase,
@@ -101,6 +105,44 @@ function NavLinks({
   );
 }
 
+/**
+ * TopBar 활성 표시 — 활성 링크의 위치 · 폭을 재서 표시 하나를 옮긴다. DOM 에 직접 쓴다(리렌더 없음).
+ * 첫 배치는 전환 없이(왼쪽에서 날아오지 않게), 이후 activeHref 가 바뀌면 미끄러진다. 폭 변화는 ResizeObserver 로 따라간다.
+ */
+function useNavIndicator(activeHref: string | undefined) {
+  const navRef = React.useRef<HTMLElement>(null);
+  const dotRef = React.useRef<HTMLSpanElement>(null);
+  React.useEffect(() => {
+    const nav = navRef.current;
+    const dot = dotRef.current;
+    if (!nav || !dot) return;
+    const place = () => {
+      const a = nav.querySelector<HTMLElement>('a[aria-current="page"]');
+      if (!a || a.offsetWidth === 0) {
+        delete nav.dataset.indicator;
+        dot.style.opacity = '0';
+        return;
+      }
+      const first = nav.dataset.indicator !== 'ready';
+      if (first) dot.style.transition = 'none';
+      dot.style.width = `${a.offsetWidth}px`;
+      dot.style.transform = `translateX(${a.offsetLeft}px)`;
+      dot.style.opacity = '1';
+      if (first) {
+        void dot.offsetWidth; // 전환 없이 자리를 잡은 뒤에 전환을 되살린다
+        dot.style.transition = '';
+        nav.dataset.indicator = 'ready';
+      }
+    };
+    place();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(place);
+    ro.observe(nav);
+    return () => ro.disconnect();
+  }, [activeHref]);
+  return { navRef, dotRef };
+}
+
 function AppShell({
   navItems,
   activeHref,
@@ -115,6 +157,7 @@ function AppShell({
   const Link = LinkComponent ?? DefaultLink;
   const scrolled = useScrolled();
   const items = navItems.slice(0, 5);
+  const { navRef, dotRef } = useNavIndicator(activeHref);
 
   return (
     <div className={cn('relative z-10 flex min-h-dvh flex-col', className)}>
@@ -130,7 +173,16 @@ function AppShell({
         <Link href={brandHref} className="focus-ring text-h3 font-bold lowercase text-fg-default rounded-sm">
           {brand}
         </Link>
-        <nav aria-label="주 메뉴" className="hidden items-center gap-1 medium:flex">
+        <nav ref={navRef} aria-label="주 메뉴" className="group/topnav relative hidden items-center gap-1 medium:flex">
+          <span
+            ref={dotRef}
+            data-slot="nav-indicator"
+            aria-hidden="true"
+            className={cn(
+              'pointer-events-none absolute top-1/2 left-0 h-8 -translate-y-1/2 rounded-full bg-accent-subtle-bg opacity-0',
+              'transition-[transform,width,opacity] duration-[var(--bs-motion-surface)] ease-bs motion-reduce:transition-none',
+            )}
+          />
           <NavLinks items={items} activeHref={activeHref} Link={Link} variant="topbar" />
         </nav>
         <div className="ml-auto flex items-center gap-2">{actions}</div>

@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { CalendarDays, FileText, User } from 'lucide-react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { AmbientBackground } from './ambient-background';
 import { AppShell, type NavItem } from './app-shell';
@@ -85,6 +85,40 @@ describe('AppShell — design.md §6.10: 같은 navItems 로 TopBar 탭 · TabBa
     const top = screen.getByRole('navigation', { name: '주 메뉴' });
     expect(top).toHaveClass('hidden', 'medium:flex');
     expect(within(top).getByRole('link', { name: '캘린더' })).toHaveClass('aria-[current=page]:bg-accent-subtle-bg');
+  });
+
+  it('TopBar 활성 표시(nav-indicator) — 장식 요소 하나, 위치를 잴 수 없으면 숨고 링크 배경이 활성 표시로 남는다', () => {
+    render(<Tree />);
+    const top = screen.getByRole('navigation', { name: '주 메뉴' });
+    const dot = top.querySelector('[data-slot="nav-indicator"]') as HTMLElement;
+    expect(dot).not.toBeNull();
+    expect(dot).toHaveAttribute('aria-hidden', 'true');
+    expect(dot).toHaveClass('bg-accent-subtle-bg', 'motion-reduce:transition-none');
+    expectTokenOnly(dot.className);
+    // jsdom 은 레이아웃이 없다(offsetWidth 0) → ready 가 아니고 표시는 투명
+    expect(top).not.toHaveAttribute('data-indicator');
+    expect(dot.style.opacity).toBe('0');
+    expect(within(top).getAllByRole('link')).toHaveLength(3);
+  });
+
+  it('TopBar 활성 표시 — 폭을 잴 수 있으면 활성 링크 자리로 옮기고 ready, activeHref 가 바뀌면 따라간다', () => {
+    const w = vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.tagName === 'A' ? 64 : 0;
+    });
+    const l = vi.spyOn(HTMLElement.prototype, 'offsetLeft', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.getAttribute('href') === '/calendar' ? 68 : this.getAttribute('href') === '/account' ? 136 : 0;
+    });
+    const { rerender } = render(<Tree />);
+    const top = screen.getByRole('navigation', { name: '주 메뉴' });
+    const dot = top.querySelector('[data-slot="nav-indicator"]') as HTMLElement;
+    expect(top).toHaveAttribute('data-indicator', 'ready');
+    expect(dot.style.width).toBe('64px');
+    expect(dot.style.transform).toBe('translateX(68px)');
+    expect(dot.style.opacity).toBe('1');
+    rerender(<Tree activeHref="/account" />);
+    expect(dot.style.transform).toBe('translateX(136px)');
+    w.mockRestore();
+    l.mockRestore();
   });
 
   it('본문은 main, compact 에서 TabBar 높이만큼 하단 여백', () => {
