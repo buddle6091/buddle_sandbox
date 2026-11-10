@@ -41,6 +41,28 @@
 - [deferred] 덱 키보드 ←/→ 카드 이동은 네이티브 스크롤에 위임(포커스는 가능).
 - [open] dev 전용 진단(`window.__heroState`, `data-canvas-inview`) 잔존 — 프로덕션 번들 제외 확인됨, 정리 시점 미정.
 
+## 2026-11-10 — 헤더 재설계 · 역할 표기 · velog 글 가져오기 (Phase 2d 후속)
+범위: `packages/ui` AppShell(`topBar="line"` · `context`) · `apps/web` 셸(`section-crumb`) · `content/landing.ts` 역할 문구 · `tools/import-velog.mjs` + `docs/archive/velog/`(90편) · `docs/architecture.md` 1.6절.
+
+### 사용자 신고 · 요청 (증상 → 원인 → 조치)
+- [fixed] "헤더가 촌스럽다" → 스크롤 후 `glass-base` 가 `border-x-0 border-t-0` 를 덮어 **사방 테두리 + 그림자 상자**가 됐고(유틸리티 순서), 알약 탭이 brand 옆에, 액션이 화면 끝에 붙어 본문 폭과 어긋났다 → 리서치(slash.page · toss.tech · linear.app: 본문 폭 정렬 · 배경 없는 텍스트 링크 · 실선 하나) 따라 `topBar="line"` 추가. important 유틸리티로 좌우 · 위 테두리와 그림자를 끄고 아래 실선만. 탭은 2px 밑줄 표시가 미끄러진다. brand 옆에 현재 섹션(`buddle / 교육 이력`).
+- [fixed] "멘토링 외에는 메인 강사로 홀로 선 적이 없다" → `가르칩니다 · 강의했습니다 · 담당 · 출강 · 과정을 짭니다 · 맡아 봤습니다` 를 `기술 강사로 참여 · 실습 지도 · 교육 참여` 로. 금지 표현 9개를 테스트로 고정. 과정 행 · 수치는 불변.
+
+### qa-verifier 판정 — FAIL(게이트는 green, 작은 blocker 3) → 조치
+- [fixed · B2] `app-shell.tsx` 에 `max-w-[1120px]` 하드코딩 → `max-w-landing` 토큰(`--container-landing`). 테스트가 `expectTokenOnly` + 임의값 금지를 단언. (apps/web 의 같은 리터럴 4곳은 이전부터 있던 것 — [deferred])
+- [fixed · B3] 헤더 연결 테스트 없음 → `section-crumb.test.tsx`(top 에서 숨김 · 9개 섹션 라벨 · aria-hidden · 내비 라벨과 일치).
+- [wontfix-here · B1] `package.json` nx 22.6.5 → 23.2.1 범프(플러그인은 22.6.5 그대로, `allowScripts` 도 옛 버전) — **세션 밖 미커밋 변경**이라 이번에도 커밋하지 않았다. 깨끗한 `npm ci` 에서 어긋날 수 있으니 되돌리거나 `@nx/*` 를 함께 올리는 별도 `chore:` 가 필요(사용자 결정).
+- [fixed] 라벨 불일치: 헤더는 `숫자`, 내비 · 팔레트는 `소개` → `소개` 로 통일. 팔레트 트리거 compact 터치 영역 32px → 44px. 크럼 전환 reduced-motion 처리. 스토리 · 주석의 옛 문구.
+- [fixed · W1] 멘토링 2번 "맡아 봤습니다 … 실습 과제와 예시를 다시 짭니다" → "실습을 지도해 봤습니다 … 예시로 바꿔 설명합니다".
+- [open · W2] 히어로 · 메타의 `AX Instructor` 직함은 그대로 — 사용자 결정.
+- [open] 과정 행 "하반기 핵심인재 PBL (3일 강의 + …)", "2024 파이썬 기초 과정 40h" 가 단독 강의로 읽힐 수 있다. 행 데이터는 건드리지 않았다 — 사용자 확인.
+- [fixed] 가져오기 스크립트: 파일 이름 충돌 시 id 접미, 3회 재시도, 페이지 간 중복 제거, `released_at` null 방어, 사라진 글 파일 정리, `fetchedAt` 제거(멱등). 저장 위치를 루트 `content/` → `docs/archive/velog/`(구조 규칙 1: 루트 폴더는 apps · packages · docs · tools 만).
+- 최종 테스트 수: web 104 · ui 139.
+
+### 메모
+- velog 원문 3편은 본문이 비어 있다(원본이 빈 글). 이미지 154개는 velog CDN 주소 그대로 — Storage 복사는 Phase 2 seed 에서(architecture 1.6).
+- 랜딩 작업과 블로그 준비(글 가져오기 · 설계 메모)가 한 세션에 섞였다 — 사용자 요청. 블로그 **기능** 구현은 하지 않았다.
+
 ## 2026-11-10 — 랜딩 v3 "사람이 만든 것처럼" (Phase 2d)
 범위: `apps/web`(랜딩 전 섹션 · 셸 · 블로그/캘린더 화면 · globals.css) · `packages/ui`(`command` 신규, `app-shell`). qa-verifier 판정은 아래.
 

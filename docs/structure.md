@@ -103,7 +103,9 @@ buddle_sandbox/
 │     │  └─ landing.tsx          컴포지션
 │     └─ tests/setup.ts
 │
+├─ docs/archive/velog/          velog 공개 글 90편 원문(.md + index.json) — 블로그 이전의 가져오기 원본 · 백업. `tools/import-velog.mjs` 가 만든다
 └─ tools/
+   ├─ import-velog.mjs           velog 공개 글 → docs/archive/velog (멱등)
    └─ capture-landing.mjs        Playwright 캡처(1280/390 × 스크롤 단계) — dev 서버 필요
 ```
 
