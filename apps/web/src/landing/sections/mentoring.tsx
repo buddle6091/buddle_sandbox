@@ -11,7 +11,6 @@ import { LazySection } from '../observe/lazy-section';
 import { MQ_EXPANDED, MQ_REDUCED_MOTION, useMedia } from '../observe/use-media';
 import { scrollStore } from '../scroll/store';
 import { Reveal, Section } from './section';
-import { useTilt } from './use-tilt';
 
 type Item = { title: string; body: string };
 
@@ -25,21 +24,25 @@ function MentoringCardBody({ no, title, body, className }: Item & { no: string; 
         className,
       )}
     >
-      <span className="landing-pop text-label font-extrabold tabular-nums text-fg-link group-hover-fine:text-fg-inverse">{no}</span>
-      <h3 className="landing-pop text-h3 font-bold text-fg-default group-hover-fine:text-fg-inverse">{title}</h3>
-      <p className="landing-pop text-body text-fg-muted group-hover-fine:text-fg-inverse">{body}</p>
+      <span className="text-label font-extrabold tabular-nums text-fg-link group-hover-fine:text-fg-inverse">{no}</span>
+      <h3 className="text-h3 font-bold text-fg-default group-hover-fine:text-fg-inverse">{title}</h3>
+      <p className="text-body text-fg-muted group-hover-fine:text-fg-inverse">{body}</p>
     </Card>
   );
 }
 
-function MentoringGridCard({ no, title, body, index }: Item & { no: string; index: number }) {
-  const tilt = useTilt<HTMLDivElement>();
+/** compact · medium — 유리 카드 그리드 대신 번호 붙은 평문 목록(v3). 카드는 expanded 스택에서만 쓴다. */
+function MentoringList({ items }: { items: readonly Item[] }) {
   return (
-    <Reveal index={index}>
-      <div className="landing-tilt h-full" {...tilt}>
-        <MentoringCardBody no={no} title={title} body={body} />
-      </div>
-    </Reveal>
+    <ol data-slot="mentoring-list" className="flex flex-col border-t border-border-default">
+      {items.map((it, i) => (
+        <Reveal key={it.title} index={i} as="li" className="grid list-none grid-cols-[auto_minmax(0,1fr)] gap-x-5 gap-y-2 border-b border-border-default py-6">
+          <span className="font-mono text-label tabular-nums text-fg-link">{`0${i + 1}`}</span>
+          <h3 className="text-h3 font-bold text-fg-default">{it.title}</h3>
+          <p className="col-start-2 text-body text-fg-body">{it.body}</p>
+        </Reveal>
+      ))}
+    </ol>
   );
 }
 
@@ -112,26 +115,22 @@ export function Mentoring() {
   return (
     <Section
       id="mentoring"
-      eyebrow={m.eyebrow}
       title={
         <>
           {m.title}
           <span className="ml-2 align-top font-mono text-caption font-normal text-fg-muted">({m.items.length})</span>
         </>
       }
-      className={cn('pt-16', stack && 'pb-0')}
+      lead={m.lead}
+      className={cn('pt-20', stack && 'pb-0')}
       // sticky 는 containing block(inner div) 안에서만 머문다 → inner 를 320vh 로 늘려야 스테이지가 붙어 있다
       innerClassName={cn(stack && 'min-h-[320vh] gap-6')}
     >
       {stack ? (
         <MentoringStack items={m.items} />
       ) : (
-        <LazySection minHeight={1000}>
-          <div className="grid gap-5 medium:grid-cols-2 expanded:grid-cols-3">
-            {m.items.map((it, i) => (
-              <MentoringGridCard key={it.title} no={`0${i + 1}`} title={it.title} body={it.body} index={i} />
-            ))}
-          </div>
+        <LazySection minHeight={900}>
+          <MentoringList items={m.items} />
         </LazySection>
       )}
     </Section>

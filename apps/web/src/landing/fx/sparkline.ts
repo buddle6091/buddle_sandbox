@@ -37,17 +37,23 @@ export function cumulativeByDate(courses: readonly CourseLike[]): CumulativePoin
 
 const fmt = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/\.?0+$/, ''));
 
-/** 값 배열 → SVG path d. 값이 클수록 위(y 작음). 값 1개 또는 전부 같은 값이면 수평선. */
-export function sparklinePath(values: readonly number[], width = 1000, height = 200, pad = 8): string {
-  if (values.length === 0) return '';
+/** 값 배열 → 점 좌표. 값이 클수록 위(y 작음). 전부 같은 값이면 바닥선. 1개면 x=0. */
+export function sparklinePoints(values: readonly number[], width = 1000, height = 200, pad = 8): Array<readonly [number, number]> {
+  if (values.length === 0) return [];
   const max = Math.max(...values);
   const min = Math.min(...values);
   const span = max - min;
   const innerH = height - pad * 2;
   const y = (v: number) => (span === 0 ? height - pad : height - pad - ((v - min) / span) * innerH);
-  if (values.length === 1) return `M0,${fmt(y(values[0]))} L${fmt(width)},${fmt(y(values[0]))}`;
-  const step = width / (values.length - 1);
-  const pts = values.map((v, i) => [i * step, y(v)] as const);
+  const step = values.length > 1 ? width / (values.length - 1) : 0;
+  return values.map((v, i) => [i * step, y(v)] as const);
+}
+
+/** 값 배열 → SVG path d. 값 1개면 수평선. */
+export function sparklinePath(values: readonly number[], width = 1000, height = 200, pad = 8): string {
+  const pts = sparklinePoints(values, width, height, pad);
+  if (pts.length === 0) return '';
+  if (pts.length === 1) return `M0,${fmt(pts[0][1])} L${fmt(width)},${fmt(pts[0][1])}`;
   let d = `M${fmt(pts[0][0])},${fmt(pts[0][1])}`;
   for (let i = 1; i < pts.length; i++) {
     const [x0, y0] = pts[i - 1];
@@ -56,4 +62,22 @@ export function sparklinePath(values: readonly number[], width = 1000, height = 
     d += ` C${fmt(x0 + cx)},${fmt(y0)} ${fmt(x1 - cx)},${fmt(y1)} ${fmt(x1)},${fmt(y1)}`;
   }
   return d;
+}
+
+/**
+ * 스크럽 — 선 위 각 점(시작일)에 해당하는 과정들. 표시에는 과정의 원래 값(날짜·제목·시간)만 쓴다.
+ * 누적 합은 선의 높이로만 쓰고 숫자로 보여주지 않는다(규칙 5).
+ */
+export type ScrubPoint<T> = { key: string; total: number; courses: T[] };
+
+export function scrubPoints<T extends CourseLike>(courses: readonly T[]): ScrubPoint<T>[] {
+  return cumulativeByDate(courses).map((p) => ({ ...p, courses: courses.filter((c) => sortKey(c.date) === p.key) }));
+}
+
+/** 가로 비율(0~1) → 가장 가까운 점 index. n 이 0 이면 -1. */
+export function nearestIndex(ratio: number, n: number): number {
+  if (n <= 0) return -1;
+  if (n === 1) return 0;
+  const r = Math.min(1, Math.max(0, ratio));
+  return Math.round(r * (n - 1));
 }

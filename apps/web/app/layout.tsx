@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 
 import { AmbientBackground } from '@sandbox/ui/components/ambient-background';
+import { Toaster } from '@sandbox/ui/components/toast';
 
 import { Shell } from './shell';
 import './globals.css';
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-dvh bg-bg-page font-sans text-fg-default antialiased">
         <AmbientBackground />
         <Shell>{children}</Shell>
+        <Toaster />
       </body>
     </html>
   );

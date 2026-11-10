@@ -60,3 +60,34 @@ describe('sparklinePath — viewBox 1000×200 큐빅 경로(slash 식 1/3 제어
     expect(d).not.toContain('NaN');
   });
 });
+
+describe('sparklinePoints · scrubPoints · nearestIndex — 스크럽(v3)', () => {
+  it('점은 값 수만큼, x 는 등간격, 큰 값이 위', async () => {
+    const { sparklinePoints } = await import('./sparkline');
+    const pts = sparklinePoints([0, 50, 100]);
+    expect(pts.map((p) => p[0])).toEqual([0, 500, 1000]);
+    expect(pts[0][1]).toBeGreaterThan(pts[2][1]);
+    expect(sparklinePoints([])).toEqual([]);
+  });
+  it('scrubPoints — 같은 시작일 과정은 한 점에 묶인다', async () => {
+    const { scrubPoints } = await import('./sparkline');
+    const pts = scrubPoints([
+      { date: '2026.09.28 ~ 10.08', hours: '64h', t: 'a' },
+      { date: '2024', hours: '40h', t: 'b' },
+      { date: '2026.09.28 ~ 10.15', hours: '6h+', t: 'c' },
+    ]);
+    expect(pts.map((p) => p.key)).toEqual(['2024.01.01', '2026.09.28']);
+    expect(pts[1].courses.map((c) => c.t)).toEqual(['a', 'c']);
+    expect(pts[1].total).toBe(110);
+  });
+  it('nearestIndex — 비율을 가장 가까운 점으로, 범위 밖은 클램프', async () => {
+    const { nearestIndex } = await import('./sparkline');
+    expect(nearestIndex(0, 5)).toBe(0);
+    expect(nearestIndex(0.49, 3)).toBe(1);
+    expect(nearestIndex(1.4, 5)).toBe(4);
+    expect(nearestIndex(-1, 5)).toBe(0);
+    expect(nearestIndex(0.5, 0)).toBe(-1);
+    expect(nearestIndex(0.9, 1)).toBe(0);
+  });
+});
+

@@ -24,22 +24,35 @@ html {
   overflow-x: clip;
 }
 
-/* ───────── 랜딩 v2 — 리빌 (시안: rotateX 16° · translateY 40 → 0, 700/1000ms, 스태거 60ms) ───────── */
+/* ───────── 랜딩 v3 — 리빌 3종 (2026-11-10) ─────────
+   v2 는 모든 요소가 같은 rotateX 16° fade-up 이라 템플릿처럼 보였다. 역할별로 나눈다:
+   기본  목록·본문  16px 상승 + 페이드(짧게, 50ms 스태거)
+   fade  보조 문장 · 긴 문장 제목  투명도만
+   rise  제목  줄 마스크(.landing-mask) 안에서 아래→위로 올라온다 */
 [data-reveal] {
   opacity: 0;
-  transform: perspective(1000px) translate3d(0, 40px, 0) rotateX(16deg);
-  transform-origin: 50% 100%;
+  transform: translate3d(0, 16px, 0);
   transition:
-    opacity 700ms var(--ease-bs),
-    transform 1000ms var(--ease-bs);
-  transition-delay: calc(var(--i, 0) * 60ms);
+    opacity 500ms var(--ease-bs),
+    transform 600ms var(--ease-bs);
+  transition-delay: calc(var(--i, 0) * 50ms);
 }
-[data-reveal="flip"] {
-  transform: perspective(900px) translate3d(28px, 0, 0) rotateY(-32deg);
-  transform-origin: 0 50%;
+[data-reveal="fade"] {
+  transform: none;
+  transition: opacity 700ms var(--ease-bs);
+  transition-delay: calc(var(--i, 0) * 50ms);
 }
-[data-reveal="depth"] {
-  transform: perspective(900px) translate3d(0, 0, -160px);
+[data-reveal="rise"] {
+  opacity: 1;
+  transform: translate3d(0, 105%, 0);
+  transition: transform 800ms var(--ease-bs);
+  transition-delay: calc(var(--i, 0) * 50ms);
+}
+.landing-mask {
+  display: block;
+  overflow: hidden;
+  /* 한글 받침 · g/y 꼬리가 마스크에 잘리지 않게 */
+  padding-bottom: 0.08em;
 }
 [data-inview="true"] [data-reveal],
 [data-reveal][data-inview="true"] {
@@ -67,15 +80,64 @@ html {
   opacity: 1;
 }
 
-/* 카드 기울임 — transform 은 JS 가 쓴다, 전환만 여기서 */
-.landing-tilt {
-  transition:
-    transform 320ms var(--ease-bs),
-    box-shadow 320ms var(--ease-bs);
-  transform-style: preserve-3d;
+/* ───────── 랜딩 v3 — 인터랙션 ───────── */
+/* 전문 분야 — 하나를 고르면 나머지가 흐려진다 */
+.landing-dim {
+  transition: opacity var(--bs-motion-surface) var(--ease-bs);
 }
-.landing-pop {
-  transform: translateZ(28px);
+.landing-dim[data-dim="true"] {
+  opacity: 0.4;
+}
+
+/* 강의 행 — 필터로 새로 들어올 때 짧게 떠오른다 */
+@keyframes landing-row-in {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: none; }
+}
+.landing-row-in {
+  animation: landing-row-in 320ms var(--ease-bs) both;
+}
+
+/* 자석 버튼 — transform 은 JS(fx/magnet), 전환만 */
+.landing-magnet {
+  transition: transform 220ms var(--ease-bs);
+  will-change: transform;
+}
+
+/* 스파크라인 스크럽 커서 — 선이 다 그려진 뒤에 나타난다 */
+.landing-spark-cursor {
+  opacity: 0;
+  transition: opacity 300ms var(--ease-bs) 1300ms;
+}
+[data-inview="true"] .landing-spark-cursor {
+  opacity: 1;
+}
+
+/* 커서 스포트라이트 — --mx/--my 는 observe/pointer-spot 이 쓴다. 포인터 구동이라 배경 애니메이션(규칙 4)이 아니다.
+   fine pointer 호버에서만 보인다 → 터치에서는 그려지지 않는다. */
+.landing-spot {
+  position: relative;
+  isolation: isolate;
+}
+.landing-spot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--bs-color-accent-default) 9%, transparent),
+    transparent 65%
+  );
+  transition: opacity var(--bs-motion-surface) var(--ease-bs);
+}
+@media (hover: hover) and (pointer: fine) {
+  .landing-spot:hover::before {
+    opacity: 1;
+  }
 }
 
 /* ───────── 랜딩 v2.1 — slash.page 모션(2026-11-08 실측 이식) ───────── */
@@ -223,15 +285,6 @@ html {
   animation: landing-drift 40s var(--ease-bs) infinite alternate;
 }
 
-/* 스크롤 큐 */
-@keyframes landing-cue {
-  0%, 100% { transform: translateY(0); opacity: 0.5; }
-  50% { transform: translateY(8px); opacity: 1; }
-}
-.landing-cue svg {
-  animation: landing-cue 2.4s var(--ease-bs) infinite;
-}
-
 /* 문의 CTA — 유약 고임(아래쪽 청자 radial) */
 .landing-contact-pool {
   background: radial-gradient(
@@ -242,6 +295,20 @@ html {
   );
 }
 
+/* ───────── 라우트 전환 (View Transitions) — 본문 교차 페이드 220ms. reduced-motion 은 즉시 ───────── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: var(--ease-bs);
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-reveal],
   .landing-bar-fill {
@@ -250,9 +317,12 @@ html {
     transition: opacity var(--bs-motion-control) linear;
   }
   .landing-word { opacity: 1; }
-  .landing-tilt, .landing-stack-card { transform: none !important; opacity: 1 !important; }
-  .landing-stars, .landing-drift, .landing-cue svg, .landing-caret { animation: none; }
+  .landing-stack-card, .landing-magnet { transform: none !important; }
+  .landing-stack-card { opacity: 1 !important; }
+  .landing-stars, .landing-drift, .landing-caret, .landing-row-in { animation: none; }
   .landing-caret { opacity: 1; }
   .landing-spark { stroke-dashoffset: 0; transition: none; }
+  .landing-spark-cursor { opacity: 1; transition: none; }
+  .landing-spot::before { display: none; }
   .landing-hero-video { display: none; }
 }

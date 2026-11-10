@@ -42,7 +42,7 @@ export function Philosophy() {
   return (
     <Section
       id="philosophy"
-      eyebrow={p.eyebrow}
+      titleReveal="fade"
       title={
         <span ref={ref} className="block max-w-[960px] text-h2 font-bold leading-[1.45] medium:text-[40px] medium:leading-[1.45]">
           {words.map((w, i) => (
@@ -52,7 +52,7 @@ export function Philosophy() {
           ))}
         </span>
       }
-      className="py-32"
+      className="py-36"
     >
       <Reveal index={1} as="p" className="max-w-content text-body-lg text-fg-body">
         {p.support}
