@@ -11,6 +11,7 @@
 - **Phase 1 완료** — `packages/ui` (아래 "Phase 1 결과").
 - **Phase 2a 완료** — `apps/web` 신설 + 메인 도메인 `/` 랜딩(스크롤 3D). 아래 "Phase 2a 결과".
 - **Phase 2b 완료** — 랜딩 v2 교체(영상 히어로 · 백자/흑유 3D · 10섹션 · ThemeToggle). 블로그·캘린더(PROMPT.md Step 2~5)는 라우트 자리만. 아래 "Phase 2b 결과".
+- **Phase 2d 완료** — 랜딩 v3 "사람이 만든 것처럼"(2026-11-10): 틀 재구성 · 1인칭 카피 · 강의 필터/스크럽/토글 · 커서 반응 · ⌘K 팔레트 · 라우트 전환 · 블로그/캘린더 안내 화면. 아래 "Phase 2d 결과".
 - **Phase 2c 완료** — 랜딩 v2.1 slash 모션(2026-11-08): display-xl 토큰 · 히어로 광선/캐럿/Clients · 숫자 스파크라인 · 강의 행 · 멘토링 sticky 스택. 아래 "Phase 2c 결과".
 - **QA 원장** `docs/state/qa-log.md` — 버그·컨벤션·미룬 결함 히스토리(2026-11-01 신설). PR/푸시마다 갱신.
 - **lefthook 켜짐** — 커밋 시 affected lint/test/typecheck 가 실제로 돈다.
@@ -27,6 +28,27 @@
 | 2a 랜딩 | **완료** | `apps/web` Next 16 + 이력서 기반 랜딩 9섹션 + Three.js 달항아리 리그 + `/blog` `/calendar` 자리 |
 | 2b 랜딩 v2 | **완료** | 영상 히어로 + 백자/흑유 테마별 3D + 10섹션 + LazySection + ThemeToggle(packages/ui) |
 | 2c 랜딩 v2.1 | **완료** | slash.page 역설계 4기법 이식 — `fx/{shards,sparkline,stack}` 순수 함수 + 테스트 18, `display-xl` 토큰 |
+
+## Phase 2d 결과 — 랜딩 v3 (2026-11-10)
+스펙 · 표 · 결정은 `docs/handoff/landing-v2/README.md` "v3" 절. 버그 · QA 는 `docs/state/qa-log.md` 2026-11-10 절.
+
+### 한 것
+- **카피**: `content/landing.ts` 전 섹션을 1인칭 대화체로. `eyebrow` · `hero.badge` 삭제, `hero.lines`(3문장) · `about.title` · 각종 라벨 추가. 수치 · 기간 · 과정 · 경력 불릿 · 후기 원문은 그대로.
+- **틀**: `Section` 에 `layout`(stack/split) · `titleReveal`(rise/fade). 리빌 3종, 틸트 제거(`fx/tilt` · `use-tilt` 삭제).
+- **인터랙션**: `fx/course-filter` + `filter/store`(막대 ↔ 강의 이력) · 스파크라인 스크럽 · 전문 분야 토글 · 경력 더 보기 · `observe/pointer-spot`(스포트라이트) · `fx/magnet` · 이메일 복사 토스트(`<Toaster />` 를 layout 에 장착).
+- **셸**: `@sandbox/ui` 에 `CommandDialog`(신규) · AppShell TopBar 활성 표시 슬라이드. `app/command-palette.tsx`(⌘K/Ctrl+K + 트리거 버튼), `src/shell/palette-items`. `app/shell.tsx` 에서 본문을 React `<ViewTransition>` 으로 감쌈.
+- **블로그 · 캘린더**: EmptyState → 1인칭 안내 화면(기능 없음).
+
+### 결정
+- cmdk 미도입(잠금 파일이 세션 밖 nx 범프와 얽힘) → 직접 구현. Tabs 대신 토글 버튼. 섹션 등장은 윗변 기준.
+- 필터 상태는 URL 이 아니라 메모리 스토어(두 섹션만 공유, 앵커 스크롤과 충돌 없음). 새로고침하면 전체로 돌아간다.
+- 파생 표시는 기존 값만 — 스크럽 읽기에 누적 합을 내지 않는다(규칙 5).
+
+### 남긴 것
+- `IT/제조 256h` ↔ `철강 256h` 표기 불일치(사용자 확인 대기).
+- 파비콘 없음 — 캡처 첫 실행의 콘솔 404 1건의 유력 원인. 아이콘 디자인이 필요해 미룸.
+- `design.md` 에 Command 스펙 없음 — Dialog(§6.7) 표면을 그대로 썼다. 스펙 추가는 사용자 확인 후.
+- 푸시 전(로컬 커밋). 세션 밖 변경(nx 범프 · tsbuildinfo · zip)은 계속 제외.
 
 ## Phase 2c 결과 — 랜딩 v2.1 slash 모션 (2026-11-08)
 요청: Toss slash.page 같은 역동성. 참고 저장소 swarm-cursors 는 크롬 확장 + 라이선스 없음(원작자 허락 전 재사용 금지) → 미사용. slash.page 를 내장 브라우저로 역설계(영상 .4 + 1px 사선 광선 4개 / 행 리스트 호버 캐럿 / 160px 숫자 + 1000×200 큐빅 라인 / 600vh fixed 스택)해 히어로 + about + teaching + mentoring 에 이식. 스펙·매핑 표·결정 3개·실측 보정은 `docs/handoff/landing-v2/README.md` "v2.1" 절.

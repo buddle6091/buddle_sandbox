@@ -114,3 +114,42 @@
 - 스택 카드는 유리(반투명)면 아래 카드 글자가 비쳐 **불투명 `bg/page`** 로(호버 시 `bg/inverse` 반전 유지).
 - 숫자 `p` 가 `whitespace-nowrap` 인데도 단위 뒤 `+` 가 다음 줄로 떨어짐(1024~1439) → `flex items-baseline` 로 고정.
 - 리빌 전 경력 카드의 `rotateY` 플립이 투영 폭으로 `scrollWidth` 2768@1280 을 만들고 있었다(v2 부터) → `[data-section] { overflow-x: clip }`(스크롤 컨테이너를 만들지 않아 sticky·snap 무영향).
+
+## v3 — "사람이 만든 것처럼" (2026-11-10 적용)
+
+사용자 요청: "좀 더 AI 스럽지 않고, 자연스럽고 역동적이고 인터랙티브하게. 사이트 전부를." 템플릿 인상의 원인을 **반복되는 리듬**(영문 소제목 → 제목 → 유리 카드 그리드, 전부 같은 fade-up)으로 진단하고 그 틀을 깼다.
+
+### 결정 (2026-11-10, 사용자 답)
+1. **틀을 깨는 재구성** — 인터랙션만 얹지 않고 섹션별 배치 · 등장을 달리한다.
+2. **카피는 1인칭 대화체** — 사실 · 수치 · 기간 · 고객사 표기는 그대로, 말투와 문장 길이만.
+3. **범위 = 랜딩 + 공용 셸 + 블로그 · 캘린더 빈 화면.** 블로그 글 목록 · 캘린더 로그인 같은 기능은 제외(Phase 2 별도 세션).
+4. **인터랙션 4종 전부** — 강의 필터 + 막대 연동 · ⌘K 팔레트 · 커서 반응 · 이메일 복사 토스트 + 페이지 전환.
+
+### 섹션별 변화
+| 섹션 | v2.1 | v3 |
+|---|---|---|
+| 공통 | 영문 대문자 eyebrow · tinted 교대 · `rotateX 16°` fade-up · 카드 틸트 | eyebrow · tinted · 틸트 삭제. `Section layout="stack"/"split"`(expanded 좌 4칸 sticky 제목 / 우 8칸). 등장 3종: 제목 `rise`(줄 마스크) · 본문 기본(16px) · 보조 `fade` |
+| top | 배지 알약 + 이름 + 100자 한 문장 + 버튼 2 + 화살표 | 배지 · 화살표 삭제. 소개 3문장(첫 줄 크게). 「최근 강의」 한 줄(`fx/latest`). 스크롤 시 이름 축소(`fx/hero-fade`). CTA 자석(`fx/magnet`) |
+| about | 숫자 + 스파크라인 | + 스파크라인 **스크럽**(role=slider, 포인터 · 좌우 화살표). 읽기는 과정의 원래 날짜 · 제목 · 시간만 |
+| expertise | 유리 카드 3 + 칩 | split. 분야 이름이 토글 버튼(`aria-pressed`), 항목은 `/` 로 이은 문장형 목록 |
+| audience | 막대 14 | split. 강의 행이 있는 산업군 4개는 `#teaching` 앵커 링크 → 강의 필터를 건다 |
+| teaching | 행 10 | 대상 칩(`aria-pressed`) + 산업군 해제 칩 + 결과 수(`aria-live`). 번호는 원래 순서 유지. 행 호버 = 커서 스포트라이트 |
+| mentoring | expanded 스택 / 그 외 유리 카드 그리드 | expanded 스택 유지 / 그 외 번호 붙은 평문 목록 |
+| career | 유리 카드 타임라인 | 선으로 나눈 2단(좌 기간 · 우 내용). 불릿 6개 → 3개 + 「나머지 3개 더 보기」(`aria-expanded`) |
+| feedback | 2열 작은 인용 | 큰 글씨 인용 2개를 엇갈려 쌓기 |
+| contact | mailto 버튼 | 이메일 복사 버튼 + 토스트(「메일 앱으로 보내기」 액션), mailto 링크는 따로 유지 |
+| 셸 | 정적 탭, 전환 없음 | ⌘K 팔레트(`@sandbox/ui` `CommandDialog`) · TopBar 활성 표시 슬라이드 · 라우트 View Transitions(React `<ViewTransition>`) |
+| /blog · /calendar | 범용 EmptyState | 1인칭 안내 + 지금 갈 수 있는 곳(velog · 메일) |
+
+### 계획과 달라진 것
+- **cmdk 를 넣지 않았다.** 루트 `package-lock.json` 에 세션 밖 nx 범프가 미커밋으로 남아 있어 의존성을 추가하면 잠금 파일 커밋이 그 변경과 얽힌다. 항목 수십 개 규모라 Dialog 위에 combobox + listbox 를 직접 구현(`packages/ui/src/components/command.tsx`, 테스트 12).
+- **전문 분야는 Tabs 대신 토글 버튼.** `@sandbox/ui` Tabs 의 pill/underline 스타일(`glass-subtle`, 가로 스크롤)이 세로 타이포 목록과 맞지 않았다.
+
+### 실측에서 바로잡은 것
+- 섹션 등장을 보이는 비율(12%)로 켜면 320vh 멘토링 섹션은 317px 가 보여야 해서 제목이 늦게 뜨고 빈 화면이 생겼다 → 윗변 기준(threshold 0, 아래 15% 선).
+- `.landing-spot > * { position: relative }` 는 레이어 밖 CSS 라 Tailwind `absolute` 유틸리티를 이긴다(문의 카드의 유약 고임이 깨질 뻔) → `isolation: isolate` + `::before { z-index: -1 }`.
+- 그룹 id 에 그룹 이름을 넣으면 공백 때문에 `aria-labelledby` 가 끊긴다 → 순번 id.
+
+### 확인이 필요한 데이터 (수정하지 않음)
+- 산업군 막대 `IT/제조 256h` 와 강의 행 `철강 256h` 는 같은 과정으로 보이는데 표기가 다르다. 그래서 이 막대는 강의 행과 연결되지 않는다(정적). 이력서 기준 어느 쪽이 맞는지 사용자 확인 후 한쪽으로 맞춘다.
+

@@ -41,6 +41,51 @@
 - [deferred] 덱 키보드 ←/→ 카드 이동은 네이티브 스크롤에 위임(포커스는 가능).
 - [open] dev 전용 진단(`window.__heroState`, `data-canvas-inview`) 잔존 — 프로덕션 번들 제외 확인됨, 정리 시점 미정.
 
+## 2026-11-10 — 랜딩 v3 "사람이 만든 것처럼" (Phase 2d)
+범위: `apps/web`(랜딩 전 섹션 · 셸 · 블로그/캘린더 화면 · globals.css) · `packages/ui`(`command` 신규, `app-shell`). qa-verifier 판정은 아래.
+
+### qa-verifier 판정 — PASS (조건부, 막는 결함 없음) → 권장 5건 + 작은 지적 반영
+- [fixed · Medium] 산업군 해제 칩은 누르면 사라져 키보드 포커스가 body 로 떨어짐 → 해제 후 「전체」 칩으로 포커스 이동(테스트 추가).
+- [fixed · Medium] `app/command-palette.tsx` 액션 분기에 테스트 없음 → `command-palette.test.tsx` 7건(단축키 토글 · route · section 두 경로 · theme · copy 성공/실패 · external).
+- [fixed · Low] Safari 는 한글 조합 확정 Enter 가 `isComposing=false · keyCode 229` 로 온다 → `CommandDialog` 가드에 229 추가.
+- [fixed · Low] 산업군 막대 흐림이 reduced-motion 에서 무효(`.landing-bar-fill { opacity: 1 }` 가 유틸리티를 이김) → 흐림을 트랙으로 이동. 전문 분야 흐림과 같은 원인.
+- [fixed · Low] 카피 2곳이 원문보다 강했다: "실습 구간마다 한 분씩" → 원문 수준 "실습 구간에서 개별 진도를", 히어로 첫 줄 "AI를 가르칩니다" → "AI와 프론트엔드를"(삭제한 배지의 범위 유지).
+- [fixed · Low] 팔레트 빈 결과 안내가 listbox 안이라 스크린리더에 전달 안 됨 → listbox 밖 `role="status"`. 열린 채 items 가 줄면 활성 항목이 사라짐 → 범위 안으로 클램프. 클립보드 실패 → mailto 폴백 테스트 추가.
+- [note] 필터 상태는 모듈 전역이라 `/blog` 를 다녀와도 유지된다 — 의도(새로고침하면 초기화).
+- [open] 검증자가 브라우저로 확인하지 못한 것: Safari IME 실기기, 팔레트 닫힘 후 포커스 복귀와 `scrollIntoView` 순서(Chromium 실측에서는 정상).
+- 최종 테스트 수: web 100 · ui 134.
+
+### 개발 중 발견한 버그 (증상 → 원인 → 조치)
+- [fixed] 멘토링 섹션 진입 시 제목이 안 뜨고 약 330px 빈 화면(1280 dark 50% 캡처) → `Section` 이 보이는 비율 12% 로 등장을 켜는데 320vh 섹션은 317px 가 보여야 한다 → 윗변 기준(threshold 0, rootMargin 아래 −15%). v2.1 부터 있던 결함.
+- [fixed · 배포 전] `.landing-spot > * { position: relative }` 가 문의 카드의 `absolute` 유약 고임을 덮어씀 → 레이어 밖 CSS 는 Tailwind 유틸리티(`@layer utilities`)를 이긴다 → 자식 규칙 삭제, `isolation: isolate` + `::before { z-index: -1 }`.
+- [fixed] 전문 분야에서 분야를 골라도 나머지가 흐려지지 않음(브라우저 실측, 테스트는 통과) → 흐림 유틸리티 `opacity-40` 를 `Reveal` 요소에 걸었는데 `[data-inview] [data-reveal] { opacity: 1 }`(레이어 밖 CSS)이 이겼다 → 안쪽 요소에 `data-dim` + `.landing-dim[data-dim="true"]` 로 옮기고 테스트가 `data-dim` 을 단언. **교훈: `Reveal` 요소에 opacity/transform 유틸리티를 걸지 않는다.**
+- [fixed] `CommandDialog` 그룹 접근 이름이 안 잡힘(`getByRole('group', { name })` 실패) → `aria-labelledby` 가 가리키는 id 에 그룹 이름("이 페이지에서")을 넣어 공백이 들어감 → 순번 id.
+- [fixed] `CommandDialog` 린트 2건: effect 안 동기 setState(열릴 때 초기화) · 렌더 중 변수 재할당(항목 번호) → 본문을 `CommandBody` 로 분리(닫히면 언마운트 → 상태 자연 초기화), 번호는 `flat.indexOf`.
+- [fixed] LazySection 자리표시 높이를 재구성 후 1280 실측으로 재보정(about 540 · expertise 440 · audience 450 · teaching 1825 · career 1020 · feedback 310). 문서 높이 변동 11,345 → 10,967 이었다.
+
+### 검증 (1280×800 실측 + 자동)
+- `npx nx affected -t lint test typecheck build --base=master` green — web 100 tests · ui 134 tests · tokens.
+- 가로 넘침: `/` · `/blog` · `/calendar` × 390 · 640 · 768 · 1024 · 1280 전 스크롤 구간 `scrollWidth − innerWidth = 0`. 콘솔 에러 0.
+- 휠 스크롤 로그: 역행 0, 틱당 이동량 = 입력 그대로(스냅 없음 유지).
+- 막대(전자/반도체) 클릭 → `#teaching` 이동, 행 4 · "10개 중 4개" · 산업군 칩 표시. ⌘K → "블로그" 입력(한글) → Enter → `/blog`, TopBar 표시 `translateX(58px)` 로 이동. 이메일 복사 → 토스트 "이메일을 복사했어요" + 액션.
+
+### 재현 안 되는 간헐 이슈
+- [flaky] `tools/capture-landing.mjs` 첫 컨텍스트(desktop-1280 light)에서 콘솔 404 1건 — 2026-11-08 과 같은 자리에서 재발. 응답 로그를 건 별도 실행에서는 미재현. `app/` 에 파비콘이 없어 `/favicon.ico` 요청으로 추정(브라우저가 컨텍스트당 한 번, 캐시에 따라 생략). 아이콘 추가 시 해소 예상.
+
+### 컨벤션 메모
+- `/new-component` 절차 1번("design.md 스펙 확인")에 Command 스펙이 없다 — 사용자가 계획에서 팔레트 추가를 승인했고 표면은 Dialog §6.7 을 그대로 썼다. `design.md` 에 절을 추가할지는 사용자 확인.
+- `shadcn add command`(cmdk) 를 쓰지 않고 직접 구현 — 잠금 파일에 세션 밖 nx 범프가 미커밋으로 있어 의존성 추가가 그 변경과 얽힌다.
+- 규칙 4 보강: 포인터 구동 효과(스포트라이트 · 자석 · 스크럽)는 배경 애니메이션이 아님을 명시(CLAUDE.md). 규칙 9 신설(섹션 등장은 윗변 기준, 영문 소제목 · 카드 그리드 반복 금지).
+- 섹션 이동에 `scrollIntoView()` 사용(팔레트) — 브라우저 기본 스크롤이며 스크롤 라이브러리 금지(규칙 3)에 해당하지 않는다.
+- 브라우저 검증 중 이메일 복사 버튼을 실제로 눌러 사용자 OS 클립보드에 `sangwon.lee@buddle.it.kr` 이 들어갔다.
+
+### 미룬 결함 · 확인 대기
+- [open] 산업군 막대 `IT/제조 256h` ↔ 강의 행 `철강 256h` 표기 불일치(같은 과정으로 보임). 수정하지 않음 — 이력서 기준 확인 필요.
+- [deferred] 파비콘 없음.
+
+### 커밋에서 제외
+- `package.json`/`package-lock.json` nx 범프, `apps/web/tsconfig.tsbuildinfo`, `docs/개발 블로그 및 캘린더 시스템.zip` (전부 세션 밖 변경).
+
 ## 2026-11-08 — 랜딩 v2.1 slash 모션 (Phase 2c)
 범위: `packages/tokens` display-xl · `apps/web/src/landing/{fx,sections}` · `globals.css`. qa-verifier **PASS**(세부는 handoff "Phase 2c").
 
