@@ -41,6 +41,14 @@
 - [deferred] 덱 키보드 ←/→ 카드 이동은 네이티브 스크롤에 위임(포커스는 가능).
 - [open] dev 전용 진단(`window.__heroState`, `data-canvas-inview`) 잔존 — 프로덕션 번들 제외 확인됨, 정리 시점 미정.
 
+## 2026-11-16 — 에디토리얼 헤더(masthead)
+- [done] 사용자 선택: ansphare 갤러리의 meridian · plait 형. 왼쪽 로고 + 소개 두 줄, 오른쪽 메뉴 + ⌘K · 테마, 배경 막대 없음. 스크롤로 사라지면 기존 line 바가 내려온다(AppShell `masthead` 슬롯, IO).
+- [changed] 처음엔 메뉴를 3묶음(페이지 · 이력 · 연락)으로 넓혔으나 사용자 요청으로 **메뉴 구성은 이전(소개 · 블로그 · 캘린더)으로 롤백**, 배치만 유지.
+- [fixed] masthead 와 히어로 사이에 배경 이음매(히어로 영상 · 오브가 헤더 아래에서 잘림) → AppShell 이 masthead 높이를 `--bs-masthead-h` 로 쓰고 히어로가 그만큼 `-mt` + `pt` 로 배경을 끌어올림.
+- [fixed] 팔레트를 masthead 와 바 양쪽에 두면 ⌘K 리스너가 둘이라 한 번 누르면 열렸다 닫힘 → 다이얼로그 · 단축키는 바의 CommandPalette 하나, masthead 에는 이벤트로 여는 트리거만.
+- 검증: web 109 · ui 168 테스트, lint · typecheck green. 1280 · 768 · 390 캡처, 가로 넘침 0, 페이지 에러 0. 바는 맨 위에서 `data-hidden=true`(inert), 스크롤 후 `false`.
+- [skipped] qa-verifier — 사용자가 토큰 사용량을 걱정한 직후라 이번 묶음은 생략(규칙상 필요, 요청 시 실행).
+
 ## 2026-11-16 — 텍스트 선택 기본 차단
 - [done] 사용자 요청 "블로그 본문 제외하고 모두 user-select: none" → `apps/web/app/globals.css` `@layer base` 에 `body { user-select: none }`. 예외: input · textarea · select · contenteditable(입력이 불편해지므로) · `[data-selectable]`(블로그 본문, Phase 2 의 `/posts/[slug]` article).
 - 검증(브라우저): body · 히어로 제목 · 본문 · 헤더 링크 `none`, 히어로 제목 전체 선택 시 선택 글자 0 · `data-selectable` 프로브(코드 포함)는 `text` 로 선택됨 · ⌘K 입력 칸 `text`.

@@ -158,7 +158,14 @@ export function Hero() {
   // 1024 미만에서는 캔버스가 글 아래로 밀려 탭바에 잘리고 three 번들만 무겁다 → 아예 마운트하지 않는다(영상 배경만). 2026-11-01 결정
   const expanded = useMedia(MQ_EXPANDED);
   return (
-    <Section id="top" title={h.name} header="none" className="overflow-hidden px-0 pt-0 pb-0" innerClassName="max-w-none gap-0">
+    <Section
+      id="top"
+      title={h.name}
+      header="none"
+      // 배경(영상 · 오브 · 광선)을 에디토리얼 헤더 뒤까지 끌어올린다 — 헤더 높이는 AppShell 이 --bs-masthead-h 로 알려 준다
+      className="-mt-[var(--bs-masthead-h,0px)] overflow-hidden px-0 pt-[var(--bs-masthead-h,0px)] pb-0"
+      innerClassName="max-w-none gap-0"
+    >
       {/* 배경 레이어: 영상 → 좌측 흰 막 → 하단 페이지색 페이드. 다크는 어두운 막 */}
       <HeroVideo />
       <HeroShards />
@@ -176,7 +183,7 @@ export function Hero() {
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent-tertiary/40 to-transparent" />
       </div>
 
-      <div className="relative mx-auto grid w-full max-w-[1120px] min-h-[min(640px,calc(100svh-var(--bs-layout-topbar-h)))] items-center gap-8 px-4 pt-[calc(var(--bs-layout-topbar-h)+var(--spacing)*12)] pb-20 medium:px-8 expanded:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] expanded:min-h-0">
+      <div className="relative mx-auto grid w-full max-w-[1120px] min-h-[min(600px,calc(100svh-var(--spacing)*40))] items-center gap-8 px-4 pt-10 pb-20 medium:pt-14 medium:px-8 expanded:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] expanded:min-h-0">
         <div className="flex min-w-0 flex-col items-start gap-7">
           <h1 id="top-title" className="landing-mask text-h1 text-fg-default medium:text-display expanded:text-display-xl">
             <span data-reveal="rise" className="block">

@@ -13,6 +13,32 @@ import { LANDING } from '../src/landing/content/landing';
 import { copyText } from '../src/shell/clipboard';
 import { isPaletteShortcut, paletteItems, type PaletteItem } from '../src/shell/palette-items';
 
+/** 다른 곳(에디토리얼 헤더)에 둔 트리거가 팔레트를 여는 신호 — 다이얼로그 · 단축키는 CommandPalette 하나만 갖는다 */
+export const PALETTE_OPEN_EVENT = 'bs:palette-open';
+
+function TriggerButton({ onClick }: { onClick: () => void }) {
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      aria-label="명령 팔레트 열기"
+      aria-keyshortcuts="Meta+K Control+K"
+      onClick={onClick}
+      data-slot="palette-trigger"
+      className="size-11 gap-1.5 px-0 text-fg-muted hover-fine:text-fg-default expanded:h-8 expanded:w-auto expanded:px-2"
+    >
+      <Search />
+      <kbd className="hidden font-mono text-caption font-normal expanded:inline-block">⌘K</kbd>
+    </Button>
+  );
+}
+
+/** 팔레트를 여는 버튼만 — 다이얼로그는 화면에 하나뿐인 CommandPalette 가 연다 */
+export function CommandPaletteTrigger() {
+  return <TriggerButton onClick={() => window.dispatchEvent(new Event(PALETTE_OPEN_EVENT))} />;
+}
+
 const ROUTE_ICON: Record<string, LucideIcon> = { '/': Home, '/blog': FileText, '/calendar': CalendarDays };
 const THEME_ICON = { light: Sun, dark: Moon, system: Monitor } as const;
 
@@ -47,8 +73,13 @@ export function CommandPalette() {
       e.preventDefault();
       setOpen((v) => !v);
     };
+    const onOpen = () => setOpen(true);
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    window.addEventListener(PALETTE_OPEN_EVENT, onOpen);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener(PALETTE_OPEN_EVENT, onOpen);
+    };
   }, []);
 
   const onSelect = async (item: CommandItem) => {
@@ -69,19 +100,7 @@ export function CommandPalette() {
 
   return (
     <>
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        aria-label="명령 팔레트 열기"
-        aria-keyshortcuts="Meta+K Control+K"
-        onClick={() => setOpen(true)}
-        data-slot="palette-trigger"
-        className="size-11 gap-1.5 px-0 text-fg-muted hover-fine:text-fg-default expanded:h-8 expanded:w-auto expanded:px-2"
-      >
-        <Search />
-        <kbd className="hidden font-mono text-caption font-normal expanded:inline-block">⌘K</kbd>
-      </Button>
+      <TriggerButton onClick={() => setOpen(true)} />
       <CommandDialog open={open} onOpenChange={setOpen} items={items} onSelect={onSelect} placeholder="페이지 · 섹션 · 테마 · 이메일 복사" />
     </>
   );

@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { CalendarDays, FileText, User } from 'lucide-react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { AmbientBackground } from './ambient-background';
 import { AppShell, type NavItem } from './app-shell';
@@ -190,6 +190,55 @@ describe('AppShell — design.md §6.10: 같은 navItems 로 TopBar 탭 · TabBa
       expect(dot.style.transform).toBe('translateX(80px)');
       w.mockRestore();
       r.mockRestore();
+    });
+  });
+
+  describe('masthead — 페이지 맨 위 에디토리얼 헤더', () => {
+    let fire: (visible: boolean) => void = () => undefined;
+    beforeEach(() => {
+      vi.stubGlobal(
+        'IntersectionObserver',
+        class {
+          constructor(cb: IntersectionObserverCallback) {
+            fire = (v) => cb([{ isIntersecting: v } as IntersectionObserverEntry], this as unknown as IntersectionObserver);
+          }
+          observe() {}
+          disconnect() {}
+          unobserve() {}
+        },
+      );
+    });
+    afterEach(() => vi.unstubAllGlobals());
+
+    it('masthead 가 TopBar 보다 먼저 흐름대로 놓이고, 보이는 동안 TopBar 는 숨고 inert', () => {
+      render(<Tree topBar="line" masthead={<p>마스트헤드</p>} />);
+      const mast = document.querySelector('[data-slot="masthead"]')!;
+      const bar = screen.getByRole('banner', { hidden: true });
+      expect(mast).toHaveTextContent('마스트헤드');
+      expect(mast.compareDocumentPosition(bar) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(bar).toHaveClass('fixed', 'inset-x-0', 'top-0', 'data-[hidden=true]:-translate-y-full', 'motion-reduce:transition-none');
+      expect(bar).toHaveAttribute('data-hidden', 'true');
+      expect(bar).toHaveAttribute('inert');
+      expectTokenOnly(bar.className);
+    });
+
+    it('masthead 가 화면 밖으로 나가면 TopBar 가 내려오고, 다시 보이면 숨는다', () => {
+      render(<Tree topBar="line" masthead={<p>마스트헤드</p>} />);
+      const bar = screen.getByRole('banner', { hidden: true });
+      act(() => fire(false));
+      expect(bar).toHaveAttribute('data-hidden', 'false');
+      expect(bar).not.toHaveAttribute('inert');
+      act(() => fire(true));
+      expect(bar).toHaveAttribute('data-hidden', 'true');
+    });
+
+    it('masthead 가 없으면 기존 sticky TopBar 그대로', () => {
+      render(<Tree topBar="line" />);
+      const bar = screen.getByRole('banner');
+      expect(bar).toHaveClass('sticky');
+      expect(bar).not.toHaveClass('fixed');
+      expect(bar).toHaveAttribute('data-hidden', 'false');
+      expect(document.querySelector('[data-slot="masthead"]')).toBeNull();
     });
   });
 

@@ -8,7 +8,8 @@ import { CalendarDays, FileText, Home } from 'lucide-react';
 import { AppShell, type NavItem } from '@sandbox/ui/components/app-shell';
 import { ThemeToggle } from '@sandbox/ui/components/theme-toggle';
 
-import { CommandPalette } from './command-palette';
+import { CommandPalette, CommandPaletteTrigger } from './command-palette';
+import { Masthead } from './masthead';
 import { SectionCrumb } from './section-crumb';
 
 const NAV: NavItem[] = [
@@ -27,6 +28,16 @@ export function Shell({ children }: { children: React.ReactNode }) {
       activeHref={active}
       sideNav={false}
       topBar="line"
+      masthead={
+        <Masthead
+          actions={
+            <>
+              <CommandPaletteTrigger />
+              <ThemeToggle />
+            </>
+          }
+        />
+      }
       context={pathname === '/' ? <SectionCrumb /> : null}
       LinkComponent={Link}
       actions={

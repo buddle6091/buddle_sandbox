@@ -27,6 +27,8 @@ import { GlassSurface } from './glass-surface';
  *               내용이 **본문 컨테이너 폭**(`max-w-landing` 토큰)에 맞고, 탭은 배경 없는 텍스트 링크 + 2px 밑줄 표시, 내비는 우측(액션 옆).
  *               스크롤 후에는 유리 상자가 아니라 **아래 실선 하나**만 생긴다(glass base 의 좌우 · 위 테두리와 그림자를 끈다).
  *               brand 옆 `context` 슬롯에 현재 위치(예: `/ 강의 이력`)를 둘 수 있다.
+ *   masthead    (2026-11-16) 페이지 맨 위에 흐름대로 놓이는 에디토리얼 헤더(로고 · 소개 · 링크 묶음). 주면 TopBar 는
+ *               fixed 로 바뀌어 masthead 가 화면에 보이는 동안 숨고(inert), 스크롤로 masthead 가 사라지면 위에서 내려온다.
  * compact 에서 backdrop-filter 는 TopBar·TabBar 두 개뿐 — 리스트 안 카드는 glass-flat.
  */
 export type NavItem = {
@@ -50,6 +52,8 @@ type AppShellProps = {
   sideNav?: boolean;
   /** TopBar 모양. pill = 앱(기본), line = 사이트(본문 폭 · 텍스트 링크 · 밑줄 표시). */
   topBar?: 'pill' | 'line';
+  /** 페이지 맨 위 에디토리얼 헤더. 주면 TopBar 는 masthead 가 화면 밖으로 나간 뒤에만 보인다. */
+  masthead?: React.ReactNode;
   /** brand 바로 옆 슬롯 — 현재 위치 표시 등(line 에서만 그린다). */
   context?: React.ReactNode;
   /** 라우터 Link 주입(Next.js 등). 기본 <a>. */
@@ -168,6 +172,40 @@ function useNavIndicator(activeHref: string | undefined, line: boolean) {
   return { navRef, dotRef };
 }
 
+/** masthead 가 화면에 조금이라도 보이는가. IO 가 없는 환경(SSR · 테스트)에서는 보인다고 본다(맨 위에서 시작). */
+function useInViewport(ref: React.RefObject<HTMLElement | null>, enabled: boolean) {
+  const [visible, setVisible] = React.useState(true);
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!enabled || !el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, [enabled, ref]);
+  return visible;
+}
+
+/**
+ * masthead 높이를 문서 루트에 `--bs-masthead-h` 로 쓴다 — 첫 섹션(히어로)이 `-mt-[var(--bs-masthead-h)]` 로
+ * 배경을 masthead 뒤까지 끌어올려 이음매가 생기지 않게. DOM 에 직접 쓴다(리렌더 없음).
+ */
+function useMastheadHeightVar(ref: React.RefObject<HTMLElement | null>, enabled: boolean) {
+  React.useEffect(() => {
+    const el = ref.current;
+    const root = document.documentElement;
+    if (!enabled || !el) return;
+    const write = () => root.style.setProperty('--bs-masthead-h', `${Math.round(el.getBoundingClientRect().height)}px`);
+    write();
+    if (typeof ResizeObserver === 'undefined') return () => root.style.removeProperty('--bs-masthead-h');
+    const ro = new ResizeObserver(write);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      root.style.removeProperty('--bs-masthead-h');
+    };
+  }, [enabled, ref]);
+}
+
 function AppShell({
   navItems,
   activeHref,
@@ -176,6 +214,7 @@ function AppShell({
   actions,
   sideNav = true,
   topBar = 'pill',
+  masthead,
   context,
   LinkComponent,
   className,
@@ -185,14 +224,25 @@ function AppShell({
   const scrolled = useScrolled();
   const items = navItems.slice(0, 5);
   const line = topBar === 'line';
+  const mastRef = React.useRef<HTMLDivElement>(null);
+  const mastVisible = useInViewport(mastRef, masthead != null);
+  useMastheadHeightVar(mastRef, masthead != null);
+  const barHidden = masthead != null && mastVisible;
   const { navRef, dotRef } = useNavIndicator(activeHref, line);
 
   return (
     <div className={cn('relative z-10 flex min-h-dvh flex-col', className)}>
+      {masthead != null && (
+        <div ref={mastRef} data-slot="masthead" className="relative z-30">
+          {masthead}
+        </div>
+      )}
       <header
         data-slot="topbar"
         data-variant={topBar}
         data-scrolled={scrolled}
+        data-hidden={barHidden}
+        inert={barHidden || undefined}
         className={cn(
           'sticky top-0 z-40 flex h-[var(--bs-layout-topbar-h)] items-center pt-[env(safe-area-inset-top)]',
           'bg-transparent transition-[background-color,border-color,box-shadow] duration-[var(--bs-motion-surface)] ease-bs',
@@ -201,6 +251,13 @@ function AppShell({
             ? // 유리 상자가 아니라 아래 실선 하나 — glass base 의 좌우 · 위 테두리와 그림자를 끈다(important: 유틸리티 순서와 무관하게)
               'border-b border-transparent data-[scrolled=true]:border-x-0! data-[scrolled=true]:border-t-0! data-[scrolled=true]:shadow-none!'
             : 'gap-4 px-4 medium:px-6 data-[scrolled=true]:border-x-0 data-[scrolled=true]:border-t-0',
+          masthead != null &&
+            cn(
+              // masthead 아래로 흐름을 차지하지 않게 fixed. 보이는 동안은 위로 빠져 있다가 내려온다
+              'fixed inset-x-0 top-0',
+              'transition-[background-color,border-color,box-shadow,transform,opacity] motion-reduce:transition-none',
+              'data-[hidden=true]:pointer-events-none data-[hidden=true]:-translate-y-full data-[hidden=true]:opacity-0',
+            ),
         )}
       >
         {line ? (

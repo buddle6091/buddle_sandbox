@@ -377,6 +377,7 @@ shadcn 원본 유지, cva variant만 추가(기존 variant 삭제 금지). 모�
 ### 6.10 Navigation
 
 -   TopBar h `layout/topbar-h` + safe-top, sticky. 스크롤 전 투명 → 스크롤 후 glass `base`.
+-   masthead(2026-11-16, 사이트 화면): 페이지 맨 위 에디토리얼 헤더 — 왼쪽 로고 + 소개 두 줄, 오른쪽 세로 메뉴(소개 · 블로그 · 캘린더) + ⌘K · 테마. 배경 막대 없음. masthead 가 보이는 동안 TopBar 는 숨고(inert), 사라지면 위에서 내려온다. 첫 섹션은 `--bs-masthead-h` 만큼 끌어올려 배경이 헤더 뒤까지 이어진다.
 -   compact TabBar(최대 5항목, h 56, 화면 아래 좌우 · 아래 12px 띄운 liquid glass 알약 `density=dense`, 활성 탭 = 안쪽 알약 + glow .3 — 2026-11-16) / medium Rail(72, 아이콘 + 12px 라벨) / expanded Sidebar(248, `bg/subtle` 불투명). 세 형태는 같은 `navItems` 배열에서 렌더.
 
 ### 6.11 Table
