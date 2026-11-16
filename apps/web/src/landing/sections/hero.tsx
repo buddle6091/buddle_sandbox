@@ -8,6 +8,7 @@ import { Button } from '@sandbox/ui/components/button';
 import { GlassSurface } from '@sandbox/ui/components/glass-surface';
 
 import { HERO_VIDEO, LANDING } from '../content/landing';
+import { heroDissolve } from '../fx/dissolve';
 import { heroFade } from '../fx/hero-fade';
 import { latestCourse } from '../fx/latest';
 import { SHARDS } from '../fx/shards';
@@ -148,9 +149,40 @@ function useHeroNameFade<T extends HTMLElement>() {
   return ref;
 }
 
+/**
+ * 히어로 → 인트로 연결(DayDream 식) — 배경 레이어 묶음이 스크롤에 따라 페이지색으로 녹고 살짝 늦게 따라 내려간다.
+ * rAF 로 DOM 에 직접(리렌더 없음). 높이는 래퍼 자신(= 히어로 섹션) 기준. reduced-motion 은 정지.
+ */
+function useHeroDissolve<T extends HTMLElement>() {
+  const ref = React.useRef<T>(null);
+  React.useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let raf = 0;
+    const apply = () => {
+      raf = 0;
+      const el = ref.current;
+      if (!el) return;
+      const d = heroDissolve(window.scrollY, el.offsetHeight);
+      el.style.opacity = d.opacity === 1 ? '' : d.opacity.toFixed(3);
+      el.style.transform = d.shift === 0 ? '' : `translate3d(0, ${d.shift.toFixed(1)}px, 0)`;
+    };
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+    schedule();
+    const unsub = scrollStore.subscribe(schedule);
+    return () => {
+      unsub();
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+  return ref;
+}
+
 export function Hero() {
   const h = LANDING.hero;
   const nameRef = useHeroNameFade<HTMLSpanElement>();
+  const bgRef = useHeroDissolve<HTMLDivElement>();
   const magnetA = useMagnetic<HTMLSpanElement>();
   const magnetB = useMagnetic<HTMLSpanElement>();
   // 3D 는 히어로가 보일 때만 돈다(frameloop always ↔ demand)
@@ -166,21 +198,23 @@ export function Hero() {
       className="-mt-[var(--bs-masthead-h,0px)] overflow-hidden px-0 pt-[var(--bs-masthead-h,0px)] pb-0"
       innerClassName="max-w-none gap-0"
     >
-      {/* 배경 레이어: 영상 → 좌측 흰 막 → 하단 페이지색 페이드. 다크는 어두운 막 */}
-      <HeroVideo />
-      <HeroShards />
-      <div aria-hidden="true" className="landing-hero-scrim absolute inset-0" />
-      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-60 bg-gradient-to-b from-transparent to-bg-page" />
-      {/* 라이트: 상단 오브 빛 2개(40s 드리프트 1개) · 다크: 별 + 하단 오브 + 청자 라인 */}
-      <div aria-hidden="true" className="landing-hero-orbs pointer-events-none absolute inset-0 dark:hidden">
-        <div className="landing-drift bg-orb-primary absolute -top-[460px] -left-[380px] size-[960px] rounded-full opacity-40" />
-        <div className="bg-orb-tertiary absolute -top-[120px] -right-[300px] size-[820px] rounded-full opacity-40" />
-      </div>
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden dark:block">
-        <div className="landing-stars absolute inset-0" />
-        <div className="landing-drift bg-orb-primary absolute -bottom-[420px] -left-[460px] h-[700px] w-[1100px] rounded-full opacity-60" />
-        <div className="bg-orb-tertiary absolute -right-[420px] -bottom-[400px] h-[700px] w-[1100px] rounded-full opacity-50" />
-        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent-tertiary/40 to-transparent" />
+      {/* 배경 레이어 묶음: 영상 → 광선 → 좌측 막 → 오브/별. 스크롤로 통째로 녹는다(useHeroDissolve).
+          하단은 불투명 페이지색 덮개 대신 마스크로 투명하게 끝낸다 — 덮개는 뒤의 고정 배경을 가려 인트로와 사이에 띠가 생겼다. 다크는 어두운 막 */}
+      <div ref={bgRef} aria-hidden="true" data-slot="hero-bg" className="landing-hero-bg absolute inset-0">
+        <HeroVideo />
+        <HeroShards />
+        <div aria-hidden="true" className="landing-hero-scrim absolute inset-0" />
+        {/* 라이트: 상단 오브 빛 2개(40s 드리프트 1개) · 다크: 별 + 하단 오브 + 청자 라인 */}
+        <div aria-hidden="true" className="landing-hero-orbs pointer-events-none absolute inset-0 dark:hidden">
+          <div className="landing-drift bg-orb-primary absolute -top-[460px] -left-[380px] size-[960px] rounded-full opacity-40" />
+          <div className="bg-orb-tertiary absolute -top-[120px] -right-[300px] size-[820px] rounded-full opacity-40" />
+        </div>
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden dark:block">
+          <div className="landing-stars absolute inset-0" />
+          <div className="landing-drift bg-orb-primary absolute -bottom-[420px] -left-[460px] h-[700px] w-[1100px] rounded-full opacity-60" />
+          <div className="bg-orb-tertiary absolute -right-[420px] -bottom-[400px] h-[700px] w-[1100px] rounded-full opacity-50" />
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent-tertiary/40 to-transparent" />
+        </div>
       </div>
 
       <div className="relative mx-auto grid w-full max-w-[1120px] min-h-[min(600px,calc(100svh-var(--spacing)*40))] items-center gap-8 px-4 pt-10 pb-20 medium:pt-14 medium:px-8 expanded:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] expanded:min-h-0">

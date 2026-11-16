@@ -374,6 +374,8 @@ shadcn 원본 유지, cva variant만 추가(기존 variant 삭제 금지). 모�
 
 -   24 / 32 / 40 / 56, fallback = 이니셜 1자 + `blue/100` 배경 + `blue/700` 글자
 
+-   DayDream 식 연결(2026-11-16, 랜딩): ① 히어로 배경 묶음은 스크롤로 페이지에 녹는다(opacity + 30% 시차, 하단은 불투명 덮개 대신 mask) ② 히어로 뒤 인트로 문장 — 단어 하이라이트 + 아이콘 칩(accent-subtle, 살짝 기울임, spring 등장, aria-hidden) + 그라데이션 강조(accent → accent-tertiary) ③ 목록 메타는 고정폭 대문자 라벨(`font-mono text-caption uppercase tracking-wider fg-muted`, 가운뎃점 구분). 하늘 · 구름 비주얼은 쓰지 않는다.
+
 ### 6.10 Navigation
 
 -   TopBar h `layout/topbar-h` + safe-top, sticky. 스크롤 전 투명 → 스크롤 후 glass `base`.

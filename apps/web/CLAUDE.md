@@ -25,7 +25,7 @@ UI 는 `@sandbox/ui` 만 소비한다(여기서 공용 컴포넌트를 새로 �
 app/                 라우트(서버 컴포넌트). layout.tsx 가 AmbientBackground + AppShell
 app/globals.css      @import "@sandbox/ui/styles.css" + 리빌(기본/fade/rise)·영상·막대·캐럿·광선·스파크라인·스택·스포트라이트·자석·라우트 전환 CSS
 src/landing/         랜딩 전용 (content · scroll · observe · fx · sections · three) — 트리는 docs/structure.md
-                     fx/ = words · bars · theme-mix · shards · sparkline · stack · course-filter · magnet · hero-fade · latest (순수 함수 + 테스트, WebGL/DOM 없이 Vitest 로 고정)
+                     fx/ = words · bars · theme-mix · shards · sparkline · stack · course-filter · magnet · hero-fade · latest · dissolve · intro · meta (순수 함수 + 테스트, WebGL/DOM 없이 Vitest 로 고정)
                      filter/store.ts = 산업군 막대 ↔ 강의 이력이 공유하는 필터 상태
 src/shell/           세 라우트 공통 — palette-items(⌘K 항목) · clipboard. 조립은 app/command-palette.tsx
 tests/setup.ts       jsdom 폴리필

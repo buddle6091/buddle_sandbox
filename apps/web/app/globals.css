@@ -238,6 +238,11 @@ html {
 }
 
 /* 히어로 배경 영상(시안 D) — 아래 40% 마스크, 좌측 흰 막, reduced-motion 은 포스터만 */
+/* 히어로 배경 묶음 — 아래 15rem 을 투명으로 녹여 인트로 문장(뒤의 고정 배경 그대로)과 이어 붙인다 */
+.landing-hero-bg {
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 15rem), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 calc(100% - 15rem), transparent 100%);
+}
 .landing-hero-mask {
   -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
   mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
@@ -365,4 +370,20 @@ html {
   .landing-spark-cursor { opacity: 1; transition: none; }
   .landing-spot::before { display: none; }
   .landing-hero-video { display: none; }
+}
+
+/* ───────── 인트로 문장 칩(DayDream 식) — 단어 하이라이트 순서대로 스프링으로 튀어나온다. scale 속성만(기울기 rotate 와 분리) ───────── */
+.landing-intro-chip {
+  opacity: 0;
+  scale: 0.4;
+  transition:
+    opacity 260ms var(--ease-bs),
+    scale var(--bs-motion-spring) var(--bs-motion-spring-curve);
+}
+.landing-intro-chip[data-lit="true"] {
+  opacity: 1;
+  scale: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-intro-chip { opacity: 1; scale: 1; transition: none; }
 }

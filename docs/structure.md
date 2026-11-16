@@ -81,10 +81,10 @@ buddle_sandbox/
 │     ├─ src/landing/            랜딩 v2 전용
 │     │  ├─ content/landing.ts   내용 SSOT (2026-10 공개용 이력서)
 │     │  ├─ scroll/              progress.ts · store.ts · scroll-driver.tsx(네이티브 스크롤 → 스토어) · scroll-progress-bar.tsx
-│     │  ├─ observe/             use-in-view.ts · lazy-section.tsx(뷰포인트 마운트) · section-indicator.tsx · pointer-spot.tsx(커서 스포트라이트)
+│     │  ├─ observe/             use-in-view.ts · use-word-progress.ts · lazy-section.tsx(뷰포인트 마운트) · section-indicator.tsx · pointer-spot.tsx(커서 스포트라이트)
 │     │  ├─ filter/store.ts      강의 필터 상태(산업군 막대 ↔ 강의 이력 공유, useSyncExternalStore)
-│     │  ├─ fx/                  words · bars · theme-mix · shards · sparkline(+스크럽) · stack · course-filter · magnet · hero-fade · latest (순수 함수 + 테스트; deck 은 v2.1, tilt 는 v3 에서 제거)
-│     │  ├─ sections/            section.tsx(래퍼, layout stack|split) + 10개 섹션 + use-count-up · use-magnetic
+│     │  ├─ fx/                  words · bars · theme-mix · shards · sparkline(+스크럽) · stack · course-filter · magnet · hero-fade · latest · dissolve · intro · meta (순수 함수 + 테스트; deck 은 v2.1, tilt 는 v3 에서 제거)
+│     │  ├─ sections/            section.tsx(래퍼, layout stack|split) + 10개 섹션 + intro(히어로 뒤 문장 블록, 섹션 아님) · meta-label + use-count-up · use-magnetic
 │     │  ├─ three/               hero-canvas(dynamic) · hero-rig · scene-light(백자) · scene-dark(흑유) · hero-state · palette
 │     ├─ src/shell/              palette-items.ts(⌘K 항목, 순수 함수) · clipboard.ts — 세 라우트 공통. 조립은 app/command-palette.tsx
 │     │  └─ landing.tsx          컴포지션

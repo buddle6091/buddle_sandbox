@@ -109,6 +109,36 @@ describe('Landing — 10섹션', () => {
     expect(words.length).toBe(LANDING.philosophy.sentence.split(' ').length);
   });
 
+  it('인트로(DayDream 식) — 섹션이 아닌 문장 블록, 단어 + 장식 칩이 한 줄로 이어지고 칩은 스크린리더에서 숨는다', () => {
+    render(<Landing />);
+    const intro = document.querySelector('[data-slot="intro"]')!;
+    expect(intro).not.toBeNull();
+    expect(intro.closest('section[data-section]')).toBeNull();
+    // 히어로 바로 다음, 소개 섹션 앞
+    expect(document.getElementById('top')!.nextElementSibling).toBe(intro);
+    const chips = LANDING.intro.filter((s) => 'chip' in s);
+    expect(intro.querySelectorAll('[data-slot="intro-chip"]')).toHaveLength(chips.length);
+    for (const c of intro.querySelectorAll('[data-slot="intro-chip"]')) expect(c).toHaveAttribute('aria-hidden', 'true');
+    const text = LANDING.intro.flatMap((s) => ('chip' in s ? [] : s.text.split(/\s+/).filter(Boolean))).join(' ');
+    expect(intro.textContent!.replace(/\s+/g, ' ').trim()).toBe(text);
+    expect(intro.querySelectorAll('[data-em="true"]').length).toBeGreaterThan(0);
+  });
+
+  it('히어로 배경 레이어는 디졸브 래퍼 하나에 묶인다(스크롤로 페이지색에 녹는다)', () => {
+    render(<Landing />);
+    const bg = document.querySelector('#top [data-slot="hero-bg"]')!;
+    expect(bg).toHaveAttribute('aria-hidden', 'true');
+    expect(bg.querySelector('[data-slot="hero-video"]')).not.toBeNull();
+  });
+
+  it('강의 행 · 경력 — 고정폭 메타 라벨(산업군 · 대상 · 도구 / 스택)', () => {
+    render(<Landing />);
+    const first = document.querySelector('#teaching [data-course-row] [data-slot="meta"]')!;
+    const c = LANDING.teaching.courses[0];
+    expect(first).toHaveTextContent(`${c.industry} · ${c.target} · ${c.tool}`);
+    expect(document.querySelectorAll('#career [data-slot="meta"]')).toHaveLength(LANDING.career.items.filter((i) => 'stack' in i && i.stack).length);
+  });
+
   it('연락처 — 새 이메일 mailto, 외부 링크 noopener', () => {
     render(<Landing />);
     expect(screen.getByRole('link', { name: LANDING.contact.openMail })).toHaveAttribute('href', 'mailto:sangwon.lee@buddle.it.kr');

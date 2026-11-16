@@ -1,3 +1,5 @@
+import type { IntroSegment } from '../fx/intro';
+
 /**
  * 랜딩 v2 내용 — 유일한 수정 지점. 출처: 2026-10 공개용 이력서(docs/handoff/landing-v2/design/Profile.dc.html 의 _data()).
  * v3(2026-11-10): 말투만 1인칭 대화체로 다듬었다 — 사실·수치·기간·고객사 표기는 이력서 그대로.
@@ -117,6 +119,19 @@ export const LANDING = {
     ],
   },
 
+  /**
+   * 히어로와 소개 사이 인트로 문장(DayDream 식) — 스크롤에 따라 앞 단어부터 칠해지고, 칩은 장식(aria-hidden).
+   * 사실은 기존 값(3년 차 · 38곳 · 기술 강사로 실습 지도)만 쓴다. em 은 그라데이션 강조.
+   */
+  intro: [
+    { text: '3년 차 프론트엔드 개발자로 직접 만들어 본 경험' },
+    { chip: 'code', label: '코드' },
+    { text: '그대로, 기업 · 기관 38곳의' },
+    { chip: 'building', label: '기업 · 기관' },
+    { text: 'AI 교육 현장에서 수강생 옆에서' },
+    { text: '실습을 함께 풀어요', em: true },
+    { chip: 'spark', label: 'AI' },
+  ] satisfies IntroSegment[],
   philosophy: {
     sentence:
       '직접 실습해 보고, 그 안에서 CS 지식을 얻고, 내 업무의 Pain Point를 스스로 해결할 수 있겠다는 자신감까지 가져가도록 돕고 싶습니다.',

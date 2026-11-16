@@ -41,6 +41,25 @@
 - [deferred] 덱 키보드 ←/→ 카드 이동은 네이티브 스크롤에 위임(포커스는 가능).
 - [open] dev 전용 진단(`window.__heroState`, `data-canvas-inview`) 잔존 — 프로덕션 번들 제외 확인됨, 정리 시점 미정.
 
+## 2026-11-16 — DayDream 식 연결 모션 (히어로 디졸브 · 인트로 문장 칩 · 메타 라벨)
+
+참고: ansphare.com 의 DayDream Studio 영상(하늘 · 구름 테마). **움직임만** 가져오고 하늘 · 구름 비주얼은 쓰지 않았다(사용자 결정 "방향만 진행").
+
+### 변경
+- 히어로 배경 레이어(영상 · 광선 · 막 · 오브/별)를 `data-slot="hero-bg"` 하나로 묶고 스크롤에 따라 페이지로 녹인다 — `fx/dissolve.ts` `heroDissolve`(높이 80% 에서 opacity 0, 스크롤 30% 시차), rAF + scrollStore, reduced-motion 정지.
+- 히어로와 소개 사이 인트로 문장(`sections/intro.tsx`, 섹션 아님 → 내비 · 섹션 점 영향 없음). 단어 하이라이트는 철학 섹션과 같은 `useWordProgress`(observe 로 추출) · `isLit`, 사이사이 아이콘 칩이 스프링으로 튀어나온다(장식, aria-hidden). 토큰화는 `fx/intro.ts`.
+- 강의 행의 산업군 · 대상 배지 → 고정폭 메타 라벨(`산업군 · 대상 · 도구`), 경력 스택 줄도 같은 `MetaLabel`(`fx/meta.ts`).
+- 새 카피 1문장(`LANDING.intro`): 사실은 기존 값(3년 차 · 38곳 · 실습 지도)만 사용. 문구는 사용자 확인 대상.
+
+### 버그 (개발 중 발견)
+- [fixed] 히어로와 인트로 사이 옅은 가로 띠 → 히어로 하단의 불투명 `to-bg-page` 덮개가 뒤의 고정 배경(AppShell 레이어)을 가려 경계가 생김 → 덮개 제거, 배경 묶음에 `mask-image`(하단 15rem 투명)로 대체. 라이트 · 다크 모두 띠 없음 확인.
+- [note] 인앱 브라우저에서 로드 직후 측정 시 스크롤/하이라이트가 반영 안 된 값이 1회 나옴 → 로드 대기 부족(재측정 시 정상). 콘솔의 View Transition `Document hidden` 오류는 기존과 같은 테스트 환경 산물.
+
+### 검증
+- `nx affected -t lint test typecheck` green (새 순수 함수 테스트 9 + 랜딩 통합 테스트 3).
+- 1280 라이트 · 다크, 390 라이트: 가로 넘침 0, 디졸브 값(scroll 300 → opacity 0.54 · shift 90px), 인트로 24토큰 전부 점등, 칩 표시 확인.
+- qa-verifier: 토큰 사용량 우려로 이번에도 생략 — 미검증 상태로 남김.
+
 ## 2026-11-16 — 에디토리얼 헤더(masthead)
 - [done] 사용자 선택: ansphare 갤러리의 meridian · plait 형. 왼쪽 로고 + 소개 두 줄, 오른쪽 메뉴 + ⌘K · 테마, 배경 막대 없음. 스크롤로 사라지면 기존 line 바가 내려온다(AppShell `masthead` 슬롯, IO).
 - [changed] 처음엔 메뉴를 3묶음(페이지 · 이력 · 연락)으로 넓혔으나 사용자 요청으로 **메뉴 구성은 이전(소개 · 블로그 · 캘린더)으로 롤백**, 배치만 유지.

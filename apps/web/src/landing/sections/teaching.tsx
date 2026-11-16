@@ -3,13 +3,13 @@
 import * as React from 'react';
 import { X } from 'lucide-react';
 
-import { Badge } from '@sandbox/ui/components/badge';
 import { cn } from '@sandbox/ui/lib/utils';
 
 import { LANDING } from '../content/landing';
 import { courseFilterStore, useCourseFilter } from '../filter/store';
 import { countLabel, filterCourses, isFiltered, targetsOf } from '../fx/course-filter';
 import { LazySection } from '../observe/lazy-section';
+import { MetaLabel } from './meta-label';
 import { Reveal, Section } from './section';
 
 const CHIP = cn(
@@ -91,15 +91,7 @@ function CourseList() {
                     |
                   </span>
                 </h3>
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <Badge variant="accent" className="h-6.5 max-w-none px-2.5">
-                    {c.industry}
-                  </Badge>
-                  <Badge variant="outline" className="h-6.5 max-w-none px-2.5">
-                    {c.target}
-                  </Badge>
-                  <span className="ml-1 font-mono text-label text-fg-muted">{c.tool}</span>
-                </div>
+                <MetaLabel parts={[c.industry, c.target, c.tool]} />
               </div>
               <span className="font-mono text-label tabular-nums text-fg-muted medium:text-body" aria-label={`${no}번째`}>
                 {String(no).padStart(2, '0')}

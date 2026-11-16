@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import { LANDING } from '../content/landing';
 import { LazySection } from '../observe/lazy-section';
+import { MetaLabel } from './meta-label';
 import { Reveal, Section } from './section';
 
 /**
@@ -39,7 +40,7 @@ function CareerRow({ item, index }: { item: (typeof LANDING.career.items)[number
             {open ? c.lessLabel : c.moreLabel(extra)}
           </button>
         )}
-        {'stack' in item && item.stack && <p className="font-mono text-caption text-fg-muted">{item.stack}</p>}
+        {'stack' in item && item.stack && <MetaLabel parts={item.stack.split(' · ')} className="leading-relaxed" />}
       </div>
     </Reveal>
   );
