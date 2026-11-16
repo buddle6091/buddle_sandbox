@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { ArrowUpRight } from 'lucide-react';
 
 import { Button } from '@sandbox/ui/components/button';
+import { GlassSurface } from '@sandbox/ui/components/glass-surface';
 
 import { HERO_VIDEO, LANDING } from '../content/landing';
 import { heroFade } from '../fx/hero-fade';
@@ -204,9 +205,17 @@ export function Hero() {
               </Button>
             </span>
             <span className="landing-magnet inline-flex" {...magnetB}>
-              <Button asChild size="lg" variant="glass">
-                <a href={h.ctas[1].href}>{h.ctas[1].label}</a>
-              </Button>
+              {/* 보조 CTA = liquid glass(렌즈 굴절). 뒤가 히어로 영상이라 굴절이 가장 잘 보이는 자리. 등장은 Reveal 이 맡는다 */}
+              <GlassSurface
+                as="a"
+                href={h.ctas[1].href}
+                interactive
+                appear={false}
+                backdrop="medium"
+                className="focus-ring inline-flex h-12 items-center px-6 text-body font-semibold"
+              >
+                {h.ctas[1].label}
+              </GlassSurface>
             </span>
           </Reveal>
           <Reveal index={7} variant="fade" className="flex flex-col gap-2.5 border-t border-border-default pt-5">

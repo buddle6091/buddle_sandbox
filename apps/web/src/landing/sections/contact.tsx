@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Check, Copy } from 'lucide-react';
 
 import { Button } from '@sandbox/ui/components/button';
+import { GlassSurface } from '@sandbox/ui/components/glass-surface';
 import { toast } from '@sandbox/ui/components/toast';
 
 import { copyText } from '../../shell/clipboard';
@@ -50,11 +51,19 @@ export function Contact() {
                 </Button>
               </span>
               {c.links.map((l) => (
-                <Button key={l.href} asChild size="lg" variant="glass">
-                  <a href={l.href} target="_blank" rel="noopener noreferrer">
-                    {l.label}
-                  </a>
-                </Button>
+                <GlassSurface
+                  key={l.href}
+                  as="a"
+                  href={l.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  interactive
+                  appear={false}
+                  backdrop="medium"
+                  className="focus-ring inline-flex h-12 items-center px-6 text-body font-semibold"
+                >
+                  {l.label}
+                </GlassSurface>
               ))}
             </div>
             <a href={mailto} className="focus-ring rounded-sm text-body-sm text-fg-link underline-offset-4 hover-fine:underline">

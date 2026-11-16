@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 
+import { GlassSurface } from '@sandbox/ui/components/glass-surface';
 import { cn } from '@sandbox/ui/lib/utils';
 
 import { NAV_SECTIONS, type SectionId } from '../content/landing';
@@ -26,12 +27,20 @@ export function useActiveSection(ids: readonly SectionId[]) {
   return active;
 }
 
-/** expanded+ 우측 섹션 점 — AppShell 라우트 내비는 그대로, 페이지 안 위치만 표시 */
+/**
+ * expanded+ 우측 섹션 점 — AppShell 라우트 내비는 그대로, 페이지 안 위치만 표시.
+ * 2026-11-16: 세로 liquid glass 알약 위에 얹었다. 스크롤하면 뒤를 지나가는 본문이 가장자리에서 휘어 보인다(Chromium).
+ */
 export function SectionIndicator() {
   const ids = React.useMemo(() => NAV_SECTIONS.map((n) => n.id), []);
   const active = useActiveSection(ids);
   return (
-    <nav aria-label="페이지 섹션" className="fixed top-1/2 right-5 z-30 hidden -translate-y-1/2 flex-col gap-3 expanded:flex">
+    <GlassSurface
+      as="nav"
+      aria-label="페이지 섹션"
+      intensity={0.75}
+      className="fixed top-1/2 right-4 z-30 hidden -translate-y-1/2 flex-col gap-2 px-1.5 py-3 expanded:flex"
+    >
       {NAV_SECTIONS.map((n) => (
         <a
           key={n.id}
@@ -39,20 +48,20 @@ export function SectionIndicator() {
           aria-label={n.label}
           aria-current={active === n.id ? 'location' : undefined}
           className={cn(
-            'focus-ring group relative flex size-4 items-center justify-center rounded-full',
+            'focus-ring group relative flex size-5 items-center justify-center rounded-full',
           )}
         >
           <span
             className={cn(
-              'block size-2 rounded-full bg-border-strong transition-[background-color,transform] duration-[var(--bs-motion-control)] ease-bs',
-              active === n.id && 'scale-125 bg-accent-default',
+              'block size-1.5 rounded-full bg-fg-muted transition-[background-color,transform] duration-[var(--bs-motion-control)] ease-bs',
+              active === n.id && 'scale-150 bg-accent-default',
             )}
           />
-          <span className="pointer-events-none absolute right-6 inline-flex h-7 items-center rounded-sm bg-bg-inverse px-2.5 text-caption leading-none whitespace-nowrap text-fg-inverse opacity-0 transition-opacity duration-[var(--bs-motion-control)] ease-bs group-hover-fine:opacity-100 group-focus-visible:opacity-100">
+          <span className="pointer-events-none absolute right-8 inline-flex h-7 items-center rounded-sm bg-bg-inverse px-2.5 text-caption leading-none whitespace-nowrap text-fg-inverse opacity-0 transition-opacity duration-[var(--bs-motion-control)] ease-bs group-hover-fine:opacity-100 group-focus-visible:opacity-100">
             {n.label}
           </span>
         </a>
       ))}
-    </nav>
+    </GlassSurface>
   );
 }

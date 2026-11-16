@@ -284,4 +284,15 @@ describe('Landing — 10섹션', () => {
     }
     expect(document.getElementById('teaching')).toHaveTextContent(LANDING.teaching.roleNote);
   });
+
+  it('liquid glass — 히어로 보조 CTA · 문의 링크 · 우측 섹션 점이 GlassSurface(젤리 · 등장은 Reveal 이 맡음)', () => {
+    render(<Landing />);
+    const cta = screen.getByRole('link', { name: LANDING.hero.ctas[1].label });
+    expect(cta).toHaveAttribute('data-slot', 'glass-surface');
+    expect(cta).toHaveAttribute('data-interactive', 'true');
+    expect(cta).toHaveAttribute('data-appear', 'false');
+    expect(cta).toHaveAttribute('data-backdrop', 'medium');
+    expect(screen.getByRole('link', { name: 'GitHub' })).toHaveAttribute('data-slot', 'glass-surface');
+    expect(screen.getByRole('navigation', { name: '페이지 섹션' })).toHaveAttribute('data-slot', 'glass-surface');
+  });
 });
