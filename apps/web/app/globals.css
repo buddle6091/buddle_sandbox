@@ -7,6 +7,26 @@
 /* Tailwind 가 ui 패키지 소스의 클래스도 스캔하게 한다 */
 @source "../../../packages/ui/src";
 
+/* 텍스트 선택 — 기본은 막고(2026-11-16 사용자 결정), 블로그 본문만 연다.
+   예외: 입력 칸(검색 · 팔레트 · 이후 댓글 · 에디터)은 선택이 막히면 입력 자체가 불편하므로 항상 연다.
+   블로그 본문은 감싸는 요소에 `data-selectable` 을 붙인다(`/posts/[slug]` 의 article, Phase 2).
+   @layer base 에 둬서 Tailwind `select-text` 유틸리티로도 국소적으로 열 수 있다. */
+@layer base {
+  body {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  input,
+  textarea,
+  select,
+  [contenteditable]:not([contenteditable="false"]),
+  [data-selectable],
+  [data-selectable] * {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+}
+
 /* 앵커 이동만 부드럽게. 섹션 scroll-snap 은 쓰지 않는다 —
    `scroll-snap-type: y proximity` + 모든 섹션 `scroll-snap-align: start` 는 휠 1틱(100px)을 120~470px 로 늘리고,
    지나친 시작점이 더 가까우면 위로 끌어올렸다(실측 2039→1940→2040, 2026-11-08). 섹션 높이가 556~2624px 로 제각각이라 재발 구조. */
