@@ -41,6 +41,42 @@
 - [deferred] 덱 키보드 ←/→ 카드 이동은 네이티브 스크롤에 위임(포커스는 가능).
 - [open] dev 전용 진단(`window.__heroState`, `data-canvas-inview`) 잔존 — 프로덕션 번들 제외 확인됨, 정리 시점 미정.
 
+## 2026-11-16 — 텍스트 선택 기본 차단
+- [done] 사용자 요청 "블로그 본문 제외하고 모두 user-select: none" → `apps/web/app/globals.css` `@layer base` 에 `body { user-select: none }`. 예외: input · textarea · select · contenteditable(입력이 불편해지므로) · `[data-selectable]`(블로그 본문, Phase 2 의 `/posts/[slug]` article).
+- 검증(브라우저): body · 히어로 제목 · 본문 · 헤더 링크 `none`, 히어로 제목 전체 선택 시 선택 글자 0 · `data-selectable` 프로브(코드 포함)는 `text` 로 선택됨 · ⌘K 입력 칸 `text`.
+- [note] 이력서 정보(과정명 · 이메일 등)를 드래그 복사할 수 없다. 이메일은 복사 버튼 · 팔레트로 대체된다. 스크린리더 · 브라우저 찾기(⌘F)는 영향 없음.
+
+## 2026-11-16 — Liquid glass(렌즈 굴절 유리) `GlassSurface`
+범위: `packages/tokens`(liquid 색 9 · blur 2 · saturate · shadow · spring) · `packages/ui`(`glass-surface` 신규 + `lib/liquid` + `use-lens-support` · AppShell TabBar) · `apps/web`(섹션 점 · 히어로 · 문의). 사용자 요청: "전형적인 glassmorphism 대신 liquid glass".
+
+### 개발 중 발견한 버그 · 판단 (증상 → 원인 → 조치)
+- [fixed] 렌즈를 켜도 굴절이 안 보이고 뿌연 알약만 보임(800×500 실측) → 블러 6px + 틴트 56% 가 굴절을 덮었다. 블러 없이 렌즈만 걸면 글자가 가장자리에서 휘어 보이는 것을 확인 → 렌즈일 때 블러 2px(`liquid/blur-lens`), 틴트 26%. 폴백 블러는 6px 유지.
+- [fixed] 낮춘 틴트로는 TabBar 라벨이 아래 본문 글자와 겹쳐 읽기 어렵다 → `density="dense"`(틴트 62% · 블러 6px)를 두고 본문 위에 글자를 얹는 표면(TabBar)에만.
+- [fixed] 소비처가 넘긴 `data-slot` 이 컴포넌트의 `data-slot="glass-surface"` 를 덮어씀 → rest props 를 먼저 펼치고 컴포넌트 data 속성을 뒤에.
+- [fixed] 처음 그려질 때 렌즈가 꺼져 있다가 켜짐 — 의도(SSR · 크기 측정 전은 폴백, 하이드레이션 + ResizeObserver 뒤 렌즈).
+- [note] 바깥 TabBar 가 backdrop-filter 를 가져 backdrop root 가 되므로 안쪽 활성 알약은 실제 굴절을 할 수 없다 → `backdrop="none"` + 틴트 · 하이라이트 · glow 로 구분(프롬프트의 "안쪽 원형 버튼은 더 강한 렌즈"는 바깥 표면이 없는 곳에서만 성립 — 스토리 Recorder 참고).
+
+### 프롬프트와 다르게 한 것 (사용자 확인 필요)
+- **framer-motion 을 넣지 않았다.** 루트 `package-lock.json` 에 세션 밖 nx 범프가 미커밋으로 있어 의존성 추가가 그 변경과 얽힌다. spring(stiffness 300 · damping 20)은 CSS `linear()` 로 샘플링한 곡선(`--bs-motion-spring-curve`)으로 같은 오버슈트(최대 10.8%)를 낸다. 넣기로 하면 GlassSurface 안에서만 바꾸면 된다.
+- **색은 토큰으로.** 프롬프트의 rgba 흰색 · 핑크 · 시안 · 오렌지 · 보라를 기존 팔레트(white · celadon/300 · red/500 · amber/500 · violet/500)로 매핑했다. 핑크 primitive 는 없어 red/500 으로.
+- **블러 2px**(프롬프트 4~8px) — 렌즈가 켜졌을 때만. 실측에서 4px 부터 굴절이 묻혔다.
+- **`@supports` 대신 Client Hints 판별** — `@supports (backdrop-filter: url(#a))` 는 Safari · Firefox 에서도 참이라 판별이 안 된다. `@supports` 는 backdrop-filter 자체가 없는 브라우저의 불투명 폴백에만 썼다.
+- 이징 하나 규칙(design.md §4)에 spring 예외를 추가했다(liquid 전용, `--ease-*` 가 아님).
+
+### 재현 안 되는 간헐 이슈
+- [flaky] 브라우저 콘솔 `InvalidStateError: Transition was aborted because of invalid state. Document hidden` 1건 — 앱 브라우저 창이 가려진 상태에서 라우트를 이동해 View Transition 이 중단된 것으로 보인다(테스트 환경). 사용자가 탭을 전환하는 순간 라우트가 바뀌면 같은 메시지가 날 수 있다. 화면은 정상.
+
+### 검증
+- 테스트: tokens 146 · ui 165(GlassSurface 14 + liquid 순수 함수 11 포함) · web 105. lint · typecheck · build green.
+
+### qa-verifier 판정 — PASS(막는 결함 없음) → 반영
+- [fixed · Medium] reduced-motion 인데 마우스로 누르면 `scale(1.06, .92)` 가 그대로 — hover 미디어의 `:hover:active`(특이도 0,4,0)가 reduced-motion 목록(0,3,0)을 이겼다 → hover 미디어에 `(prefers-reduced-motion: no-preference)` 조건 + reduced-motion 목록에 `:hover:active` 추가.
+- [fixed · Low] `dense` + `backdrop="medium"` 조합이면 compact 에서 blur 가 3개가 될 수 있던 특이도 구멍, backdrop-filter 미지원 브라우저에서 dense 가 반투명으로 남던 구멍 → 선택자 보강. `max-width: 599.98px` → `width < 600px`(medium 토큰 주석).
+- [fixed · Low] 변위 지도 색 이름 예외를 packages/ui/CLAUDE.md 규칙 1 · design.md §6.13 에 명시. 스토리에 density · backdrop 조합과 dark 변형 추가. spring 곡선을 토큰 테스트로 고정. qa-log 테스트 수 정정.
+- [open · Low] 렌즈가 가장자리에서 요소 바깥(최대 scale/2 px)을 샘플링한다 — 실측(블러 없는 프로브)에서 글자가 가장자리에서 휘어 보였고 이상 없음. 방향을 안쪽으로 뒤집을지는 시각 취향 문제라 그대로 둔다.
+- [note] 등장 애니메이션은 `display: none` → 보임 전환(창 크기 변경으로 TabBar · 섹션 점이 나타날 때)마다 다시 재생된다. 의도와 크게 어긋나지 않아 그대로.
+- 브라우저(Chromium): 렌즈 `data-lens="on"` 4곳(섹션 점 · 히어로 CTA · 문의 링크 2), 굴절 육안 확인(블러 없는 비교 프로브). 390 TabBar 라이트 · 다크, 가로 넘침 0.
+
 ## 2026-11-10 — 헤더 재설계 · 역할 표기 · velog 글 가져오기 (Phase 2d 후속)
 범위: `packages/ui` AppShell(`topBar="line"` · `context`) · `apps/web` 셸(`section-crumb`) · `content/landing.ts` 역할 문구 · `tools/import-velog.mjs` + `docs/archive/velog/`(90편) · `docs/architecture.md` 1.6절.
 

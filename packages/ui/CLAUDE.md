@@ -4,7 +4,7 @@ shadcn 기반 공용 컴포넌트(`@sandbox/ui`). 스펙은 `../../design.md` §
 새 컴포넌트는 반드시 `/new-component` 스킬 절차로. 완료 판정은 `qa-verifier`.
 
 ## 절대 규칙
-1. **색/간격/타이포/radius/shadow 하드코딩 금지.** `@sandbox/tokens` 유틸리티만(`bg-bg-default` `text-fg-muted` `shadow-glass` `text-label` …). `#hex` `rgb(` 가 `src/` 에 있으면 FAIL.
+1. **색/간격/타이포/radius/shadow 하드코딩 금지.** `@sandbox/tokens` 유틸리티만(`bg-bg-default` `text-fg-muted` `shadow-glass` `text-label` …). `#hex` `rgb(` 가 `src/` 에 있으면 FAIL. 예외 하나: `lib/liquid.ts` 의 변위 지도 SVG 안 색 이름(black · red · lime · gray)은 화면 색이 아니라 굴절 채널 값이다(GlassSurface).
 2. **shadcn 의 `--background`/`--primary` 계열 CSS 변수를 쓰지 않는다.** `shadcn add` 가 심는 `bg-background text-foreground` 를 전부 토큰 유틸로 치환한다.
 3. **유리 3단계는 `glass-subtle` / `glass-base` / `glass-solid` 유틸리티로만**(`src/styles.css`). 같은 화면에서 blur 레이어를 겹치지 않는다. compact 리스트 안 카드는 `glass-base-flat`(blur 없음).
 4. **hover 는 `hover-fine:`** (`hover:` 금지). 터치는 `active:scale-[.985]`.

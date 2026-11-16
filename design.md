@@ -139,6 +139,22 @@ v0.1 토큰 이름은 전부 유지한다(기존 컴포넌트 무수정). `glass
 | `glass/saturate`      | 150%             | 150%                 |
 | `glass/fallback-bg`   | `gray/0 @ 92%`   | `obsidian/panel @ 94%` |
 
+**liquid (렌즈 굴절 유리, 2026-11-16)** — `GlassSurface`(§6.13) 전용. frosted glass(`glass/*`)와 섞지 않는다.
+
+| Token                    | Light               | Dark                 |
+| ------------------------ | ------------------- | -------------------- |
+| `liquid/tint`            | `gray/0 @ 26%`      | `obsidian/ash @ 38%` |
+| `liquid/rim`             | `white @ 55%`       | `white @ 22%`        |
+| `liquid/highlight`       | `white @ 60%`       | `white @ 30%`        |
+| `liquid/specular`        | `white @ 36%`       | `white @ 16%`        |
+| `liquid/chroma-cool`     | `celadon/300 @ 60%` | `celadon/300 @ 50%`  |
+| `liquid/chroma-warm`     | `red/500 @ 42%`     | `red/500 @ 48%`      |
+| `liquid/glow-1·2·3`      | `red/500 @ 70%` · `amber/500 @ 65%` · `violet/500 @ 70%` | 같음 |
+| `liquid/blur`            | 6px(폴백 · dense)   | 6px                  |
+| `liquid/blur-lens`       | 2px(굴절 켜짐)      | 2px                  |
+| `liquid/saturate`        | 180%                | 180%                 |
+| `shadow/liquid`          | `inset 0 1px 1px highlight, inset 0 -1px 2px navy @ 15%, 0 10px 30px -6px navy @ 25%` | 같은 모양, black @ 15% · 45% |
+
 **glaze (고임 — 카드 아래 절반에만)**
 
 | Token           | Light                                                                                      | Dark                                                                      |
@@ -256,6 +272,7 @@ v0.1 토큰 이름은 전부 유지한다(기존 컴포넌트 무수정). `glass
 | `motion/control` | 170ms (버튼·탭·링크 색 전환)                   |
 | `motion/surface` | 300ms (테두리·그림자·열림)                     |
 | `motion/pool`    | 420ms (고임 차오름)                            |
+| `motion/spring`  | 560ms + `linear()` spring 곡선(stiffness 300 · damping 20) — **liquid glass 전용 예외**(2026-11-16 사용자 요청). `--ease-*` 토큰이 아니다 |
 
 -   `transition: all` 금지. 대상 속성을 나열한다.
 -   hover는 `@media (hover: hover) and (pointer: fine)` 안에서만. 터치는 `:active { transform: scale(.985) }`.
@@ -360,7 +377,7 @@ shadcn 원본 유지, cva variant만 추가(기존 variant 삭제 금지). 모�
 ### 6.10 Navigation
 
 -   TopBar h `layout/topbar-h` + safe-top, sticky. 스크롤 전 투명 → 스크롤 후 glass `base`.
--   compact TabBar(최대 5항목, h 56 + safe-bottom, glass `base`) / medium Rail(72, 아이콘 + 12px 라벨) / expanded Sidebar(248, `bg/subtle` 불투명). 세 형태는 같은 `navItems` 배열에서 렌더.
+-   compact TabBar(최대 5항목, h 56, 화면 아래 좌우 · 아래 12px 띄운 liquid glass 알약 `density=dense`, 활성 탭 = 안쪽 알약 + glow .3 — 2026-11-16) / medium Rail(72, 아이콘 + 12px 라벨) / expanded Sidebar(248, `bg/subtle` 불투명). 세 형태는 같은 `navItems` 배열에서 렌더.
 
 ### 6.11 Table
 
@@ -370,6 +387,19 @@ shadcn 원본 유지, cva variant만 추가(기존 variant 삭제 금지). 모�
 ### 6.12 Accordion
 
 -   trigger h 52, radius `radius/md`. 열린 항목만 glass `subtle`, 닫힌 항목은 `border/default` 선으로 구분.
+
+### 6.13 Liquid Glass — `GlassSurface` (2026-11-16)
+
+blur 위주의 frosted glass 가 아니라 **렌즈 굴절** 유리. 레퍼런스: Zsolt Kacso "glass recorder".
+
+-   형태: `pill`(radius full) / `circle`(정사각, 같은 세기에서 더 강한 렌즈 + 두 겹 하이라이트).
+-   굴절: 요소 크기의 변위 지도(R = 가로, G = 세로, 가운데 중립 회색) + `feDisplacementMap` 을 `backdrop-filter: url(#id)` 로. Chromium 만 — 판별은 UA Client Hints 의 Chromium 브랜드(`@supports` 는 문법만 봐서 판별 불가). 그 외 브라우저 · SSR · 크기 측정 전은 `blur(liquid/blur) saturate(liquid/saturate)` 폴백.
+-   층: 틴트 → glow(활성) → 좌상단 스페큘러 → 색수차(위 cool · 아래 warm, `mix-blend-mode: screen`) → 내용. 테두리 1px `liquid/rim`, 그림자 `shadow/liquid`.
+-   density: `clear`(기본, 뒤가 사진 · 그라디언트일 때) / `dense`(본문 위에 글자를 얹는 표면 — 틴트 `glass/base-bg`, 렌즈일 때도 블러 6px). 글자 4.5:1 은 dense 또는 밝은 배경 위에서만 보장한다.
+-   backdrop: `always` / `medium`(compact 에서는 불투명 틴트 — 화면당 blur 2개 규칙) / `none`. backdrop-filter 를 가진 조상 안의 표면은 굴절할 배경이 없으므로 `none`.
+-   모션: hover `scale(1.03, .97)` · press `scale(1.06, .92)` 를 `motion/spring` 으로(젤리). 등장 = 투명 + blur 10 + 10px 아래. glow(0~1, 최대 투명도 .55)는 핑크(red) → 오렌지(amber) → 보라(violet) 가 7초에 걸쳐 흐른다. reduced-motion 이면 전부 끔.
+-   변위 지도 SVG 안의 색 이름(black · red · lime · gray)은 채널 값(gray = 128 = 변위 0)이라 토큰 규칙의 예외다.
+-   적용: compact TabBar · expanded 랜딩 우측 섹션 점 · 히어로 보조 CTA · 문의 외부 링크.
 
 ---
 
