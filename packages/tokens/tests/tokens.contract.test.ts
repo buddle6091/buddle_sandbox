@@ -185,7 +185,7 @@ describe('3. Primitive 해석 — semantic 은 raw hex 를 쓰지 않는다', ()
     const css = semanticCss();
     const light = declarations(block(css, LIGHT));
     const dark = declarations(block(css, EXPLICIT_DARK));
-    for (const level of ['sm', 'md', 'lg', 'glass', 'intaglio']) {
+    for (const level of ['sm', 'md', 'lg', 'glass', 'intaglio', 'liquid']) {
       const name = `--bs-shadow-${level}`;
       expect(light.get(name), `${name} light`).toContain(`--bs-color-${SHADOW_BASE.light}`);
       expect(light.get(name), `${name} light 에 black`).not.toContain(`--bs-color-${SHADOW_BASE.dark}`);
@@ -314,7 +314,17 @@ describe('6. 스케일 값이 design.md 와 일치', () => {
     expect(declared.get('--spacing')).toBe('4px');
   });
 
-  it('모션 — 이징 하나(ease-bs)와 지속시간 셋', () => {
+  it('spring 곡선 — linear() 표본이 감쇠 진동(시작 0 · 최대 오버슈트 · 끝 1)이다', () => {
+    const curve = declarations(allSrc()).get('--bs-motion-spring-curve') ?? '';
+    const pts = (curve.match(/^linear\((.+)\)$/)?.[1] ?? '').split(',').map((v) => Number(v.trim()));
+    expect(pts).toHaveLength(MOTION.springCurve.samples);
+    expect(pts[0]).toBe(MOTION.springCurve.first);
+    expect(pts.at(-1)).toBe(MOTION.springCurve.last);
+    expect(Math.max(...pts)).toBeCloseTo(MOTION.springCurve.peak, 3);
+    for (const p of pts) expect(Number.isFinite(p)).toBe(true);
+  });
+
+  it('모션 — 이징 하나(ease-bs)와 지속시간 넷(spring 은 liquid 전용 예외, --ease-* 가 아니다)', () => {
     const theme = declarations(block(themeCss(), '@theme(?!\\s+inline)'));
     expect(theme.get('--ease-bs')).toBe(MOTION.ease);
     // 다른 이징 토큰을 추가로 두지 않는다 (design.md §4 "유일한 이징").

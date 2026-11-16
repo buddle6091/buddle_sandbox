@@ -107,6 +107,16 @@ export const SEMANTIC: Record<string, { light: string; dark: string }> = {
   'glass-solid-bg': { light: 'gray-0', dark: 'obsidian-panel' },
   'glass-solid-border': { light: 'gray-0', dark: 'white' },
   'glass-fallback-bg': { light: 'gray-0', dark: 'obsidian-panel' },
+  // liquid (렌즈 유리, 2026-11-16) — GlassSurface 전용
+  'liquid-tint': { light: 'gray-0', dark: 'obsidian-ash' },
+  'liquid-rim': { light: 'white', dark: 'white' },
+  'liquid-highlight': { light: 'white', dark: 'white' },
+  'liquid-specular': { light: 'white', dark: 'white' },
+  'liquid-chroma-cool': { light: 'celadon-300', dark: 'celadon-300' },
+  'liquid-chroma-warm': { light: 'red-500', dark: 'red-500' },
+  'liquid-glow-1': { light: 'red-500', dark: 'red-500' },
+  'liquid-glow-2': { light: 'amber-500', dark: 'amber-500' },
+  'liquid-glow-3': { light: 'violet-500', dark: 'violet-500' },
   // glaze (고임)
   'glaze-tint': { light: 'blue-500', dark: 'blue-400' },
   'glaze-celadon': { light: 'celadon-500', dark: 'celadon-500' },
@@ -124,6 +134,15 @@ export const ALPHA_TOKENS: Record<string, { light: number; dark: number }> = {
   'glass-solid-bg': { light: 80, dark: 78 },
   'glass-solid-border': { light: 90, dark: 18 },
   'glass-fallback-bg': { light: 92, dark: 94 },
+  'liquid-tint': { light: 26, dark: 38 },
+  'liquid-rim': { light: 55, dark: 22 },
+  'liquid-highlight': { light: 60, dark: 30 },
+  'liquid-specular': { light: 36, dark: 16 },
+  'liquid-chroma-cool': { light: 60, dark: 50 },
+  'liquid-chroma-warm': { light: 42, dark: 48 },
+  'liquid-glow-1': { light: 70, dark: 70 },
+  'liquid-glow-2': { light: 65, dark: 65 },
+  'liquid-glow-3': { light: 70, dark: 70 },
   'glaze-tint': { light: 10, dark: 14 },
   'glaze-celadon': { light: 16, dark: 14 },
 };
@@ -149,6 +168,10 @@ export const NON_COLOR_SEMANTIC = [
   '--bs-glass-blur-md',
   '--bs-glass-blur-lg',
   '--bs-glass-saturate',
+  '--bs-liquid-blur',
+  '--bs-liquid-blur-lens',
+  '--bs-liquid-saturate',
+  '--bs-shadow-liquid',
 ] as const;
 
 /** 모드와 무관한 비색 토큰(값이 양쪽 같아야 하는 것) */
@@ -158,6 +181,9 @@ export const NON_COLOR_STATIC: Record<string, string> = {
   '--bs-glass-blur-lg': '28px',
   '--bs-glass-saturate': '150%',
   '--bs-orb-blur': '30px',
+  '--bs-liquid-blur': '6px',
+  '--bs-liquid-blur-lens': '2px',
+  '--bs-liquid-saturate': '180%',
 };
 
 /** 그림자가 참조해야 하는 primitive — 라이트는 navy 알파만, 다크는 black 알파만 (design.md §7-3) */
@@ -195,12 +221,14 @@ export const RADIUS: Record<string, string> = {
 };
 
 /** design.md §1.2 Shadow — theme 에서 유틸리티로 노출돼야 하는 단계 */
-export const SHADOW_LEVELS = ['sm', 'md', 'lg', 'glass', 'ring', 'intaglio'] as const;
+export const SHADOW_LEVELS = ['sm', 'md', 'lg', 'glass', 'ring', 'intaglio', 'liquid'] as const;
 
 /** design.md §4 Motion — 이징 하나, 지속시간 셋 */
 export const MOTION = {
   ease: 'cubic-bezier(0.22, 1, 0.36, 1)',
-  durations: { control: '170ms', surface: '300ms', pool: '420ms' },
+  durations: { control: '170ms', surface: '300ms', pool: '420ms', spring: '560ms' },
+  /** liquid glass 전용 spring(stiffness 300 · damping 20 · mass 1) — 시작 0, 최대 1.108(10.8% 오버슈트), 끝 1 */
+  springCurve: { first: 0, peak: 1.108, last: 1, samples: 29 },
 } as const;
 
 /**

@@ -61,13 +61,27 @@ describe('AppShell — design.md §6.10: 같은 navItems 로 TopBar 탭 · TabBa
     expect(screen.getByRole('button', { name: '로그아웃' })).toBeInTheDocument();
   });
 
-  it('TabBar — compact 전용, h 56 + safe-bottom, glass base, 최대 5개', () => {
+  it('TabBar — compact 전용, 화면 아래 떠 있는 liquid glass 알약(safe-area 위 12px), h 56, 최대 5개', () => {
     render(<Tree />);
     const tab = screen.getByRole('navigation', { name: '하단 탭' });
-    expect(tab).toHaveClass('fixed', 'bottom-0', 'medium:hidden', 'glass-base');
-    expect(tab).toHaveClass('pb-[env(safe-area-inset-bottom)]');
-    expect(tab.className).toMatch(/h-\[calc\(var\(--bs-layout-tabbar-h\)/);
+    expect(tab).toHaveAttribute('data-slot', 'glass-surface');
+    // 본문 위에 글자를 얹는 표면 → 짙은 틴트(라벨 대비)
+    expect(tab).toHaveAttribute('data-density', 'dense');
+    expect(tab).toHaveClass('fixed', 'inset-x-3', 'medium:hidden', 'liquid-glass', 'rounded-full', 'h-[var(--bs-layout-tabbar-h)]');
+    expect(tab.className).toMatch(/bottom-\[calc\(env\(safe-area-inset-bottom\)/);
+    expect(tab.className).not.toMatch(/glass-base/);
     expectTokenOnly(tab.className);
+  });
+
+  it('TabBar 활성 탭 — 안쪽 알약(backdrop 없음 · glow) 하나, 장식', () => {
+    render(<Tree />);
+    const tab = screen.getByRole('navigation', { name: '하단 탭' });
+    const marks = tab.querySelectorAll('[data-tab-active]');
+    expect(marks).toHaveLength(1);
+    expect(marks[0]).toHaveAttribute('aria-hidden', 'true');
+    expect(marks[0]).toHaveAttribute('data-backdrop', 'none');
+    expect(marks[0].closest('a')).toHaveAttribute('aria-current', 'page');
+    expect(marks[0].querySelector('[data-slot="glass-glow"]')).not.toBeNull();
   });
 
   it('Rail — medium 전용 72, 아이콘 + 12px 라벨; Sidebar — expanded 전용 248, bg/subtle 불투명', () => {

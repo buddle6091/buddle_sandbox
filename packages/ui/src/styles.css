@@ -238,3 +238,143 @@
   animation: bs-sheet-side-out var(--bs-motion-surface) var(--ease-bs) both;
   @media (prefers-reduced-motion: reduce) { animation-name: bs-fade-out; }
 }
+
+/**
+ * Liquid glass — 렌즈 굴절 유리(GlassSurface 전용, 2026-11-16).
+ * frosted glass(glass-*)와 다르다: 블러는 약하게(폴백 6px · 렌즈일 때 2px — 실측: 6px 이면 굴절이 블러에 묻힌다) · 채도는 강하게(180%) · 1px 흰 rim + 위 inset 하이라이트 ·
+ * 위 시안 / 아래 핑크 색수차 · 좌상단 스페큘러. Chromium 은 SVG 변위 지도로 가장자리를 휘게(data-lens="on"),
+ * 그 외 브라우저는 blur + saturate 폴백. 표면(틴트 · 테두리 · 그림자 · 위치)은 `@layer components` 라 소비처의 Tailwind 유틸리티가 이긴다.
+ * hover 젤리 · reduced-motion 블록은 레이어 밖이다 — 모션은 소비처가 덮지 못하게(reduced-motion 이 항상 이기게) 의도한 것.
+ */
+@layer components {
+  .liquid-glass {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--bs-color-liquid-tint);
+    border: 1px solid var(--bs-color-liquid-rim);
+    box-shadow: var(--bs-shadow-liquid);
+    -webkit-backdrop-filter: blur(var(--bs-liquid-blur)) saturate(var(--bs-liquid-saturate));
+    backdrop-filter: blur(var(--bs-liquid-blur)) saturate(var(--bs-liquid-saturate));
+  }
+  .liquid-glass[data-lens="on"] {
+    -webkit-backdrop-filter: var(--glass-filter) blur(var(--bs-liquid-blur-lens)) saturate(var(--bs-liquid-saturate));
+    backdrop-filter: var(--glass-filter) blur(var(--bs-liquid-blur-lens)) saturate(var(--bs-liquid-saturate));
+  }
+  /* dense — 아무 본문 위에 떠서 글자를 얹는 표면(TabBar). 틴트를 frosted 수준(62%)으로 올리고 렌즈일 때도 블러 6px */
+  .liquid-glass[data-density="dense"] {
+    background-color: var(--bs-color-glass-base-bg);
+  }
+  .liquid-glass[data-density="dense"][data-lens="on"] {
+    -webkit-backdrop-filter: var(--glass-filter) blur(var(--bs-liquid-blur)) saturate(var(--bs-liquid-saturate));
+    backdrop-filter: var(--glass-filter) blur(var(--bs-liquid-blur)) saturate(var(--bs-liquid-saturate));
+  }
+  .liquid-glass[data-backdrop="none"] {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  /* compact 는 화면당 backdrop-filter 2개(TopBar · TabBar) 규칙 — backdrop="medium" 은 compact 에서 불투명 틴트로.
+     600 = --breakpoint-medium(뷰포트 기준이어야 하므로 @container 가 아니다). density · lens 조합보다 우선하도록 선택자를 높인다 */
+  @media (width < 600px) {
+    .liquid-glass[data-backdrop="medium"],
+    .liquid-glass[data-backdrop="medium"][data-density][data-lens] {
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      background-color: var(--bs-color-glass-fallback-bg);
+    }
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .liquid-glass,
+    .liquid-glass[data-density="dense"] {
+      background-color: var(--bs-color-glass-fallback-bg);
+    }
+  }
+
+  /* 스페큘러 — 좌상단 흰빛 */
+  .liquid-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(120% 140% at 14% -20%, var(--bs-color-liquid-specular), transparent 48%);
+  }
+  /* 원형(내부 버튼) — 더 둥근 하이라이트 두 겹 */
+  .liquid-glass[data-variant="circle"]::before {
+    background:
+      radial-gradient(38% 26% at 34% 20%, var(--bs-color-liquid-highlight), transparent 72%),
+      radial-gradient(80% 80% at 30% 24%, var(--bs-color-liquid-specular), transparent 62%);
+  }
+  /* 색수차 — 위 가장자리 시안, 아래 가장자리 핑크가 screen 으로 번진다 */
+  .liquid-glass::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    box-shadow:
+      inset 0 2px 3px -1px var(--bs-color-liquid-chroma-cool),
+      inset 0 -2px 4px -1px var(--bs-color-liquid-chroma-warm);
+  }
+
+  /* 활성 glow — 핑크 → 오렌지 → 보라가 천천히 흐른다. 세기는 --glass-glow(0~0.55) */
+  .liquid-glass-glow {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: var(--glass-glow, 0);
+    background-image:
+      radial-gradient(30% 70% at 20% 65%, var(--bs-color-liquid-glow-1), transparent 72%),
+      radial-gradient(30% 70% at 50% 35%, var(--bs-color-liquid-glow-2), transparent 72%),
+      radial-gradient(30% 70% at 80% 65%, var(--bs-color-liquid-glow-3), transparent 72%);
+    background-size: 200% 100%;
+    animation: liquid-glow-flow 7s var(--ease-bs) infinite alternate;
+    transition: opacity var(--bs-motion-surface) var(--ease-bs);
+  }
+
+  /* 젤리 — hover 때 옆으로 늘고 위아래로 눌린다, press 때 더. spring(stiffness 300 · damping 20) */
+  .liquid-glass[data-interactive="true"] {
+    transition: transform var(--bs-motion-spring) var(--bs-motion-spring-curve);
+  }
+  .liquid-glass[data-interactive="true"]:active {
+    transform: scale(1.06, 0.92);
+  }
+
+  /* 등장 — 투명 + blur 10px + 10px 아래에서. fill 은 backwards 만(끝난 뒤 hover transform 을 막지 않게) */
+  .liquid-glass[data-appear="true"] {
+    animation: liquid-appear 640ms var(--ease-bs) backwards;
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .liquid-glass[data-interactive="true"]:hover {
+    transform: scale(1.03, 0.97);
+  }
+  .liquid-glass[data-interactive="true"]:hover:active {
+    transform: scale(1.06, 0.92);
+  }
+}
+@keyframes liquid-glow-flow {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+@keyframes liquid-appear {
+  from { opacity: 0; filter: blur(10px); transform: translate3d(0, 10px, 0); }
+  to { opacity: 1; filter: blur(0); transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .liquid-glass[data-interactive="true"],
+  .liquid-glass[data-interactive="true"]:hover,
+  .liquid-glass[data-interactive="true"]:active,
+  .liquid-glass[data-interactive="true"]:hover:active {
+    transition: none;
+    transform: none;
+  }
+  .liquid-glass[data-appear="true"],
+  .liquid-glass-glow {
+    animation: none;
+  }
+}

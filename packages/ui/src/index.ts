@@ -23,6 +23,7 @@ export * from './components/avatar';
 export * from './components/tabs';
 export * from './components/app-shell';
 export * from './components/ambient-background';
+export * from './components/glass-surface';
 export * from './components/empty-state';
 export * from './components/error-state';
 export * from './components/sync-banner';

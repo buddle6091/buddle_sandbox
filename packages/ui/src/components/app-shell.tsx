@@ -5,6 +5,7 @@ import type { LucideIcon } from 'lucide-react';
 
 import { cn } from '@sandbox/ui/lib/utils';
 import { useScrolled } from '../hooks/use-scrolled';
+import { GlassSurface } from './glass-surface';
 
 /**
  * AppShell — design.md §6.10 + SCREENS 공통 헤더
@@ -14,7 +15,8 @@ import { useScrolled } from '../hooks/use-scrolled';
  *            좌 brand(lowercase 700) · medium+ 알약 탭(활성 accent/subtle-bg) · 우 actions
  *            활성 알약은 하나의 표시(nav-indicator)가 탭 사이를 미끄러진다(2026-11-10). 위치를 재기 전 · 잴 수 없는
  *            환경(SSR · 테스트)에서는 링크 자체 배경이 그대로 활성 표시다.
- *   TabBar   compact 전용. h 56 + safe-bottom, glass base, 최대 5항목
+ *   TabBar   compact 전용. 화면 아래에 떠 있는 liquid glass 알약(GlassSurface, 2026-11-16) — 좌우 · 아래 12px 띄움,
+ *            h 56, 최대 5항목. 활성 탭 뒤에 안쪽 알약(backdrop 없음 + glow) 하나.
  *   Rail     medium 전용. 72, 아이콘 + 12px 라벨
  *   Sidebar  expanded+ 전용. 248, bg/subtle 불투명
  * `sideNav={false}` 면 Rail/Sidebar 를 빼고 TopBar 탭 + TabBar 만 쓴다(블로그 화면).
@@ -89,8 +91,8 @@ function NavLinks({
     ),
     tabbar: cn(
       navLinkBase,
-      'flex min-h-11 flex-1 flex-col items-center justify-center gap-0.5 rounded-md text-caption text-fg-muted',
-      'active:scale-[.985] aria-[current=page]:text-accent-default',
+      'relative isolate flex min-h-11 flex-1 flex-col items-center justify-center gap-0.5 rounded-full text-caption text-fg-body',
+      'active:scale-[.985] aria-[current=page]:font-semibold aria-[current=page]:text-fg-default',
     ),
     rail: cn(
       navLinkBase,
@@ -113,6 +115,10 @@ function NavLinks({
           aria-current={href === activeHref ? 'page' : undefined}
           className={cls[variant]}
         >
+          {variant === 'tabbar' && href === activeHref && (
+            // 활성 탭 = 안쪽 알약. 바깥 TabBar 가 backdrop root 라 굴절 대신 틴트 · 하이라이트 · glow 로 구분한다
+            <GlassSurface as="span" aria-hidden="true" data-tab-active backdrop="none" appear={false} glow={0.3} className="absolute inset-y-1 inset-x-0.5 -z-10" />
+          )}
           {showIcon && <Icon aria-hidden />}
           <span>{label}</span>
         </Link>
@@ -271,20 +277,23 @@ function AppShell({
             </nav>
           </>
         )}
-        <main className="min-w-0 flex-1 pb-[calc(var(--bs-layout-tabbar-h)+env(safe-area-inset-bottom))] medium:pb-0">
+        <main className="min-w-0 flex-1 pb-[calc(var(--bs-layout-tabbar-h)+env(safe-area-inset-bottom)+var(--spacing)*6)] medium:pb-0">
           {children}
         </main>
       </div>
 
-      <nav
+      <GlassSurface
+        as="nav"
         aria-label="하단 탭"
+        intensity={0.55}
+        density="dense"
         className={cn(
-          'fixed inset-x-0 bottom-0 z-40 flex h-[calc(var(--bs-layout-tabbar-h)+env(safe-area-inset-bottom))] items-stretch px-2 pb-[env(safe-area-inset-bottom)]',
-          'glass-base rounded-none border-x-0 border-b-0 medium:hidden',
+          'fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+var(--spacing)*3)] z-40 flex h-[var(--bs-layout-tabbar-h)] items-stretch p-1',
+          'medium:hidden',
         )}
       >
         <NavLinks items={items} activeHref={activeHref} Link={Link} variant="tabbar" />
-      </nav>
+      </GlassSurface>
     </div>
   );
 }
