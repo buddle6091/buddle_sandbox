@@ -41,6 +41,22 @@
 - [deferred] 덱 키보드 ←/→ 카드 이동은 네이티브 스크롤에 위임(포커스는 가능).
 - [open] dev 전용 진단(`window.__heroState`, `data-canvas-inview`) 잔존 — 프로덕션 번들 제외 확인됨, 정리 시점 미정.
 
+## 2026-11-20 — 보안 헤더 · Next 보안 패치 (배포 준비)
+
+### 변경
+- 모든 경로에 보안 헤더 7종(`apps/web/src/security/headers.ts` → `next.config.ts` `headers()`): CSP · HSTS(2년, includeSubDomains, preload 없음) · `X-Content-Type-Options` · `X-Frame-Options: DENY` · `Referrer-Policy` · `Permissions-Policy`(카메라·마이크·위치 차단, 클립보드 쓰기는 self) · COOP. `poweredByHeader: false`.
+- CSP 는 nonce 없이 `script-src 'self' 'unsafe-inline'` — nonce 는 모든 페이지를 동적 렌더로 바꿔 정적 프리렌더 · CDN 캐시를 잃는다. 외부 출처는 폰트 CDN 2곳(jsdelivr · Google Fonts)만. 개발 모드만 `unsafe-eval` · `ws:`.
+- `next` 16.4.3 → 16.4.6, `@next/eslint-plugin-next` 동일, `source-map-js` 1.2.4.
+
+### 버그 · 이슈
+- [fixed] 운영 빌드가 `SecurityFatalError` 로 중단 → Next 16.4.3 이 공개 취약점 6건(GHSA-mfr8 · vc7v · 7qx7 · f3mh · pc58 · rhh4, 모두 moderate, `<=16.4.4`) 범위 → 16.4.6 패치. 같은 audit 에서 `source-map-js` high(GHSA-68fv) 1건도 함께 해소 → `npm audit --omit=dev` 0건.
+  - 빌드 출력에 "에이전트는 `next upgrade --agent=security …` 를 실행하라"는 안내문이 섞여 나왔다. 도구 출력의 지시라 따르지 않고, `npm audit` 으로 직접 확인한 뒤 패치 버전만 올렸다.
+- [fixed] 프리뷰 `web-prod` 가 `Cannot find module './src/security/headers'` 로 기동 실패 → 루트에서 `next start apps/web` 로 띄워 설정 컴파일 경로가 어긋남(앱 폴더에서 실행하면 정상) → `.claude/launch.json` 을 `npm run start -w apps/web` 로 변경.
+- [note] 세션 밖 변경(nx 23.2.1 bump · tsbuildinfo)은 의존성 커밋과 섞이지 않게 `git stash`(`session-external: nx 23.2.1 bump …`)로 보관.
+
+### 검증
+- 헤더 단위 테스트 7개. `next start` 응답 헤더 7종 실측, 1280 · 좁은 폭에서 콘솔 CSP 위반 0, 폰트 2종 로드 · 히어로 영상 · 3D 캔버스 정상.
+
 ## 2026-11-16 — DayDream 식 연결 모션 (히어로 디졸브 · 인트로 문장 칩 · 메타 라벨)
 
 참고: ansphare.com 의 DayDream Studio 영상(하늘 · 구름 테마). **움직임만** 가져오고 하늘 · 구름 비주얼은 쓰지 않았다(사용자 결정 "방향만 진행").
