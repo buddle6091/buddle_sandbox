@@ -41,7 +41,7 @@
 | glaze | `bg-glaze-pool`(고임 그래디언트) `bg-glaze-tint` |
 | orb | `bg-orb-primary` `bg-orb-tertiary` `bg-orb-secondary` (+ 크기 `--bs-orb-size-*`, 흐림 `--bs-orb-blur`) |
 | shadow | `shadow-sm` `shadow-md` `shadow-lg` `shadow-glass` `shadow-ring`(focus) `shadow-intaglio`(음각 인풋) |
-| 타이포 | `text-display` `text-h1` `text-h2` `text-h3` `text-body-lg` `text-body` `text-body-sm` `text-label` `text-caption` `text-code` — size·line-height·weight·letter-spacing 이 한 번에 적용된다 |
+| 타이포 | `text-display-xl`(히어로 이름 전용, expanded) `text-display` `text-h1` `text-h2` `text-h3` `text-body-lg` `text-body` `text-body-sm` `text-label` `text-caption` `text-code` — size·line-height·weight·letter-spacing 이 한 번에 적용된다 |
 | 간격 | `p-6`(24px) `gap-4`(16px) — 4px 베이스 곱셈이라 `p-7` 처럼 표에 없는 값도 쓸 수 있다 |
 | radius | `rounded-sm`(6) `rounded-md`(10) `rounded-lg`(16) `rounded-xl`(24) `rounded-full` |
 | 모션 | `ease-bs`(유일한 이징) + `duration-[var(--bs-motion-control)]`(170) / `--bs-motion-surface`(300) / `--bs-motion-pool`(420) |

@@ -61,6 +61,16 @@
   --color-glass-solid-bg: var(--bs-color-glass-solid-bg);
   --color-glass-solid-border: var(--bs-color-glass-solid-border);
   --color-glass-fallback-bg: var(--bs-color-glass-fallback-bg);
+  /* liquid — GlassSurface 전용(bg-liquid-tint 등). 렌즈 유리 */
+  --color-liquid-tint: var(--bs-color-liquid-tint);
+  --color-liquid-rim: var(--bs-color-liquid-rim);
+  --color-liquid-highlight: var(--bs-color-liquid-highlight);
+  --color-liquid-specular: var(--bs-color-liquid-specular);
+  --color-liquid-chroma-cool: var(--bs-color-liquid-chroma-cool);
+  --color-liquid-chroma-warm: var(--bs-color-liquid-chroma-warm);
+  --color-liquid-glow-1: var(--bs-color-liquid-glow-1);
+  --color-liquid-glow-2: var(--bs-color-liquid-glow-2);
+  --color-liquid-glow-3: var(--bs-color-liquid-glow-3);
 
   /* glaze */
   --color-glaze-tint: var(--bs-color-glaze-tint);
@@ -71,6 +81,7 @@
   --shadow-md: var(--bs-shadow-md);
   --shadow-lg: var(--bs-shadow-lg);
   --shadow-glass: var(--bs-shadow-glass);
+  --shadow-liquid: var(--bs-shadow-liquid);
   --shadow-ring: var(--bs-shadow-ring);
   --shadow-intaglio: var(--bs-shadow-intaglio);
 
@@ -104,6 +115,12 @@
      compact 축소(display 36/44, h1 26/34)와 다크 모드 weight 한 단계 하향은 컴포넌트 CSS 책임. */
   --font-sans: "Pretendard Variable", Pretendard, system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* display-xl — 랜딩 히어로 이름 전용(expanded 에서만, 페이지당 1개). slash.page 급 타이포, 2026-11-08 */
+  --text-display-xl: 96px;
+  --text-display-xl--line-height: 96px;
+  --text-display-xl--font-weight: 800;
+  --text-display-xl--letter-spacing: -0.04em;
 
   --text-display: 56px;
   --text-display--line-height: 64px;
@@ -186,4 +203,8 @@
   --bs-motion-control: 170ms;
   --bs-motion-surface: 300ms;
   --bs-motion-pool: 420ms;
+  /* spring — liquid glass(GlassSurface) 전용 예외(2026-11-16 사용자 요청: stiffness 300 · damping 20 · mass 1 을 linear() 로 샘플링, 최대 10.8% 오버슈트).
+     이징 토큰(--ease-*)이 아니라 이 한 쌍으로만 둔다 — 다른 컴포넌트는 계속 ease-bs 하나. */
+  --bs-motion-spring: 560ms;
+  --bs-motion-spring-curve: linear(0, 0.052, 0.18, 0.346, 0.521, 0.686, 0.827, 0.938, 1.019, 1.071, 1.099, 1.108, 1.104, 1.091, 1.073, 1.054, 1.036, 1.02, 1.008, 0.999, 0.993, 0.989, 0.988, 0.989, 0.99, 0.992, 0.994, 0.996, 1);
 }

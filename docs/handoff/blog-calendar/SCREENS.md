@@ -15,6 +15,7 @@
 - 게시 직후 새 행: height 0→auto + 투명도 300ms.
 
 ## B. 글 읽기 — `/posts/[slug]` (참조 2b)
+- **본문 article 에 `data-selectable`** — 사이트 전체가 `user-select: none` 기본이라(2026-11-16) 본문만 선택 · 복사 가능하게 연다. 코드 블록 포함.
 - grid `1fr 180px` gap space/10, `max-w` 900. compact 1열.
 - 헤더: Badge(카테고리·태그) → h1(32/40/700, 와이어프레임 34) → 메타 행(Avatar 28 · 작성자 · 날짜 · N분 읽기 · 조회) → `border/default`.
 - 본문 body-lg(17/30), h2 24/700, 코드 블록 gray/900 + JetBrains Mono 13, radius/md.

@@ -7,7 +7,7 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@next/eslint-plugin-next": "^16.4.3",
+    "@next/eslint-plugin-next": "^16.4.6",
     "@nx/eslint": "22.6.5",
     "@nx/eslint-plugin": "22.6.5",
     "@nx/vite": "22.6.5",

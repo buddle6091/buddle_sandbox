@@ -3,7 +3,8 @@
 import * as React from 'react';
 
 type Props = React.ComponentProps<'div'> & {
-  /** 마운트 전 자리표시 높이(px) — CLS 방지 */
+  /** 마운트 전 자리표시 높이(px) — CLS 방지. 1280×800 실측 본문 높이에 맞춘다(2026-11-08):
+   *  어긋나면 마운트 때 문서 높이가 변해 스크롤 중 섹션 시작점이 움직인다(스냅 튕김의 부차 원인이었다). */
   minHeight: number;
   /** 다음 섹션을 미리 그리는 여유. 기본: 뷰포트 아래 40% */
   rootMargin?: string;

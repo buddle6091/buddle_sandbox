@@ -1,5 +1,10 @@
+import type { IntroSegment } from '../fx/intro';
+
 /**
  * 랜딩 v2 내용 — 유일한 수정 지점. 출처: 2026-10 공개용 이력서(docs/handoff/landing-v2/design/Profile.dc.html 의 _data()).
+ * v3(2026-11-10): 말투만 1인칭 대화체로 다듬었다 — 사실·수치·기간·고객사 표기는 이력서 그대로.
+ * 역할 표기(2026-11-10 사용자 확인): 멘토링을 빼면 메인 강사로 단독 진행한 과정이 아니다 → "가르칩니다 · 강의했습니다 · 담당" 대신
+ *   "기술 강사로 참여 · 실습 지도 · 교육 참여" 로 쓴다. 과정 제목 · 시간 · 수치는 그대로.
  * 규칙: 이력서에 없는 수치·채움 문장 금지. 전화번호·생년월일·주소·사진 없음(공개 페이지).
  * 기업 고객사는 업종·대상·일반화된 주제로만, 지자체·학교·공공기관은 실명.
  */
@@ -22,11 +27,25 @@ export type SectionId = (typeof SECTION_IDS)[number];
 export const NAV_SECTIONS: Array<{ id: SectionId; label: string }> = [
   { id: 'about', label: '소개' },
   { id: 'expertise', label: '전문 분야' },
-  { id: 'teaching', label: '강의 이력' },
+  { id: 'teaching', label: '교육 이력' },
   { id: 'mentoring', label: '멘토링' },
   { id: 'career', label: '개발 경력' },
   { id: 'contact', label: '문의' },
 ];
+
+/** 헤더의 현재 위치 표시(`buddle / 교육 이력`)용 — 섹션 10개 전부. top 은 표시하지 않는다. */
+export const SECTION_LABELS: Record<SectionId, string | null> = {
+  top: null,
+  about: '소개',
+  expertise: '전문 분야',
+  philosophy: '교육 철학',
+  audience: '산업군',
+  teaching: '교육 이력',
+  mentoring: '멘토링',
+  career: '개발 경력',
+  feedback: '후기',
+  contact: '문의',
+};
 
 export type Stat = { value: number; unit: string; plus?: boolean; label: string };
 export type Course = { date: string; hours: string; industry: string; target: string; title: string; tool: string };
@@ -41,14 +60,18 @@ export const HERO_VIDEO = {
 
 export const LANDING = {
   hero: {
-    badge: 'AI · 프론트엔드 교육 강사',
     name: '이상원',
     role: 'Frontend Developer · AX Instructor',
-    tagline:
-      '주니어 시절부터 시니어처럼 모든 프로젝트에 책임을 가지고, 처음부터 끝까지 개발을 이끌어 간 경험을 바탕으로 수강생이 AX 분야에서 비즈니스 문제를 스스로 해결할 수 있도록 눈높이를 맞춘 컨설팅형 강의를 진행합니다.',
+    /** 첫 줄은 크게, 나머지는 본문 크기 */
+    lines: [
+      '프론트엔드 개발자로 일했고, 지금은 기업과 기관의 AI 교육 현장에서 기술 강사로 실습을 지도합니다.',
+      '주니어 때부터 시니어처럼 프로젝트를 책임지고, 처음부터 끝까지 개발을 끌고 간 경험이 제 실습 지도의 바탕이에요.',
+      '수강생이 AX 분야에서 자기 비즈니스 문제를 스스로 풀 수 있도록, 눈높이를 맞춰 옆에서 돕고 멘토링합니다.',
+    ],
+    recentLabel: '최근 참여 과정',
     ctas: [
-      { label: '강의 문의하기', href: '#contact' },
-      { label: '강의 이력 보기', href: '#teaching' },
+      { label: '교육 문의하기', href: '#contact' },
+      { label: '교육 이력 보기', href: '#teaching' },
     ],
     canvasLabel: {
       light: '청자 유약 방울이 궤도 고리 안에서 천천히 일렁이는 3D 장식',
@@ -57,20 +80,21 @@ export const LANDING = {
   },
 
   about: {
+    title: '숫자로 먼저 보면',
     stats: [
-      { value: 38, unit: '곳', label: '담당 기업 · 기관' },
-      { value: 1000, unit: 'h', plus: true, label: '누적 강의 시간' },
+      { value: 38, unit: '곳', label: '참여 기업 · 기관' },
+      { value: 1000, unit: 'h', plus: true, label: '누적 교육 참여 시간' },
       { value: 1200, unit: '명', plus: true, label: '누적 수강 인원' },
-      { value: 51, unit: '과정', label: '담당 과정 수' },
+      { value: 51, unit: '과정', label: '참여 과정 수' },
       { value: 3, unit: '년 차', label: '프론트엔드 실무 경력' },
     ] satisfies Stat[],
     clientsLabel: 'Clients',
-    clientsLine: '노원 미래산업고 · S 반도체 기업 외 기업 · 기관 출강 36곳',
+    clientsLine: '노원 미래산업고 · S 반도체 기업 외 기업 · 기관 교육 참여 36곳',
   },
 
   expertise: {
-    eyebrow: 'EXPERTISE & SKILLS',
-    title: '현업 개발 역량을 그대로 교육으로',
+    title: '현업에서 쓰던 기술로 실습을 지도합니다',
+    hint: '분야 이름을 누르면 그 분야만 또렷해져요.',
     groups: [
       {
         title: '개발 스택',
@@ -95,18 +119,30 @@ export const LANDING = {
     ],
   },
 
+  /**
+   * 히어로와 소개 사이 인트로 문장(DayDream 식) — 스크롤에 따라 앞 단어부터 칠해지고, 칩은 장식(aria-hidden).
+   * 사실은 기존 값(3년 차 · 38곳 · 기술 강사로 실습 지도)만 쓴다. em 은 그라데이션 강조.
+   */
+  intro: [
+    { text: '3년 차 프론트엔드 개발자로 직접 만들어 본 경험' },
+    { chip: 'code', label: '코드' },
+    { text: '그대로, 기업 · 기관 38곳의' },
+    { chip: 'building', label: '기업 · 기관' },
+    { text: 'AI 교육 현장에서 수강생 옆에서' },
+    { text: '실습을 함께 풀어요', em: true },
+    { chip: 'spark', label: 'AI' },
+  ] satisfies IntroSegment[],
   philosophy: {
-    eyebrow: 'TEACHING PHILOSOPHY',
     sentence:
-      '직접 실습해 보고, 그 실습 안에서 얻는 CS 지식과 내 업무의 Pain Point를 스스로 해결할 수 있겠다는 자신감을 갖게 하는 교육을 지향합니다.',
+      '직접 실습해 보고, 그 안에서 CS 지식을 얻고, 내 업무의 Pain Point를 스스로 해결할 수 있겠다는 자신감까지 가져가도록 돕고 싶습니다.',
     support:
-      '개발자로서 비즈니스 문제를 해결했던 경험을 바탕으로, 이제는 교육생이 수업을 통해 자신의 비즈니스 문제를 스스로 해결할 수 있는 능력을 갖추도록 방향을 제시하는 사람이 되려고 합니다.',
+      '개발자일 때는 제가 비즈니스 문제를 풀었습니다. 이제는 교육생이 수업을 통해 자기 비즈니스 문제를 스스로 풀 수 있도록, 방향을 잡아 주는 사람이 되려고 합니다.',
   },
 
   audience: {
-    eyebrow: 'AUDIENCE',
-    title: '교육 대상 산업군',
-    note: '산업군별 누적 강의 시간입니다.',
+    title: '이런 산업군의 교육에 참여했습니다',
+    note: '산업군별 누적 교육 참여 시간이에요.',
+    hint: '화살표가 붙은 막대를 누르면 아래 교육 이력이 그 산업군으로 걸러집니다.',
     max: 329,
     bars: [
       { name: '전자/반도체', hours: 329 },
@@ -127,11 +163,12 @@ export const LANDING = {
   },
 
   teaching: {
-    eyebrow: 'TEACHING EXPERIENCE',
-    title: '주요 강의 이력',
+    title: '주요 교육 참여 이력',
+    roleNote: '멘토링을 제외한 과정은 메인 강사 단독 진행이 아니라 기술 강사(실습 지도)로 참여했습니다.',
     policy:
-      '기업 고객사는 비밀유지 의무에 따라 업종 · 대상 계층 · 일반화된 교육 주제로만 표기하고, 지자체 · 학교 · 공공기관은 실명으로 표기합니다. 옆으로 넘겨 보세요.',
-    deckLabel: '주요 강의 이력 카드 목록',
+      '기업 고객사는 비밀유지 의무가 있어 업종 · 대상 계층 · 일반화한 교육 주제로만 적었습니다. 지자체 · 학교 · 공공기관은 실명입니다.',
+    filterAll: '전체',
+    filterLabel: '대상으로 걸러 보기',
     courses: [
       { date: '2026.09.28 ~ 10.08', hours: '64h', industry: '전자/반도체', target: '개발자', title: 'AI Agent 아키텍트 과정 — Agent 설계 · RAG · MCP · Multi-Agent (8일)', tool: 'Claude Code · OpenAI API' },
       { date: '2026.04.06 ~ 06.22', hours: '256h', industry: '철강', target: '개발자', title: '전문개발 과정 — Agent · RAG 코드 개발 (8회, 회차별 2~5일 블록)', tool: 'Claude Code' },
@@ -147,20 +184,23 @@ export const LANDING = {
   },
 
   mentoring: {
-    eyebrow: 'MENTORING',
-    title: '멘토링 · 실습 지도 · 트러블슈팅',
+    title: '강의실에서 제가 하는 일',
+    lead: '멘토링 · 실습 지도 · 트러블슈팅',
     items: [
-      { title: '1:1 실습 밀착 지도', body: '강의 중 실습 구간에서 개별 진도를 확인하며 막힌 지점을 직접 잡아 드립니다. 컴퓨터 사용이 익숙하지 않은 리더급 수강생도 결과물을 완성하고 돌아가는 것을 기준으로 삼습니다.' },
-      { title: '수준별 눈높이 조정', body: '사장단 · 임원부터 실무자, 대졸 신입, 고교생, 비개발 직군까지 담당했습니다. 같은 주제라도 대상의 업무 맥락에 맞춰 실습 과제와 예시를 다시 설계합니다.' },
-      { title: '강의실 환경 대응', body: '네트워크에 대한 이해를 바탕으로 강의실의 망 · 접속 문제를 빠르게 파악하고, 수강생이 납득할 수 있게 원인을 안내하며 해결합니다.' },
-      { title: '실습 에러 핸들링', body: '웹 서비스를 처음부터 끝까지 개발 · 운영한 경험으로 실습과 AI 툴에서 발생하는 대부분의 에러를 직접 처리해, 수업 중 병목에 빠르고 유연하게 대처합니다.' },
-      { title: 'PBL · 해커톤 코칭', body: '해커톤 · 미니 프로젝트 과정에서 TA로 팀별 기술 지원을 맡아, 문제 정의부터 데모까지 각 팀의 막힌 구간을 함께 풀어냅니다.' },
+      { title: '1:1 실습 밀착 지도', body: '강의 중 실습 구간에서 개별 진도를 확인하고, 막힌 지점은 직접 잡아 드립니다. 컴퓨터 사용이 익숙하지 않은 리더급 수강생도 결과물을 완성하고 돌아가는 것이 제 기준입니다.' },
+      { title: '수준별 눈높이 조정', body: '사장단 · 임원부터 실무자, 대졸 신입, 고교생, 비개발 직군까지 실습을 지도해 봤습니다. 같은 주제라도 대상의 업무 맥락에 맞는 예시로 바꿔 설명합니다.' },
+      { title: '강의실 환경 대응', body: '네트워크를 이해하고 있어서 강의실의 망 · 접속 문제를 빠르게 파악합니다. 원인은 수강생이 납득할 수 있게 설명하면서 해결해요.' },
+      { title: '실습 에러 핸들링', body: '웹 서비스를 처음부터 끝까지 개발 · 운영해 봤기 때문에, 실습과 AI 툴에서 나는 대부분의 에러는 제가 직접 처리합니다. 수업 중 병목이 생겨도 빠르고 유연하게 풀어 갑니다.' },
+      { title: 'PBL · 해커톤 코칭', body: '해커톤 · 미니 프로젝트 과정에서는 TA로 팀별 기술 지원을 맡습니다. 문제 정의부터 데모까지, 팀마다 막힌 구간을 같이 풉니다.' },
     ],
   },
 
   career: {
-    eyebrow: 'DEVELOPER CAREER',
-    title: '가르치는 내용은 직접 만들어 본 것들입니다',
+    title: '교육에서 다루는 건 제가 직접 만들어 본 것들입니다',
+    moreLabel: (n: number) => `나머지 ${n}개 더 보기`,
+    lessLabel: '접기',
+    /** 접힌 상태에서 보이는 불릿 수 */
+    collapsedBullets: 3,
     items: [
       {
         period: '2024.08 ~ 2025.12',
@@ -207,9 +247,8 @@ export const LANDING = {
   },
 
   feedback: {
-    eyebrow: 'FEEDBACK',
-    title: '수강생 · 교육 담당자 후기',
-    note: '고객사 실명은 비공개 원칙에 따라 업종으로 표기합니다.',
+    title: '수업이 끝나고 받은 후기',
+    note: '수강생 · 교육 담당자 후기입니다. 고객사 실명은 비공개가 원칙이라 업종으로 적었어요.',
     quotes: [
       {
         quote: '기술 강사님의 실습 중 지도로 인해 컴퓨터 사용에 어려움을 가진 팀장님조차 AI 활용에 자신감을 얻게 되었습니다. 큰 도움이 되어 주셔서 감사합니다!',
@@ -223,8 +262,11 @@ export const LANDING = {
   },
 
   contact: {
-    title: '팀에 맞는 AX 교육을 함께 설계합니다',
-    body: '임원부터 실무자, 개발자, 고교생까지 대상의 업무 맥락에 맞춰 과정을 구성합니다.',
+    title: 'AX 교육 현장, 실습 지도와 멘토링으로 함께합니다',
+    body: '임원부터 실무자, 개발자, 고교생까지. 대상의 업무 맥락에 맞춰 실습을 돕습니다.',
+    copyLabel: '이메일 주소 복사',
+    copied: '이메일을 복사했어요',
+    openMail: '메일 앱으로 보내기',
     email: 'sangwon.lee@buddle.it.kr',
     links: [
       { label: 'GitHub', href: 'https://github.com/buddle6091' },
@@ -232,7 +274,7 @@ export const LANDING = {
     ],
   },
 
-  footer: 'buddle · 공개용 프로필 — 고객사 실명과 증빙 자료는 제출용 이력서에 별도로 기재합니다.',
+  footer: 'buddle · 공개용 프로필 — 고객사 실명과 증빙 자료는 제출용 이력서에 따로 적습니다.',
 } as const;
 
 export type Landing = typeof LANDING;

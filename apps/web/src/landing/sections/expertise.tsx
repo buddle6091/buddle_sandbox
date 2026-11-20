@@ -1,43 +1,63 @@
 'use client';
 
-import { Badge } from '@sandbox/ui/components/badge';
-import { Card } from '@sandbox/ui/components/card';
+import * as React from 'react';
+
+import { cn } from '@sandbox/ui/lib/utils';
 
 import { LANDING } from '../content/landing';
 import { LazySection } from '../observe/lazy-section';
 import { Reveal, Section } from './section';
-import { useTilt } from './use-tilt';
 
-function GroupCard({ title, chips, index }: { title: string; chips: readonly string[]; index: number }) {
-  const tilt = useTilt<HTMLDivElement>();
-  return (
-    <Reveal index={index} variant="flip">
-      <Card variant="glass" className="landing-tilt h-full gap-4 p-7" {...tilt}>
-        <h3 className="landing-pop text-h3 font-bold text-fg-default">{title}</h3>
-        <ul className="landing-pop flex flex-wrap gap-2">
-          {chips.map((c) => (
-            <li key={c}>
-              {/* 칩은 카드 폭에 맞춰 줄바꿈(600~1023 에서 nowrap 칩이 카드 밖으로 넘쳐 가로 스크롤을 만들었다) */}
-              <Badge variant="accent" className="h-auto min-h-8 max-w-full px-3 py-1.5 text-left text-label whitespace-normal">
-                <span>{c}</span>
-              </Badge>
-            </li>
-          ))}
-        </ul>
-      </Card>
-    </Reveal>
-  );
-}
-
+/**
+ * 전문 분야 — v3: 유리 카드 3 + 칩 묶음 대신 타이포 목록.
+ * 분야 이름이 토글 버튼(aria-pressed)이고, 하나를 누르면 그 분야만 또렷하고 나머지는 흐려진다(다시 누르면 해제).
+ * 항목은 칩이 아니라 `/` 로 이어 쓴 문장형 목록 — 히어로 Clients 줄과 같은 문법.
+ */
 export function Expertise() {
   const e = LANDING.expertise;
+  const [active, setActive] = React.useState<string | null>(null);
   return (
-    <Section id="expertise" eyebrow={e.eyebrow} title={e.title} variant="tinted">
-      <LazySection minHeight={360}>
-        <div className="grid gap-6 medium:grid-cols-2 expanded:grid-cols-3">
-          {e.groups.map((g, i) => (
-            <GroupCard key={g.title} title={g.title} chips={g.chips} index={i} />
-          ))}
+    <Section id="expertise" title={e.title} lead={e.hint} layout="split" className="py-28">
+      <LazySection minHeight={440}>
+        <div data-slot="expertise-groups" data-active={active !== null} className="flex flex-col">
+          {e.groups.map((g, i) => {
+            const on = active === g.title;
+            return (
+              <Reveal key={g.title} index={i} className="border-t border-border-default py-8 first:border-t-0 first:pt-0">
+                {/* 흐림은 Reveal 안쪽 요소에 건다 — [data-reveal] 의 opacity 규칙(레이어 밖 CSS)이 유틸리티를 이기기 때문 */}
+                <div
+                  data-expertise-group
+                  data-on={on}
+                  data-dim={active !== null && !on}
+                  className="landing-dim flex flex-col gap-4 medium:flex-row medium:gap-8"
+                >
+                <h3 className="shrink-0 medium:w-44">
+                  <button
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => setActive(on ? null : g.title)}
+                    className="focus-ring group -mx-1 inline-flex items-baseline gap-2 rounded-sm px-1 text-left text-h2 font-bold text-fg-default"
+                  >
+                    <span className={cn('underline-offset-8 group-hover-fine:underline', on && 'underline decoration-accent-default')}>{g.title}</span>
+                    <span className="font-mono text-caption font-normal tabular-nums text-fg-muted">{String(g.chips.length).padStart(2, '0')}</span>
+                  </button>
+                </h3>
+                <ul className="flex flex-wrap gap-x-3 gap-y-2 text-body-lg text-fg-body">
+                  {g.chips.map((c, j) => (
+                    <li key={c} className="flex items-baseline gap-3">
+                      <span>{c}</span>
+                      {j < g.chips.length - 1 && (
+                        <span aria-hidden="true" className="text-border-strong">
+                          /
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
       </LazySection>
     </Section>

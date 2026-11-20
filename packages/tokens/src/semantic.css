@@ -72,6 +72,22 @@
   --bs-glass-blur-lg: 28px;
   --bs-glass-saturate: 150%;
 
+  /* liquid — 렌즈 굴절 유리(2026-11-16). frosted glass(glass-*) 와 다른 표면: 블러 약하게 · 채도 강하게 · 흰 rim · 색수차 · 스페큘러.
+     컴포넌트는 @sandbox/ui GlassSurface 하나뿐. 다른 곳에서 쓰지 않는다. */
+  --bs-color-liquid-tint: color-mix(in srgb, var(--bs-color-gray-0) 26%, transparent);
+  --bs-color-liquid-rim: color-mix(in srgb, var(--bs-color-white) 55%, transparent);
+  --bs-color-liquid-highlight: color-mix(in srgb, var(--bs-color-white) 60%, transparent);
+  --bs-color-liquid-specular: color-mix(in srgb, var(--bs-color-white) 36%, transparent);
+  --bs-color-liquid-chroma-cool: color-mix(in srgb, var(--bs-color-celadon-300) 60%, transparent);
+  --bs-color-liquid-chroma-warm: color-mix(in srgb, var(--bs-color-red-500) 42%, transparent);
+  --bs-color-liquid-glow-1: color-mix(in srgb, var(--bs-color-red-500) 70%, transparent);
+  --bs-color-liquid-glow-2: color-mix(in srgb, var(--bs-color-amber-500) 65%, transparent);
+  --bs-color-liquid-glow-3: color-mix(in srgb, var(--bs-color-violet-500) 70%, transparent);
+  --bs-liquid-blur: 6px;
+  --bs-liquid-blur-lens: 2px;
+  --bs-liquid-saturate: 180%;
+  --bs-shadow-liquid: inset 0 1px 1px var(--bs-color-liquid-highlight), inset 0 -1px 2px color-mix(in srgb, var(--bs-color-navy-shadow) 15%, transparent), 0 10px 30px -6px color-mix(in srgb, var(--bs-color-navy-shadow) 25%, transparent);
+
   /* glaze — 고임. 카드 아래 절반에만 깐다 */
   --bs-color-glaze-tint: color-mix(in srgb, var(--bs-color-blue-500) 10%, transparent);
   --bs-color-glaze-celadon: color-mix(in srgb, var(--bs-color-celadon-500) 16%, transparent);
@@ -146,6 +162,21 @@
     --bs-glass-blur-lg: 28px;
     --bs-glass-saturate: 150%;
 
+    /* liquid — 렌즈 굴절 유리(2026-11-16). 다크는 rim · 하이라이트를 낮추고 틴트를 obsidian 으로 */
+    --bs-color-liquid-tint: color-mix(in srgb, var(--bs-color-obsidian-ash) 38%, transparent);
+    --bs-color-liquid-rim: color-mix(in srgb, var(--bs-color-white) 22%, transparent);
+    --bs-color-liquid-highlight: color-mix(in srgb, var(--bs-color-white) 30%, transparent);
+    --bs-color-liquid-specular: color-mix(in srgb, var(--bs-color-white) 16%, transparent);
+    --bs-color-liquid-chroma-cool: color-mix(in srgb, var(--bs-color-celadon-300) 50%, transparent);
+    --bs-color-liquid-chroma-warm: color-mix(in srgb, var(--bs-color-red-500) 48%, transparent);
+    --bs-color-liquid-glow-1: color-mix(in srgb, var(--bs-color-red-500) 70%, transparent);
+    --bs-color-liquid-glow-2: color-mix(in srgb, var(--bs-color-amber-500) 65%, transparent);
+    --bs-color-liquid-glow-3: color-mix(in srgb, var(--bs-color-violet-500) 70%, transparent);
+    --bs-liquid-blur: 6px;
+    --bs-liquid-blur-lens: 2px;
+    --bs-liquid-saturate: 180%;
+    --bs-shadow-liquid: inset 0 1px 1px var(--bs-color-liquid-highlight), inset 0 -1px 2px color-mix(in srgb, var(--bs-color-black) 15%, transparent), 0 10px 30px -6px color-mix(in srgb, var(--bs-color-black) 45%, transparent);
+
     /* glaze — 고임. 카드 아래 절반에만 깐다 */
     --bs-color-glaze-tint: color-mix(in srgb, var(--bs-color-blue-400) 14%, transparent);
     --bs-color-glaze-celadon: color-mix(in srgb, var(--bs-color-celadon-500) 14%, transparent);
@@ -219,6 +250,21 @@
   --bs-glass-blur-md: 16px;
   --bs-glass-blur-lg: 28px;
   --bs-glass-saturate: 150%;
+
+  /* liquid — 렌즈 굴절 유리(2026-11-16). 다크는 rim · 하이라이트를 낮추고 틴트를 obsidian 으로 */
+  --bs-color-liquid-tint: color-mix(in srgb, var(--bs-color-obsidian-ash) 38%, transparent);
+  --bs-color-liquid-rim: color-mix(in srgb, var(--bs-color-white) 22%, transparent);
+  --bs-color-liquid-highlight: color-mix(in srgb, var(--bs-color-white) 30%, transparent);
+  --bs-color-liquid-specular: color-mix(in srgb, var(--bs-color-white) 16%, transparent);
+  --bs-color-liquid-chroma-cool: color-mix(in srgb, var(--bs-color-celadon-300) 50%, transparent);
+  --bs-color-liquid-chroma-warm: color-mix(in srgb, var(--bs-color-red-500) 48%, transparent);
+  --bs-color-liquid-glow-1: color-mix(in srgb, var(--bs-color-red-500) 70%, transparent);
+  --bs-color-liquid-glow-2: color-mix(in srgb, var(--bs-color-amber-500) 65%, transparent);
+  --bs-color-liquid-glow-3: color-mix(in srgb, var(--bs-color-violet-500) 70%, transparent);
+  --bs-liquid-blur: 6px;
+  --bs-liquid-blur-lens: 2px;
+  --bs-liquid-saturate: 180%;
+  --bs-shadow-liquid: inset 0 1px 1px var(--bs-color-liquid-highlight), inset 0 -1px 2px color-mix(in srgb, var(--bs-color-black) 15%, transparent), 0 10px 30px -6px color-mix(in srgb, var(--bs-color-black) 45%, transparent);
 
   /* glaze — 고임. 카드 아래 절반에만 깐다 */
   --bs-color-glaze-tint: color-mix(in srgb, var(--bs-color-blue-400) 14%, transparent);

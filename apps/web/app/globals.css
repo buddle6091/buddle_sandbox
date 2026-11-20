@@ -7,46 +7,72 @@
 /* Tailwind 가 ui 패키지 소스의 클래스도 스캔하게 한다 */
 @source "../../../packages/ui/src";
 
-/* 섹션 전환 — 부드러운 스크롤 + 섹션 시작점에 느슨하게 스냅(proximity: 긴 섹션 안에서는 자유 스크롤) */
+/* 텍스트 선택 — 기본은 막고(2026-11-16 사용자 결정), 블로그 본문만 연다.
+   예외: 입력 칸(검색 · 팔레트 · 이후 댓글 · 에디터)은 선택이 막히면 입력 자체가 불편하므로 항상 연다.
+   블로그 본문은 감싸는 요소에 `data-selectable` 을 붙인다(`/posts/[slug]` 의 article, Phase 2).
+   @layer base 에 둬서 Tailwind `select-text` 유틸리티로도 국소적으로 열 수 있다. */
+@layer base {
+  body {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  input,
+  textarea,
+  select,
+  [contenteditable]:not([contenteditable="false"]),
+  [data-selectable],
+  [data-selectable] * {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+}
+
+/* 앵커 이동만 부드럽게. 섹션 scroll-snap 은 쓰지 않는다 —
+   `scroll-snap-type: y proximity` + 모든 섹션 `scroll-snap-align: start` 는 휠 1틱(100px)을 120~470px 로 늘리고,
+   지나친 시작점이 더 가까우면 위로 끌어올렸다(실측 2039→1940→2040, 2026-11-08). 섹션 높이가 556~2624px 로 제각각이라 재발 구조. */
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y proximity;
-}
-[data-section] {
-  scroll-snap-align: start;
 }
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-    scroll-snap-type: none;
   }
 }
-
-/* 가로 덱 — 스크롤바 숨김(스크롤·스냅·키보드는 그대로) */
-.landing-deck {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.landing-deck::-webkit-scrollbar {
-  display: none;
+/* 리빌 전 요소의 3D 변형(rotateY 플립)이 투영 폭으로 가로 스크롤을 만든다(실측 scrollWidth 2768@1280, v2 부터).
+   섹션 단위 overflow-x: clip — 스크롤 컨테이너를 만들지 않아 sticky(멘토링 스테이지)에 영향이 없다. */
+[data-section] {
+  overflow-x: clip;
 }
 
-/* ───────── 랜딩 v2 — 리빌 (시안: rotateX 16° · translateY 40 → 0, 700/1000ms, 스태거 60ms) ───────── */
+/* ───────── 랜딩 v3 — 리빌 3종 (2026-11-10) ─────────
+   v2 는 모든 요소가 같은 rotateX 16° fade-up 이라 템플릿처럼 보였다. 역할별로 나눈다:
+   기본  목록·본문  16px 상승 + 페이드(짧게, 50ms 스태거)
+   fade  보조 문장 · 긴 문장 제목  투명도만
+   rise  제목  줄 마스크(.landing-mask) 안에서 아래→위로 올라온다 */
 [data-reveal] {
   opacity: 0;
-  transform: perspective(1000px) translate3d(0, 40px, 0) rotateX(16deg);
-  transform-origin: 50% 100%;
+  transform: translate3d(0, 16px, 0);
   transition:
-    opacity 700ms var(--ease-bs),
-    transform 1000ms var(--ease-bs);
-  transition-delay: calc(var(--i, 0) * 60ms);
+    opacity 500ms var(--ease-bs),
+    transform 600ms var(--ease-bs);
+  transition-delay: calc(var(--i, 0) * 50ms);
 }
-[data-reveal="flip"] {
-  transform: perspective(900px) translate3d(28px, 0, 0) rotateY(-32deg);
-  transform-origin: 0 50%;
+[data-reveal="fade"] {
+  transform: none;
+  transition: opacity 700ms var(--ease-bs);
+  transition-delay: calc(var(--i, 0) * 50ms);
 }
-[data-reveal="depth"] {
-  transform: perspective(900px) translate3d(0, 0, -160px);
+[data-reveal="rise"] {
+  opacity: 1;
+  transform: translate3d(0, 105%, 0);
+  transition: transform 800ms var(--ease-bs);
+  transition-delay: calc(var(--i, 0) * 50ms);
+}
+.landing-mask {
+  display: block;
+  overflow: hidden;
+  /* 한글 받침 · g/y 꼬리가 마스크에 잘리지 않게 */
+  padding-bottom: 0.08em;
 }
 [data-inview="true"] [data-reveal],
 [data-reveal][data-inview="true"] {
@@ -74,25 +100,149 @@ html {
   opacity: 1;
 }
 
-/* 카드 기울임 — transform 은 JS 가 쓴다, 전환만 여기서 */
-.landing-tilt {
-  transition:
-    transform 320ms var(--ease-bs),
-    box-shadow 320ms var(--ease-bs);
-  transform-style: preserve-3d;
+/* ───────── 랜딩 v3 — 인터랙션 ───────── */
+/* 전문 분야 — 하나를 고르면 나머지가 흐려진다 */
+.landing-dim {
+  transition: opacity var(--bs-motion-surface) var(--ease-bs);
 }
-.landing-pop {
-  transform: translateZ(28px);
+.landing-dim[data-dim="true"] {
+  opacity: 0.4;
 }
 
-/* 강의 덱 — 카드 transform/opacity 는 JS, 전환만 */
-.landing-deck-card {
+/* 강의 행 — 필터로 새로 들어올 때 짧게 떠오른다 */
+@keyframes landing-row-in {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: none; }
+}
+.landing-row-in {
+  animation: landing-row-in 320ms var(--ease-bs) both;
+}
+
+/* 자석 버튼 — transform 은 JS(fx/magnet), 전환만 */
+.landing-magnet {
+  transition: transform 220ms var(--ease-bs);
+  will-change: transform;
+}
+
+/* 스파크라인 스크럽 커서 — 선이 다 그려진 뒤에 나타난다 */
+.landing-spark-cursor {
+  opacity: 0;
+  transition: opacity 300ms var(--ease-bs) 1300ms;
+}
+[data-inview="true"] .landing-spark-cursor {
+  opacity: 1;
+}
+
+/* 커서 스포트라이트 — --mx/--my 는 observe/pointer-spot 이 쓴다. 포인터 구동이라 배경 애니메이션(규칙 4)이 아니다.
+   fine pointer 호버에서만 보인다 → 터치에서는 그려지지 않는다. */
+.landing-spot {
+  position: relative;
+  isolation: isolate;
+}
+.landing-spot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--bs-color-accent-default) 9%, transparent),
+    transparent 65%
+  );
+  transition: opacity var(--bs-motion-surface) var(--ease-bs);
+}
+@media (hover: hover) and (pointer: fine) {
+  .landing-spot:hover::before {
+    opacity: 1;
+  }
+}
+
+/* ───────── 랜딩 v2.1 — slash.page 모션(2026-11-08 실측 이식) ───────── */
+/* 타이핑 캐럿 — 0.8s step-end 깜빡임. 강의 행에서는 호버(fine pointer) 때만 보인다 */
+@keyframes landing-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.landing-caret {
+  font-weight: 300;
+  animation: landing-blink 0.8s step-end infinite;
+}
+.landing-row .landing-caret {
+  opacity: 0;
+  animation: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .landing-row:hover .landing-caret {
+    opacity: 1;
+    animation: landing-blink 0.8s step-end infinite;
+  }
+}
+
+/* 히어로 사선 광선 — 1px 세로 그라디언트(accent), 정적. 다크는 청자(tertiary) */
+.landing-shard {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--bs-color-accent-default) 40%, transparent) 50%,
+    transparent 100%
+  );
+}
+:where(.dark, [data-theme="dark"]) .landing-shard {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--bs-color-accent-tertiary) 45%, transparent) 50%,
+    transparent 100%
+  );
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .landing-shard {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      color-mix(in srgb, var(--bs-color-accent-tertiary) 45%, transparent) 50%,
+      transparent 100%
+    );
+  }
+}
+
+/* 스파크라인 — 리빌 시 왼쪽부터 그려진다(pathLength=1) */
+.landing-spark {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1300ms var(--ease-bs) 200ms;
+}
+[data-inview="true"] .landing-spark {
+  stroke-dashoffset: 0;
+}
+
+/* 멘토링 스택 카드 — transform/opacity 는 JS(fx/stack), 전환만.
+   겹쳐 쌓이므로 유리(반투명)면 아래 카드 글자가 비친다(1280 실측) → slash 처럼 불투명 페이지색 + blur 없음 */
+.landing-stack-card {
   transition:
-    transform 240ms var(--ease-bs),
-    opacity 240ms var(--ease-bs);
+    transform 320ms var(--ease-bs),
+    opacity 320ms var(--ease-bs);
+}
+.landing-stack-card [data-slot="card"] {
+  background-color: var(--bs-color-bg-page);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .landing-stack-card [data-slot="card"]:hover {
+    background-color: var(--bs-color-bg-inverse);
+  }
 }
 
 /* 히어로 배경 영상(시안 D) — 아래 40% 마스크, 좌측 흰 막, reduced-motion 은 포스터만 */
+/* 히어로 배경 묶음 — 아래 15rem 을 투명으로 녹여 인트로 문장(뒤의 고정 배경 그대로)과 이어 붙인다 */
+.landing-hero-bg {
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 15rem), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 calc(100% - 15rem), transparent 100%);
+}
 .landing-hero-mask {
   -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
   mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
@@ -160,15 +310,6 @@ html {
   animation: landing-drift 40s var(--ease-bs) infinite alternate;
 }
 
-/* 스크롤 큐 */
-@keyframes landing-cue {
-  0%, 100% { transform: translateY(0); opacity: 0.5; }
-  50% { transform: translateY(8px); opacity: 1; }
-}
-.landing-cue svg {
-  animation: landing-cue 2.4s var(--ease-bs) infinite;
-}
-
 /* 문의 CTA — 유약 고임(아래쪽 청자 radial) */
 .landing-contact-pool {
   background: radial-gradient(
@@ -179,6 +320,40 @@ html {
   );
 }
 
+/* 헤더 현재 위치(`buddle / 교육 이력`) — 히어로를 지나면 나타나고, 섹션이 바뀌면 라벨이 아래에서 올라온다 */
+.section-crumb {
+  opacity: 0;
+  transition: opacity var(--bs-motion-surface) var(--ease-bs);
+}
+.section-crumb[data-on="true"] {
+  opacity: 1;
+}
+@keyframes section-crumb-in {
+  from { opacity: 0; transform: translate3d(0, 6px, 0); }
+  to { opacity: 1; transform: none; }
+}
+.section-crumb-label {
+  animation: section-crumb-in 260ms var(--ease-bs) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .section-crumb-label { animation: none; }
+  .section-crumb { transition: none; }
+}
+
+/* ───────── 라우트 전환 (View Transitions) — 본문 교차 페이드 220ms. reduced-motion 은 즉시 ───────── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: var(--ease-bs);
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-reveal],
   .landing-bar-fill {
@@ -187,7 +362,28 @@ html {
     transition: opacity var(--bs-motion-control) linear;
   }
   .landing-word { opacity: 1; }
-  .landing-tilt, .landing-deck-card { transform: none !important; opacity: 1 !important; }
-  .landing-stars, .landing-drift, .landing-cue svg { animation: none; }
+  .landing-stack-card, .landing-magnet { transform: none !important; }
+  .landing-stack-card { opacity: 1 !important; }
+  .landing-stars, .landing-drift, .landing-caret, .landing-row-in { animation: none; }
+  .landing-caret { opacity: 1; }
+  .landing-spark { stroke-dashoffset: 0; transition: none; }
+  .landing-spark-cursor { opacity: 1; transition: none; }
+  .landing-spot::before { display: none; }
   .landing-hero-video { display: none; }
+}
+
+/* ───────── 인트로 문장 칩(DayDream 식) — 단어 하이라이트 순서대로 스프링으로 튀어나온다. scale 속성만(기울기 rotate 와 분리) ───────── */
+.landing-intro-chip {
+  opacity: 0;
+  scale: 0.4;
+  transition:
+    opacity 260ms var(--ease-bs),
+    scale var(--bs-motion-spring) var(--bs-motion-spring-curve);
+}
+.landing-intro-chip[data-lit="true"] {
+  opacity: 1;
+  scale: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-intro-chip { opacity: 1; scale: 1; transition: none; }
 }

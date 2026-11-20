@@ -98,6 +98,57 @@
 
 ---
 
+## 1.6 블로그 글 — velog 90편을 어디에 두고 어떻게 관리하나 (2026-11-10, 제안)
+
+### 사실 (가져온 것)
+- `node tools/import-velog.mjs buddle6091 docs/archive/velog` — velog 공개 GraphQL 로 **공개 글 90편 전부**(2022-09-23 ~ 2024-06-22)를 Markdown 으로 저장. 전부 Markdown 원문, 합계 약 27만 자(파일 788KB).
+- 시리즈: TIL 60 · Trouble Shooting 16 · Coding Test 6 · Experience 5 · 없음 3. 태그는 frontmatter `tags` 에 그대로.
+- **이미지 154개는 가져오지 않았다** — 본문이 velog CDN(`velog.velcdn.com` 145개 등) 주소를 그대로 가리킨다. 목록은 `index.json` 의 `images`.
+- 비공개 글 · 임시 저장 글은 로그인 없이는 내려오지 않는다(대상 아님).
+
+### 결론 — Supabase 로 충분하다. 다만 "원본은 Markdown" 으로 둔다
+이 규모(글 수백 편, 텍스트 수 MB, 읽기 위주)는 서버리스 Postgres 가 남는다. 1.5절의 결정(Supabase + 얇은 Route Handler)을 바꿀 이유가 없다.
+블로그 글 페이지는 **빌드/재검증 시점에만 DB 를 읽는 정적 페이지**(프리렌더 + 태그 재검증)라 방문자가 늘어도 DB 부하가 늘지 않는다. DB 가 실시간으로 깨어나는 것은 조회수 · 좋아요 · 댓글뿐이다.
+
+| 선택지 | 프론트 관점에서 얻는 것 | 잃는 것 | 판정 |
+|---|---|---|---|
+| A. Git 에 Markdown 파일만(빌드 시 렌더) | 백엔드 0, 버전 관리 공짜, 가장 단순 | 브라우저 에디터 · 초안 · 조회수/좋아요/댓글(스펙 SCREENS B · C)을 못 한다. 글 하나 고치려면 커밋 → 배포 | ✗ (스펙과 충돌) |
+| **B. Supabase `posts` 가 운영 원본 + Markdown 파일은 가져오기 원본 · 백업** | 스펙 기능 전부, 정적 프리렌더 유지, 언제든 `.md` 로 되돌릴 수 있어 종속 낮음 | 가져오기 · 내보내기 스크립트 2개를 유지 | **권장** |
+| C. 헤드리스 CMS(Notion · Contentful 등) | 에디터를 안 만들어도 됨 | 스펙의 자체 에디터와 중복, 외부 서비스 하나 더, 댓글 · 카운터는 어차피 DB 필요 | ✗ |
+| D. 직접 백엔드(FastAPI + 자체 Postgres) | 완전한 통제 | 배포 단위 · 인증 경계 · CI 가 하나씩 더. 이 기능으로 얻는 것 없음(1.5절) | ✗ (신호가 켜질 때) |
+
+### 스펙에서 바꿀 것 (DATA.md `posts`)
+- `content_md` 를 **원본**으로, `content_json(Tiptap)` 은 에디터가 열 때 md 에서 만들어 쓰는 파생값으로 뒤집는다. 지금 스펙은 반대(json 원본 · md 캐시)인데, 가져온 90편이 전부 md 이고 md 가 원본이어야 내보내기 · 이전 · diff 가 쉽다.
+- 추가 컬럼: `source text`(`velog` | `native`) · `source_url` · `source_id`(velog id, unique — 재실행해도 중복 없이 upsert) · `series text`. `published_at` 은 velog 의 `released_at` 을 그대로(순서 · 날짜 보존).
+- `category` enum(개발 | 회고 | 강의) 매핑이 필요하다: TIL · Trouble Shooting · Coding Test → 개발, Experience → 회고 가 기본안. 글별 예외는 가져온 뒤 에디터에서. **사용자 확인 대기.**
+- 슬러그: velog 슬러그는 한글 · 긴 문장이다. 그대로 쓰면 URL 이 인코딩되어 길어지지만 기존 링크와 1:1 로 맞는다. 기본안은 **그대로 유지**.
+
+### 가져오기 파이프라인
+```
+velog GraphQL ─ tools/import-velog.mjs ─▶ docs/archive/velog/*.md + index.json   (커밋, 원본 · 백업)
+                                              │  tools/seed-posts.mjs (Phase 2 에서 작성)
+                                              │   1. frontmatter 파싱 → posts 행 (source_id 로 upsert, 멱등)
+                                              │   2. 이미지: velog CDN → Supabase Storage 로 복사, 본문 URL 치환
+                                              ▼
+                                       Supabase posts (content_md 원본) ─▶ /blog 프리렌더
+                                              ▲
+                              tools/export-posts.mjs ─ 주 1회 .md 내보내기(백업 · 이전 대비)
+```
+
+### 서버리스로 갈 때 실제로 조심할 것
+| 위험 | 내용 | 대응 |
+|---|---|---|
+| 무료 프로젝트 일시 정지 | Supabase 무료 요금제는 일정 기간 요청이 없으면 프로젝트를 멈춘다(정확한 기간 · 조건은 착수 시점 요금제 문서로 확인) | 캘린더 동기화 `pg_cron`(10분)이 이미 주기 요청을 만든다. 캘린더를 안 켜면 하루 1회 핑 |
+| 백업 | 무료 요금제에는 시점 복구가 없다 | 주 1회 `pg_dump` + 위 `.md` 내보내기를 GitHub Actions 로. 글은 Git 에도 남는다 |
+| 이미지 핫링크 | velog 가 CDN 정책을 바꾸거나 계정 · 글을 지우면 154개가 한꺼번에 깨진다 | 가져올 때 Storage 로 복사(위 2번). 원래 주소는 `index.json` 에 보존 |
+| 중복 콘텐츠 | 같은 글이 velog 와 여기에 둘 다 있다 | 글 하단에 원문 링크(`source_url`). velog 쪽 정리 여부는 사용자 결정 |
+| 종속 | — | 데이터는 표준 Postgres + Markdown 이라 이전 비용이 낮다. Route Handler 경유 원칙(1절)으로 영향 범위는 `/api/*` |
+
+### 직접 백엔드가 필요해지는 때 (1.5절 신호와 같다)
+글 임베딩 · 추천처럼 Python 이 필요한 작업, 30초를 넘는 배치, 상시 연결이 생길 때. 블로그 글 보관 자체로는 오지 않는다.
+
+---
+
 ## 2. 캘린더 — "주기적으로 .ics 넣기 vs 연동"
 
 ### 결론
@@ -176,6 +227,7 @@ supabase  org_label           org_name_norm unique, industry, size, status(appro
 ## 3. 결정 대기 (사용자)
 1. **배포 목적** — AWS 운영 경험이 목표(→ SST+OpenNext)인가, 가장 단순·저렴(→ Cloudflare Workers)인가. 서버리스 실행 모델 자체가 부담이면 Next 컨테이너(Fargate/Fly) 도 선택지. 어느 쪽이든 Cloudflare+AWS 이중 CDN 은 안 한다.
 2. **캘린더 인증** — Google Cloud 프로젝트 + 서비스 계정 생성에 동의하는가(권장 C). 아니면 비밀 iCal 주소(B)로 시작하고 나중에 C 로 올린다.
+4. **velog 글 이전**(1.6절) — `content_md` 원본으로 뒤집기 · 카테고리 매핑(TIL/Trouble Shooting/Coding Test → 개발, Experience → 회고) · 한글 슬러그 유지 · velog 원문을 남길지.
 3. **라벨 enum 초기 목록** — 업종 ~10개 · 규모 6개 문구 확정(`packages/schema/calendar.ts`).
 
 ### 확정 (2026-11-02)
