@@ -41,6 +41,23 @@
 - [deferred] 덱 키보드 ←/→ 카드 이동은 네이티브 스크롤에 위임(포커스는 가능).
 - [open] dev 전용 진단(`window.__heroState`, `data-canvas-inview`) 잔존 — 프로덕션 번들 제외 확인됨, 정리 시점 미정.
 
+## 2026-11-20 — AWS 배포 구성 (SST + OpenNext) · GitHub Actions CI/CD
+
+### 변경
+- `sst.config.ts`: `sst.aws.Nextjs`(OpenNext 4.1.16 고정, devDependency) — CloudFront + 서버 Lambda + 이미지 Lambda + S3 + ISR(SQS · DynamoDB). production 스테이지에 Route 53 영역 + Google Workspace 레코드(MX · TXT 2 · DKIM) + GitHub OIDC 공급자 · 배포 역할.
+- `.github/workflows/ci-cd.yml`: PR = 검증 → `pr-<번호>` 미리보기 배포 → 주소 코멘트, PR 닫힘 = 미리보기 삭제, master = 검증 → 운영 배포. 변수(`AWS_DEPLOY_ROLE_ARN`) 없으면 검증만.
+- `sst` 4.17.2 · `@opennextjs/aws` 4.1.16 devDependency, `.sst/` gitignore.
+
+### 이슈 · 결정
+- [fixed] 처음엔 정적 내보내기(S3 + CloudFront)로 구성 → 사용자 요구("SSR 이 필요한 페이지는 배포 사이트에서 확실히")를 못 맞춰 같은 날 되돌림(커밋 전 정리). 정적 구성용으로 만든 CloudFront 헤더 주입 함수도 제거 — SSR 에선 next.config `headers()` 가 그대로 동작.
+- [note] SST 기본 OpenNext(3.9.14)는 Next 16.4 를 보장하지 않는다 → 4.1.16 을 고정하고 로컬 `open-next build` 성공 · SST 가 읽는 `open-next.output.json` 형식(origins · behaviors · additionalProps) 일치 확인.
+- [note] `npx --yes @opennextjs/aws` 로 즉석 실행은 권한 분류기에서 거부됨 → devDependency 로 고정 설치 후 로컬 bin 사용(재현성도 더 좋음).
+- [note] ACM DNS 검증 때문에 도메인 연결은 네임서버 위임 뒤(`BUDDLE_DOMAIN_READY=1`).
+- [note] 가비아 메일 레코드는 공개 질의(dig)로 확인한 값 — 가비아 화면에만 있는 레코드가 없는지 사용자 확인 필요.
+- [open] GitHub 배포 역할 권한 AdministratorAccess → 안정 후 축소.
+- [open] 예산 알림 수신 이메일 "인증 대기" — 인증 전에는 알림이 오지 않음.
+- [open] 실제 배포 · CloudFront 응답 헤더 실측은 AWS SSO 로그인 후.
+
 ## 2026-11-20 — 보안 헤더 · Next 보안 패치 (배포 준비)
 
 ### 변경

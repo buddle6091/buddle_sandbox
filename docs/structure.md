@@ -28,6 +28,8 @@ buddle_sandbox/
 ├─ nx.json · package.json · package-lock.json · tsconfig.base.json
 ├─ eslint.config.mjs             @nx/enforce-module-boundaries (scope/type)
 ├─ lefthook.yml                  pre-commit: affected lint/test/typecheck · pre-push: build
+├─ sst.config.ts                 배포 IaC — OpenNext(CloudFront + Lambda + S3) + Route 53 + GitHub OIDC 역할 (architecture.md §1.7). .sst/ 는 gitignore
+├─ .github/workflows/ci-cd.yml   PR 검증 · 미리보기 배포 / master 운영 배포
 ├─ .nvmrc                        24
 │
 ├─ .claude/
