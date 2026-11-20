@@ -1,0 +1,147 @@
+# CI/CD — 검증 → 배포. 배포 구조와 이유는 docs/architecture.md §1.7, 인프라 정의는 sst.config.ts.
+#
+#   PR 열림/갱신  : 검증 → 미리보기 배포(stage pr-<번호>, *.cloudfront.net) → PR 에 주소 코멘트
+#   PR 닫힘       : 미리보기 스테이지 삭제
+#   master push   : 검증 → 운영 배포(stage production, buddle.it.kr)
+#
+# AWS 인증은 OIDC — 저장소에 접근 키를 두지 않는다. 필요한 저장소 "변수"(비밀값 아님):
+#   AWS_DEPLOY_ROLE_ARN  : 첫 로컬 production 배포 출력의 githubDeployRoleArn
+#   BUDDLE_DOMAIN_READY  : 가비아 → Route 53 네임서버 위임이 끝나면 1
+# 변수가 비어 있으면 배포 작업은 건너뛰고 검증만 돈다.
+#
+# 공개 저장소 보안: pull_request_target 을 쓰지 않는다. 포크에서 온 PR 은 AWS 역할을 받을 수 없게
+# 미리보기 작업을 같은 저장소 브랜치 PR 로 제한한다(역할 신뢰 정책도 이 저장소로만 묶여 있다).
+name: ci-cd
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened, closed]
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-cd-${{ github.event.pull_request.number || github.ref }}
+  # 운영 배포는 중간에 끊지 않는다. PR 은 새 커밋이 오면 이전 실행을 취소한다
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  AWS_REGION: ap-northeast-2
+
+jobs:
+  verify:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: nrwl/nx-set-shas@v4
+      - name: lint · test · typecheck · build (변경분만)
+        run: npx nx affected -t lint test typecheck build
+      - name: 운영 의존성 취약점 (high 이상이면 실패)
+        run: npm audit --omit=dev --audit-level=high
+
+  preview:
+    needs: verify
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.action != 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      vars.AWS_DEPLOY_ROLE_ARN != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    environment:
+      name: preview
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - id: deploy
+        name: sst deploy (pr-${{ github.event.pull_request.number }})
+        run: |
+          npx sst deploy --stage pr-${{ github.event.pull_request.number }}
+          echo "url=$(node -p "require('./.sst/outputs.json').url")" >> "$GITHUB_OUTPUT"
+      - name: PR 에 미리보기 주소 남기기
+        env:
+          GH_TOKEN: ${{ github.token }}
+          URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          body="미리보기 배포: $URL (커밋 ${GITHUB_SHA::7}). PR 을 닫으면 자동으로 지워집니다."
+          gh pr comment ${{ github.event.pull_request.number }} --edit-last --body "$body" || \
+          gh pr comment ${{ github.event.pull_request.number }} --body "$body"
+
+  remove-preview:
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.action == 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      vars.AWS_DEPLOY_ROLE_ARN != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - run: npx sst remove --stage pr-${{ github.event.pull_request.number }}
+
+  production:
+    needs: verify
+    if: github.event_name == 'push' && vars.AWS_DEPLOY_ROLE_ARN != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      id-token: write
+      contents: read
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - id: deploy
+        name: sst deploy (production)
+        env:
+          BUDDLE_DOMAIN_READY: ${{ vars.BUDDLE_DOMAIN_READY }}
+        run: |
+          npx sst deploy --stage production
+          echo "url=$(node -p "require('./.sst/outputs.json').url")" >> "$GITHUB_OUTPUT"

@@ -29,3 +29,7 @@ test-results/
 
 # deploy
 .vercel
+
+# sst
+.sst/
+.open-next/
