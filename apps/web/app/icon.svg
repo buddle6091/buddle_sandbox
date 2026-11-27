@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="5.5 4.5 53 53">
+  <!-- 파비콘: 라이트 히어로의 "청자 유약 방울" 행성 — 일렁이는 액체 구 + 기울어진 궤도 고리.
+       색은 packages/tokens primitives 의 blue(벽청) · celadon(청자) 값을 그대로 옮겼다(이미지 자산이라 CSS 변수를 못 읽는다). -->
+  <defs>
+    <radialGradient id="body" cx="38%" cy="30%" r="78%">
+      <stop offset="0" stop-color="#E6F8FC"/>
+      <stop offset="0.28" stop-color="#9ADFF0"/>
+      <stop offset="0.62" stop-color="#4275FF"/>
+      <stop offset="1" stop-color="#1E3A8C"/>
+    </radialGradient>
+    <radialGradient id="pool" cx="50%" cy="100%" r="70%">
+      <stop offset="0" stop-color="#35C6E8" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#35C6E8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6E93FF" stop-opacity="0.55"/>
+      <stop offset="0.5" stop-color="#9BB4FF" stop-opacity="1"/>
+      <stop offset="1" stop-color="#6E93FF" stop-opacity="0.55"/>
+    </linearGradient>
+    <clipPath id="front"><rect x="0" y="33" width="64" height="31"/></clipPath>
+    <clipPath id="back"><rect x="0" y="0" width="64" height="33"/></clipPath>
+  </defs>
+
+  <!-- 고리 뒤쪽 절반 -->
+  <g transform="rotate(-18 32 33)" clip-path="url(#back)">
+    <ellipse cx="32" cy="33" rx="25" ry="6.5" fill="none" stroke="url(#ring)" stroke-width="3"/>
+  </g>
+
+  <!-- 액체 행성: 원을 살짝 일그러뜨린 방울 -->
+  <path d="M32 9.5c7.4 0 12.6 3.2 15.9 8.1 3.3 4.9 4.6 10.4 3.4 16.2-1.2 5.8-4.4 10.6-9.6 13.6-5.2 3-11.5 3.6-17 1.6-5.5-2-9.6-6.6-11.2-12.3-1.6-5.7-.7-11.9 2.7-16.9 3.4-5 8.4-10.3 15.8-10.3z" fill="url(#body)"/>
+  <path d="M32 9.5c7.4 0 12.6 3.2 15.9 8.1 3.3 4.9 4.6 10.4 3.4 16.2-1.2 5.8-4.4 10.6-9.6 13.6-5.2 3-11.5 3.6-17 1.6-5.5-2-9.6-6.6-11.2-12.3-1.6-5.7-.7-11.9 2.7-16.9 3.4-5 8.4-10.3 15.8-10.3z" fill="url(#pool)"/>
+  <!-- 유약 물결 -->
+  <path d="M15.5 34c4.5 2.2 9.3 2.6 14.2 1.2 5-1.4 9.6-1.3 14.6.8" fill="none" stroke="#E6F8FC" stroke-opacity="0.45" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- 스펙큘러 하이라이트 -->
+  <ellipse cx="24.5" cy="19.5" rx="5.2" ry="3.2" transform="rotate(-28 24.5 19.5)" fill="#FFFFFF" fill-opacity="0.85"/>
+  <circle cx="31.5" cy="15.2" r="1.4" fill="#FFFFFF" fill-opacity="0.7"/>
+
+  <!-- 고리 앞쪽 절반 -->
+  <g transform="rotate(-18 32 33)" clip-path="url(#front)">
+    <ellipse cx="32" cy="33" rx="25" ry="6.5" fill="none" stroke="url(#ring)" stroke-width="3"/>
+  </g>
+</svg>

@@ -41,6 +41,17 @@
 - [deferred] 덱 키보드 ←/→ 카드 이동은 네이티브 스크롤에 위임(포커스는 가능).
 - [open] dev 전용 진단(`window.__heroState`, `data-canvas-inview`) 잔존 — 프로덕션 번들 제외 확인됨, 정리 시점 미정.
 
+## 2026-11-27 — 파비콘: 액체 행성 아이콘
+
+### 변경
+- `apps/web/app/icon.svg`(벡터, 최신 브라우저) · `favicon.ico`(16 · 32 · 48 PNG 내장, 구형 브라우저) · `apple-icon.png`(180, iOS 홈 화면). Next App Router 파일 규칙이라 `<head>` 링크는 자동.
+- 그림: 라이트 히어로의 "청자 유약 방울"을 옮긴 액체 행성 + 기울어진 궤도 고리. 색은 tokens primitives 의 blue · celadon 값(이미지 자산이라 CSS 변수를 못 읽는 예외).
+
+### 이슈
+- [fixed] 첫 시안은 고리 폭 때문에 16 · 32px 에서 행성이 작고 흰 탭 배경에서 고리가 안 보임 → viewBox 를 좁혀 행성이 칸을 채우게, 고리를 진하게, 흰 림 줄 제거.
+- [fixed] iOS 는 apple-touch-icon 의 투명 영역을 검정으로 채움 → apple-icon 만 불투명 연한 배경(blue-50 계열).
+- [note] 렌더는 Playwright 로 16 · 32 · 48 · 180 · 256 을 흰 · 어두운 탭 배경에서 확인. qa-verifier 는 자산 3개뿐이라 생략.
+
 ## 2026-11-27 — 캘린더: 2026년 11 · 12월 교육 일정 공개
 
 ### 변경
