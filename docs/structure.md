@@ -88,6 +88,7 @@ buddle_sandbox/
 │     │  ├─ three/               hero-canvas(dynamic) · hero-rig · scene-light(백자) · scene-dark(흑유) · hero-state · palette
 │     ├─ src/shell/              palette-items.ts(⌘K 항목, 순수 함수) · clipboard.ts — 세 라우트 공통. 조립은 app/command-palette.tsx
 │     │  └─ landing.tsx          컴포지션
+│     ├─ src/calendar/           schedule.ts(마스킹된 공개 일정 데이터) · month.ts(월 그리드 · 펼치기 · 통계, 순수 함수) · calendar-view.tsx
 │     └─ tests/setup.ts          jsdom 폴리필
 │
 ├─ apps/

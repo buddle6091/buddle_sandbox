@@ -29,3 +29,6 @@ test-results/
 
 # deploy
 .vercel
+
+# 로컬 전용 — 고객사 실명 등 공개 저장소에 둘 수 없는 검사 데이터
+*.local.json
