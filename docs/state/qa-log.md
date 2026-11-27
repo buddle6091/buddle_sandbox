@@ -41,6 +41,20 @@
 - [deferred] 덱 키보드 ←/→ 카드 이동은 네이티브 스크롤에 위임(포커스는 가능).
 - [open] dev 전용 진단(`window.__heroState`, `data-canvas-inview`) 잔존 — 프로덕션 번들 제외 확인됨, 정리 시점 미정.
 
+## 2026-11-27 — 임시 배포: Vercel + buddle.it.kr
+
+### 변경
+- Vercel 프로젝트 `buddle-sandbox`(Hobby, Root Directory `apps/web`, 운영 브랜치 `master`) — 대시보드에서 사용자가 가져오기.
+- 도메인: `buddle.it.kr`(Production) + `www.buddle.it.kr` → 307 리다이렉트. 가비아 DNS 에 A · CNAME 2줄 추가(기존 TXT 3 · MX 1 유지).
+
+### 이슈
+- [note] Vercel MCP 커넥터는 프로젝트 생성 403 · 프로젝트 조회 0건(권한 범위) → 대시보드 UI 로 진행.
+- [note] Vercel 가져오기 화면이 자동 제안한 `vercel.json`(services 모드)은 모든 트래픽을 Storybook 으로 보내는 잘못된 추측 → 사용하지 않음, 단일 프로젝트로.
+- [note] 인증서: apex 는 DNS 저장 후 수 분 내 발급, `www` 는 몇 분 더 늦게 전 엣지 반영(그 사이 curl 60 · 35 간헐).
+- [verified] `https://buddle.it.kr` 200 + 보안 헤더(CSP · HSTS · X-Frame-Options), `www` → 307, 브라우저 렌더 · 폰트 정상, `@ns.gabia.co.kr` 에서 MX 유지 확인.
+- [note] Vercel Hobby 는 비상업 용도 조건 — "교육 문의" 기능이 있어 장기 운영 시 검토 필요. 결제 수단 미등록이라 청구는 발생하지 않음(한도 초과 시 일시 정지).
+- [open] AWS: 크레딧은 Organizations 생성으로 2026-11-20 만료, Identity Center 인스턴스는 꼬인 상태 — 결제 지원 문의 결과 대기. PR #2(SST 배포)는 열어 둔 채 유지.
+
 ## 2026-11-20 — AWS 배포 구성 (SST + OpenNext) · GitHub Actions CI/CD
 
 ### 변경

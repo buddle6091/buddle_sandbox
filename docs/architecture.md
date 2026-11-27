@@ -164,6 +164,8 @@ buddle.it.kr (Route 53)
 GitHub Actions ── OIDC ──▶ AWS 역할 (접근 키 없음)
 ```
 
+> **임시 운영 (2026-11-27 ~): Vercel Hobby.** AWS 계정 정리(Identity Center · 결제 지원 문의) 전까지 `buddle.it.kr` 은 Vercel 프로젝트 `buddle-sandbox`(Root `apps/web`, `master` 자동 배포 · PR 미리보기)가 서빙한다. 가비아 DNS 에 `@ A 216.198.79.1` · `www CNAME 7f63f2922d2fa336.vercel-dns-017.com.` 두 줄만 추가했고 네임서버 · 메일 레코드는 그대로. 결제 수단 미등록(청구 불가), 저장소에 Vercel 전용 파일 없음. **AWS 로 옮길 때:** 위 두 레코드 삭제(또는 Route 53 위임) → Vercel 프로젝트 삭제.
+
 ### 페이지별 렌더링 (블로그 · 캘린더 구현 때 이 표를 따른다)
 | 페이지 | 방식 | 이유 |
 |---|---|---|
