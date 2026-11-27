@@ -21,7 +21,7 @@
 |---|---|
 | `/` | **랜딩 v2** — 도메인 루트로 접속하면 바로 보이는 페이지. 스펙 `docs/handoff/landing-v2/` (2026-11-01 적용) |
 | `/blog` | 개발 블로그 → `docs/handoff/blog-calendar/` |
-| `/calendar` | 비공개 캘린더 → `docs/handoff/blog-calendar/` |
+| `/calendar` | **공개 교육 일정**(2026-11-27~, 기업명 마스킹 정적 데이터 `apps/web/src/calendar/schedule.ts`). 초대 로그인 · 상세 열람은 Supabase 연동 때 → `docs/handoff/blog-calendar/` |
 
 - 랜딩 작업과 블로그·캘린더 작업은 **핸드오프 번들과 상태 원장 섹션을 따로** 쓴다. 한 세션에서 섞지 않는다.
 

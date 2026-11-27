@@ -206,7 +206,7 @@ supabase  org_label           org_name_norm unique, industry, size, status(appro
                               title = course_name 에 등록 org 토큰 포함 시 유형만
 ```
 
-- **매핑은 코드에 넣지 않는다.** 포트폴리오 리포는 공개 전제. `{ '삼성전자': 'semiconductor' }` 같은 파일을 커밋하면 git 히스토리에 고객사 실명이 영구히 남는다. 매핑은 `org_label` 테이블(소유자만)이고 소유자 화면에서 편집한다. `seed.sql` 에도 실명 금지 — 로컬 전용 `seed.local.sql` 을 gitignore.
+- **매핑은 코드에 넣지 않는다.** 포트폴리오 리포는 공개 전제. `{ '<고객사 실명>': 'semiconductor' }` 같은 파일을 커밋하면 git 히스토리에 고객사 실명이 영구히 남는다. 매핑은 `org_label` 테이블(소유자만)이고 소유자 화면에서 편집한다. `seed.sql` 에도 실명 금지 — 로컬 전용 `seed.local.sql` 을 gitignore.
 - **매칭은 정규화 + 정확 일치만.** 부분 문자열·유사도 매칭은 오탐(다른 회사에 같은 라벨)이 나므로 쓰지 않는다. 정규화 함수는 `packages/utils` 에 두고 테스트로 고정한다("(주)ABC" "ABC 주식회사" "abc" 가 같은 키).
 - **과정명 검사.** 등록된 org 토큰(정규화 전 원문, 2글자 이상)이 `course_name` 에 포함되면 과정명을 숨기고 유형(강의/멘토링)만 보여준다. 모르는 회사명이 과정명에 있어도 그 org 자체가 미등록이라 이벤트가 이미 「비공개」.
 - **새 이름 알림.** sync 가 미등록 org 를 만나면 `org_label` 에 `status='needs_review'` 행만 만든다. 소유자 화면 상단 "미분류 N건" 배지 → enum 두 개 고르면 끝. 이 검토 UI 가 이 기능의 전부다.
