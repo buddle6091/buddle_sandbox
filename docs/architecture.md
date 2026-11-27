@@ -1,7 +1,7 @@
 # 아키텍처 메모 — 배포 · 캘린더 동기화 (2026-11-02, 제안)
 
 > 사용자 질문 2개(배포 호스트 / 캘린더 반영 방식)에 대한 답과, 앞으로 확장할 서비스가 따라야 할 구조.
-> 상태: **제안 — 사용자 결정 대기**(끝의 "결정 대기" 3개). 결정되면 이 문서를 "확정"으로 바꾸고 루트 `CLAUDE.md` 스택 표를 고친다.
+> 상태: 배포는 **§1.7 로 확정(2026-11-20)**. 나머지는 **제안 — 사용자 결정 대기**(끝의 "결정 대기" 3개). 결정되면 이 문서를 "확정"으로 바꾸고 루트 `CLAUDE.md` 스택 표를 고친다.
 > 데이터 모델·API 는 `docs/handoff/blog-calendar/DATA.md` 가 SSOT. 이 문서는 그 위에 "어디서 돌리고, 어떻게 가져오나"만 적는다.
 
 ## 0. 전제 — 지금 코드가 호스트에 요구하는 것
@@ -146,6 +146,59 @@ velog GraphQL ─ tools/import-velog.mjs ─▶ docs/archive/velog/*.md + index.
 
 ### 직접 백엔드가 필요해지는 때 (1.5절 신호와 같다)
 글 임베딩 · 추천처럼 Python 이 필요한 작업, 30초를 넘는 배치, 상시 연결이 생길 때. 블로그 글 보관 자체로는 오지 않는다.
+
+---
+
+## 1.7 배포 아키텍처 확정 — Next(SSR) on AWS via SST + OpenNext, CI/CD 는 GitHub Actions (2026-11-20, 확정)
+
+> 사용자 요구: ① SSR 의 이점이 필요한 페이지는 배포 사이트에서 확실히 서버 렌더링 ② GitHub 로 CI/CD 자동화 ③ AWS 학습 · 낮은 유지비.
+> 같은 날 잠시 "정적 내보내기(S3 + CloudFront)"로 구성했다가 ①을 만족하지 못해 되돌렸다.
+
+```
+buddle.it.kr (Route 53)
+   └─ CloudFront ─┬─ S3               _next/static · public · 빌드 때 미리 만든 HTML (○ Static: 랜딩)
+                  ├─ Lambda (서버)     SSR (ƒ Dynamic: 캘린더 · 에디터) · ISR 재생성 (블로그) · Route Handler
+                  └─ Lambda (이미지)   next/image 최적화
+   ISR 재검증 = SQS + Lambda, 태그 캐시 = DynamoDB          ← 모두 SST 의 sst.aws.Nextjs 가 생성
+   Lambda ──▶ Supabase (Postgres RLS · Auth · Storage · Edge Functions · pg_cron)
+GitHub Actions ── OIDC ──▶ AWS 역할 (접근 키 없음)
+```
+
+> **임시 운영 (2026-11-27 ~): Vercel Hobby.** AWS 계정 정리(Identity Center · 결제 지원 문의) 전까지 `buddle.it.kr` 은 Vercel 프로젝트 `buddle-sandbox`(Root `apps/web`, `master` 자동 배포 · PR 미리보기)가 서빙한다. 가비아 DNS 에 `@ A 216.198.79.1` · `www CNAME 7f63f2922d2fa336.vercel-dns-017.com.` 두 줄만 추가했고 네임서버 · 메일 레코드는 그대로. 결제 수단 미등록(청구 불가), 저장소에 Vercel 전용 파일 없음. **AWS 로 옮길 때:** 위 두 레코드 삭제(또는 Route 53 위임) → Vercel 프로젝트 삭제.
+
+### 페이지별 렌더링 (블로그 · 캘린더 구현 때 이 표를 따른다)
+| 페이지 | 방식 | 이유 |
+|---|---|---|
+| `/` 랜딩 | Static | 내용이 코드에 있음. CloudFront 에서 바로 |
+| `/blog`, `/blog/[slug]` | ISR + 발행 시 `revalidateTag` | 검색 노출 + 발행 즉시 반영(재빌드 없이). 사이트맵 · OG 도 서버에서 |
+| `/blog/write` 에디터 | Dynamic (소유자 세션 확인 후) | 비공개, 서버에서 권한 확인 후 렌더 |
+| `/calendar` | Dynamic, `Cache-Control: private, no-store` | 초대자 쿠키로 서버에서 RLS 조회 → 마스킹된 데이터만 HTML 에. CDN 캐시 금지 |
+| `/api/*` Route Handler | Lambda | 초대 로그인(응답 균일화) · 캘린더 동기화(Google 키) · 댓글 작성(레이트 리밋) |
+
+### 왜 이 조합인가
+- SSR · ISR · Route Handler 를 그대로 쓰면서 AWS 에 올리는 표준 경로가 OpenNext 다. `@opennextjs/aws` 4.1.16 이 `next >=16.4.5` 를 지원하고, 이 저장소(Next 16.4.6)로 로컬 빌드 · SST 출력 형식 호환을 확인했다(2026-11-20). OpenNext 는 devDependency 로 고정해 배포 때마다 내려받지 않는다.
+- 원래 설계(§1.5 "Supabase + 얇은 Route Handler", 브라우저는 Supabase 를 직접 부르지 않음)를 그대로 유지한다.
+- 비용: 정적 페이지는 CloudFront 캐시라 Lambda 가 거의 깨어나지 않는다. Route 53 월 0.5달러 + Lambda · CloudFront · SQS · DynamoDB 무료 한도. Budgets 월 5달러 알림.
+- 주의: 이미지 업로드 10MB 는 Lambda 요청 본문 한도(6MB)를 넘는다 → `POST /api/upload` 는 Supabase Storage **서명 업로드 URL 발급**만 하고, 파일은 브라우저가 직접 올린다(DATA.md 반영 대상).
+
+### CI/CD (`.github/workflows/ci-cd.yml`)
+| 이벤트 | 작업 |
+|---|---|
+| PR 열림 · 갱신 | 검증(nx affected lint · test · typecheck · build + `npm audit` high) → 미리보기 스테이지 `pr-<번호>` 배포 → PR 에 주소 코멘트 |
+| PR 닫힘 | `sst remove --stage pr-<번호>` |
+| master push | 검증 → `production` 배포 |
+- AWS 인증: GitHub OIDC → `buddle-sandbox-github-deploy` 역할(production 스테이지가 생성). 신뢰 조건은 이 저장소의 master push 와 PR 만. 포크 PR 은 워크플로 조건으로 미리보기 제외, `pull_request_target` 미사용(공개 저장소).
+- 역할 권한은 학습 단계라 AdministratorAccess → 안정되면 CloudTrail 기준으로 축소(qa-log [open]).
+- 저장소 변수: `AWS_DEPLOY_ROLE_ARN`(첫 로컬 배포 출력), `BUDDLE_DOMAIN_READY`(네임서버 위임 후 1). 비어 있으면 검증만 돈다.
+
+### 도메인 연결 3단계
+ACM 인증서는 DNS 검증이라 네임서버가 Route 53 을 가리킨 뒤에만 발급이 끝난다.
+1. 로컬 `npx sst deploy --stage production` → Route 53 영역 + 가비아에서 옮긴 Google Workspace 레코드(MX · 사이트 인증 TXT · SPF · DKIM) + GitHub 배포 역할
+2. 가비아 네임서버 → 출력된 NS 4개, `dig NS buddle.it.kr +short` 로 확인
+3. 저장소 변수 `BUDDLE_DOMAIN_READY=1` → 다음 master 배포부터 buddle.it.kr · www 리다이렉트 연결
+
+### 이 구조를 다시 볼 때
+Lambda 콜드 스타트(수백 ms)가 캘린더 · 에디터에서 체감되면 → `warm` 옵션 또는 서버를 컨테이너(Fargate)로. Python AI 도메인이 들어오면 `apps/api`(FastAPI on Lambda)를 같은 CloudFront 의 `/api/ai/*` 로.
 
 ---
 

@@ -13,7 +13,9 @@
 - UI: **shadcn/ui 기반** → `packages/ui` 공용 컴포넌트. **Tailwind v4 + CSS 변수** 토큰.
 - 토큰: `design.md`(Primitive→Semantic Light/Dark) → `packages/tokens`(`--bs-color-*` CSS 변수 + Tailwind `@theme`)
 - 테스트: **Vitest + Testing Library**, **Playwright**(E2E 최소), **Storybook**
-- 배포: **Vercel + 커스텀 도메인** (→ **재검토 중**: AWS SST+OpenNext 또는 Cloudflare Workers. 제안·비교는 `docs/architecture.md`, 사용자 결정 대기). 2번째 모듈은 **Next.js Multi-Zones**로 같은 도메인 분리 배포.
+- 배포: **Next(SSR · ISR · Route Handler) → OpenNext → AWS(CloudFront + Lambda + S3), 도메인 Route 53(`buddle.it.kr`), IaC 는 SST(`sst.config.ts`)** — 2026-11-20 확정, `docs/architecture.md` §1.7. 백엔드는 **Supabase**(+ 얇은 Route Handler). 페이지별 렌더링 방식(Static · ISR · Dynamic)은 §1.7 표를 따른다.
+  - CI/CD: `.github/workflows/ci-cd.yml` — PR = 검증 + 미리보기 스테이지 `pr-<번호>`, master = 운영 배포. AWS 인증은 GitHub OIDC(접근 키 금지).
+  - 로컬 명령: `npx sst deploy --stage <이름>` (SSO 프로필 `buddle`). 운영(`production`)은 Actions 로만 배포한다(최초 1회 예외).
 - 최소 버전: **Node 20.19+** (`.nvmrc`=24 — vitest 4/vite 8 요구. 20.16 에서는 설치·테스트가 깨진다), **TypeScript 5.1+**
 
 ## 라우트 (apps/web, 메인 zone)
