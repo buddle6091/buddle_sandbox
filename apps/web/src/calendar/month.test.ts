@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { expandSchedule, initialMonth, monthMatrix, monthStats, type Course } from './month';
 
 describe('monthMatrix', () => {
-  it('2026년 11월 — 일요일 시작 6주, 앞뒤는 이웃 달 날짜로 채운다', () => {
+  it('2026년 11월 — 일요일 시작 5주, 앞뒤는 이웃 달 날짜로 채운다', () => {
     const weeks = monthMatrix('2026-11');
     expect(weeks).toHaveLength(5);
     expect(weeks[0][0]).toEqual({ iso: '2026-11-01', day: 1, inMonth: true, weekday: 0 });

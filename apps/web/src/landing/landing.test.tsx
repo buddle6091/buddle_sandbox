@@ -1,4 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { LANDING, SECTION_IDS } from './content/landing';
@@ -14,6 +17,9 @@ vi.mock('./scroll/scroll-driver', () => ({
   ScrollDriver: () => null,
 }));
 // jsdom 에는 IntersectionObserver 가 없으므로 LazySection 은 즉시 렌더한다(폴백).
+
+const LOCAL_LEAKS = join(__dirname, 'leaks.local.json');
+const PRIVATE_WORDS: string[] = existsSync(LOCAL_LEAKS) ? JSON.parse(readFileSync(LOCAL_LEAKS, 'utf8')) : [];
 
 afterEach(() => courseFilterStore.reset());
 
@@ -148,12 +154,11 @@ describe('Landing — 10섹션', () => {
     expect(gh).toHaveAttribute('rel', expect.stringContaining('noopener'));
   });
 
-  it('비공개 원칙 — 고객사 실명 · 전화번호 · 생년월일 · 옛 이메일이 없다', () => {
+  it('비공개 원칙 — (로컬 목록이 있으면) 고객사 실명 · 전화번호 · 생년월일 · 옛 이메일이 없다', () => {
     const { container } = render(<Landing />);
     const text = container.textContent ?? '';
-    for (const name of ['삼성', '포스코', '롯데', '한솔', '농심', '씨젠', '세방', '카카오', 'LIG', '크래프톤', '현대중공업']) {
-      expect(text, name).not.toContain(name);
-    }
+    // 고객사 실명 목록 자체가 비공개 정보 → 로컬 전용 leaks.local.json(gitignore)이 있을 때만 검사한다(캘린더 테스트와 같은 방식)
+    for (const name of PRIVATE_WORDS) expect(text, name).not.toContain(name);
     expect(text).not.toMatch(/010[- ]?\d{4}[- ]?\d{4}/);
     expect(text).not.toMatch(/1998/);
     expect(text).not.toContain('naver.com');
